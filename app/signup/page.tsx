@@ -12,9 +12,9 @@ const page = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
-      {/* DOT GRID (visible primary) */}
+      {/* Dot Grid */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle,var(--primary)_2px,transparent_1px)] bg-size-[28px_28px] animate-grid-drift" />
-      {/* GLOW LAYERS */}
+      {/* Glow Layers */}
       <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-secondary/10"></div>
       <div
         className="relative flex items-stretch rounded-xl border border-border max-w-4xl w-full overflow-hidden shadow-sm hover:scale-102 transition-transform duration-300

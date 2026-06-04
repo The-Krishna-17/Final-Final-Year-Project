@@ -1,0 +1,5 @@
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return <div className="bg-background p-4 max-w-7xl mx-auto">{children}</div>;
+};
+
+export default Layout;
