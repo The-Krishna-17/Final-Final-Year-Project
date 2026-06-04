@@ -3,6 +3,7 @@
 import Layout from "@/components/Layout/Layout";
 import Image from "next/image";
 import lightLogo from "@/public/light-logo.png";
+import darkLogo from "@/public/dark-logo.png";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaArrowRightLong, FaUsers } from "react-icons/fa6";
@@ -47,7 +48,7 @@ const page = () => {
 
   return (
     <Layout>
-      <main className="space-y-16">
+      <main className="space-y-16" id="home">
         {/* Hero Section */}
         <section className="w-full mx-auto  flex flex-col gap-4 items-center justify-center text-center">
           <h2 className="text-2xl font-semibold text-secondary-foreground opacity-60">
@@ -56,7 +57,11 @@ const page = () => {
           <h1 className="text-5xl font-bold max-w-3xl leading-tight">
             Learn and boost your skillset with
           </h1>
-          <Image src={lightLogo} alt="logo" className="max-w-44 my-4" />
+          <div className="max-w-44 my-4">
+            <Image src={lightLogo} alt="logo" className="dark:hidden" />
+            <Image src={darkLogo} alt="logo" className="hidden dark:block" />
+          </div>
+
           <p className="text-2xl font-semibold">
             {displayText}
             <span className="animate-pulse">|</span>
@@ -71,12 +76,12 @@ const page = () => {
           <Image
             src={dashboardImage}
             alt="dashboard"
-            className="max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8 border-gray-800"
+            className="border-gray-800 dark:border-gray-200 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8"
           />
         </section>
 
         {/* The Problem Section  */}
-        <section className="space-y-6">
+        <section className="space-y-6" id="problem">
           <div className="flex flex-col gap-10">
             <div className="grid md:grid-cols-2 gap-8 items-start">
               <div className="space-y-3">
@@ -116,7 +121,7 @@ const page = () => {
 
                 return (
                   <Card key={c.title} className="group bg-card p-4 shadow-sm">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
                       <Icon className="text-xl" />
                     </div>
                     <h3 className="text-lg font-semibold mb-2">{c.title}</h3>
@@ -131,7 +136,7 @@ const page = () => {
         </section>
 
         {/* The Process Section  */}
-        <section className="space-y-6">
+        <section className="space-y-6" id="process">
           <div className="space-y-3 text-center max-w-2xl mx-auto">
             <p className="text-sm uppercase tracking-widest text-muted-foreground">
               The Process
@@ -151,7 +156,7 @@ const page = () => {
 
                 return (
                   <div key={c.title} className="group flex items-start gap-4">
-                    <div className="mb-4 flex min-h-12 min-w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition">
+                    <div className="mb-4 flex min-h-12 min-w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
                       <Icon className="text-xl" />
                     </div>
                     <div className="flex flex-col">
