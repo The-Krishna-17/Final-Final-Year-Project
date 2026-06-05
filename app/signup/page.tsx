@@ -1,14 +1,60 @@
 "use client";
 
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import loginImg from "@/public/login.webp";
 import Image from "next/image";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { registerUser } from "@/store/features/auth/authSlice";
 
 const page = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { loadingRegister, errorRegister } = useAppSelector(
+    (state) => state.auth,
+  );
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [validationError, setValidationError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setValidationError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setValidationError("Passwords do not match");
+      return;
+    }
+
+    const resultAction = await dispatch(
+      registerUser({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+      }),
+    );
+
+    if (registerUser.fulfilled.match(resultAction)) {
+      router.push("/");
+    }
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
@@ -52,43 +98,123 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
+          <form onSubmit={handleSignup} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-sm font-medium text-foreground">
+                    First Name
+                  </label>
+                  <Input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="joe"
+                    required
+                    className={errorRegister?.fields?.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  />
+                  {errorRegister?.fields?.firstName && (
+                    <p className="text-xs text-red-500">{errorRegister.fields.firstName}</p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1.5 w-full">
+                  <label className="text-sm font-medium text-foreground">
+                    Last Name
+                  </label>
+                  <Input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="doe"
+                    required
+                    className={errorRegister?.fields?.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  />
+                  {errorRegister?.fields?.lastName && (
+                    <p className="text-xs text-red-500">{errorRegister.fields.lastName}</p>
+                  )}
+                </div>
+              </div>
+
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium text-foreground">
-                  First Name
+                  Email
                 </label>
-                <Input type="text" placeholder="joe" />
+                <Input
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  type="email"
+                  placeholder="email@gmail.com"
+                  required
+                  className={errorRegister?.fields?.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                />
+                {errorRegister?.fields?.email && (
+                  <p className="text-xs text-red-500">{errorRegister.fields.email}</p>
+                )}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium text-foreground">
-                  Last Name
+                  Password
                 </label>
-                <Input type="text" placeholder="doe" />
+                <div className="relative">
+                  <Input
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    required
+                    className={`pr-10 ${errorRegister?.fields?.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                  </button>
+                </div>
+                {errorRegister?.fields?.password && (
+                  <p className="text-xs text-red-500">{errorRegister.fields.password}</p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-foreground">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Input
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showConfirmPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Email
-              </label>
-              <Input type="email" placeholder="email@gmail.com" />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Password
-              </label>
-              <Input type="password" placeholder="••••••••" />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Confirm Password
-              </label>
-              <Input type="password" placeholder="••••••••" />
-            </div>
-          </div>
+            {(validationError || errorRegister?.global) && (
+              <p className="text-sm text-red-500 font-medium">
+                {validationError || errorRegister?.global}
+              </p>
+            )}
 
-          <Button className="w-full">Signup</Button>
+            <Button type="submit" className="w-full" disabled={loadingRegister}>
+              {loadingRegister ? "Signing up..." : "Signup"}
+            </Button>
+          </form>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-border" />
