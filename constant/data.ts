@@ -11,7 +11,18 @@ import {
   FaBolt,
   FaCalendarAlt,
   FaStar,
+  FaChartLine,
+  FaQuestionCircle,
 } from "react-icons/fa";
+import {
+  SiNextdotjs,
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiSocketdotio,
+  SiVercel,
+  SiTypescript,
+} from "react-icons/si";
 
 export const LANDING_PAGE_MARQUEE = [
   "Exchange Skills, Build Together",
@@ -137,4 +148,128 @@ export const FEATURES = [
     rating: "86.5%",
     metricLabel: "User Confidence",
   },
+];
+
+export const RESEARCH_STATS = [
+  { value: "4.51", label: "Avg importance of intelligent matching" },
+  { value: "91.9%", label: "Willing to teach a skill" },
+  { value: "78.4%", label: "Unaware of similar platforms" },
+  { value: "86.5%", label: "Would stay after bad experience" },
+  { value: "4.11 / 5", label: "Interest in joining platform" },
+];
+
+export const TECH_STACK = [
+  {
+    id: 1,
+    name: "Next.js 14",
+    role: "Frontend · TypeScript",
+    icon: SiNextdotjs,
+    color: "#000000",
+  },
+  {
+    id: 2,
+    name: "Node.js",
+    role: "Backend Runtime",
+    icon: SiNodedotjs,
+    color: "#3C873A",
+  },
+  {
+    id: 3,
+    name: "Express.js",
+    role: "REST API Layer",
+    icon: SiExpress,
+    color: "#444444",
+  },
+  {
+    id: 4,
+    name: "MongoDB Atlas",
+    role: "Cloud NoSQL Database",
+    icon: SiMongodb,
+    color: "#47A248",
+  },
+  {
+    id: 5,
+    name: "Socket.io",
+    role: "Real-time Messaging",
+    icon: SiSocketdotio,
+    color: "#010101",
+  },
+];
+
+export const ARCHITECTURE = [
+  {
+    id: "frontend",
+    title: "Frontend",
+    icon: SiNextdotjs,
+    points: [
+      "Next.js 14 with TypeScript",
+      "Server-side rendering (SSR)",
+      "JWT-secured auth flows",
+      "Fully mobile-responsive UI",
+      "Deployed on Vercel",
+    ],
+  },
+
+  {
+    id: "backend",
+    title: "Backend",
+    icon: SiNodedotjs,
+    points: [
+      "Node.js + Express.js REST API",
+      "MongoDB Atlas + Mongoose ODM",
+      "Socket.io WebSocket server",
+      "JWT token auth & refresh",
+      "Deployed on Render / AWS",
+    ],
+  },
+
+  {
+    id: "intelligence",
+    title: "Intelligence",
+    icon: FaBrain,
+    points: [
+      "Content-based filtering (cold start)",
+      "Collaborative filtering (active users)",
+      "Match explanation generator",
+      "Precision, Recall, F1, MAP metrics",
+      "Onboarding quiz for preferences",
+    ],
+  },
+];
+
+export const FAQS = [
+  {
+    question: "What is SkillXchange?",
+    answer:
+      "SkillXchange is a peer-to-peer platform where users can exchange skills without paying money. You teach what you know and learn what you need.",
+  },
+  {
+    question: "Is SkillXchange free to use?",
+    answer:
+      "Yes. The platform is completely free. It is designed to democratize access to learning through skill exchange.",
+  },
+  {
+    question: "How does matching work?",
+    answer:
+      "We use a hybrid recommendation system combining content-based filtering (for new users) and collaborative filtering (for active users) to suggest the best skill partners.",
+  },
+  {
+    question: "Can I trust other users?",
+    answer:
+      "Yes. Every user has verified profiles, ratings, and trust scores based on post-session reviews and platform activity.",
+  },
+  {
+    question: "Do I need to be an expert to teach?",
+    answer:
+      "No. You only need to be one step ahead of someone else. Teaching reinforces your own understanding while helping others grow.",
+  },
+];
+
+export const CONTACT_BENEFITS = [
+  "Research-driven peer-to-peer learning platform",
+  "AI-powered skill matching and recommendations",
+  "Secure messaging and session scheduling",
+  "Completely free skill exchange ecosystem",
+  "Built around lifelong learning and accessibility",
+  "Aligned with UN Sustainable Development Goals",
 ];
