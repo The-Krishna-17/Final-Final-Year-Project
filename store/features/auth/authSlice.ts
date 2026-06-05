@@ -11,6 +11,7 @@ import {
   ResetPasswordPayload,
   AuthError,
 } from "./type";
+import { axiosInstance } from "@/utils/axiosInstance";
 
 const initialState: AuthState = {
   user: null,
@@ -42,17 +43,22 @@ const initialState: AuthState = {
 // Helper function to extract AuthError from Axios error
 const extractError = (error: unknown, defaultMessage: string): AuthError => {
   if (axios.isAxiosError(error) && error.response?.data) {
-    const data = error.response.data as { message?: string; errors?: { field: string; message: string }[] };
+    const data = error.response.data as {
+      message?: string;
+      errors?: { field: string; message: string }[];
+    };
     const authError: AuthError = {};
-    
+
     if (data.errors && data.errors.length > 0) {
       authError.fields = {};
-      data.errors.forEach(err => {
-        const fieldName = err.field.includes(".") ? err.field.split(".").pop() || err.field : err.field;
+      data.errors.forEach((err) => {
+        const fieldName = err.field.includes(".")
+          ? err.field.split(".").pop() || err.field
+          : err.field;
         authError.fields![fieldName] = err.message;
       });
     }
-    
+
     if (data.message && data.message !== "Validation failed") {
       authError.global = data.message;
     }
@@ -67,101 +73,128 @@ const extractError = (error: unknown, defaultMessage: string): AuthError => {
 };
 
 // Thunks
-export const registerUser = createAsyncThunk<AuthResponse, RegisterUser, { rejectValue: AuthError }>(
-  "auth/registerUser",
-  async (formData, thunkAPI) => {
-    try {
-      const response = await normalInstance.post("/auth/register", formData);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Registration failed"));
-    }
+export const registerUser = createAsyncThunk<
+  AuthResponse,
+  RegisterUser,
+  { rejectValue: AuthError }
+>("auth/registerUser", async (formData, thunkAPI) => {
+  try {
+    const response = await normalInstance.post("/auth/register", formData);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(extractError(error, "Registration failed"));
   }
-);
+});
 
-export const loginUser = createAsyncThunk<AuthResponse, LoginPayload, { rejectValue: AuthError }>(
-  "auth/loginUser",
-  async (formData, thunkAPI) => {
-    try {
-      const response = await normalInstance.post("/auth/login", formData);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Login failed"));
-    }
+export const loginUser = createAsyncThunk<
+  AuthResponse,
+  LoginPayload,
+  { rejectValue: AuthError }
+>("auth/loginUser", async (formData, thunkAPI) => {
+  try {
+    const response = await normalInstance.post("/auth/login", formData);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(extractError(error, "Login failed"));
   }
-);
+});
 
-export const getMe = createAsyncThunk<AuthResponse, void, { rejectValue: AuthError }>(
-  "auth/getMe",
-  async (_, thunkAPI) => {
-    try {
-      const response = await normalInstance.get("/auth/me");
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Failed to fetch user data"));
-    }
+export const getMe = createAsyncThunk<
+  AuthResponse,
+  void,
+  { rejectValue: AuthError }
+>("auth/getMe", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.get("/auth/me");
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to fetch user data"),
+    );
   }
-);
+});
 
-export const forgotPassword = createAsyncThunk<GenericResponse, ForgotPasswordPayload, { rejectValue: AuthError }>(
-  "auth/forgotPassword",
-  async (formData, thunkAPI) => {
-    try {
-      const response = await normalInstance.post("/auth/forgot-password", formData);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Failed to send reset email"));
-    }
+export const forgotPassword = createAsyncThunk<
+  GenericResponse,
+  ForgotPasswordPayload,
+  { rejectValue: AuthError }
+>("auth/forgotPassword", async (formData, thunkAPI) => {
+  try {
+    const response = await normalInstance.post(
+      "/auth/forgot-password",
+      formData,
+    );
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to send reset email"),
+    );
   }
-);
+});
 
-export const resetPassword = createAsyncThunk<GenericResponse, ResetPasswordPayload, { rejectValue: AuthError }>(
+export const resetPassword = createAsyncThunk<
+  GenericResponse,
+  ResetPasswordPayload,
+  { rejectValue: AuthError }
+>(
   "auth/resetPassword",
   async ({ token, password, confirmPassword }, thunkAPI) => {
     try {
-      const response = await normalInstance.post(`/auth/reset-password/${token}`, { password, confirmPassword });
+      const response = await normalInstance.post(
+        `/auth/reset-password/${token}`,
+        { password, confirmPassword },
+      );
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Failed to reset password"));
+      return thunkAPI.rejectWithValue(
+        extractError(error, "Failed to reset password"),
+      );
     }
-  }
+  },
 );
 
-export const verifyEmail = createAsyncThunk<GenericResponse, string, { rejectValue: AuthError }>(
-  "auth/verifyEmail",
-  async (token, thunkAPI) => {
-    try {
-      const response = await normalInstance.get(`/auth/verify-email/${token}`);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Email verification failed"));
-    }
+export const verifyEmail = createAsyncThunk<
+  GenericResponse,
+  string,
+  { rejectValue: AuthError }
+>("auth/verifyEmail", async (token, thunkAPI) => {
+  try {
+    const response = await normalInstance.get(`/auth/verify-email/${token}`);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Email verification failed"),
+    );
   }
-);
+});
 
-export const logoutUser = createAsyncThunk<GenericResponse, void, { rejectValue: AuthError }>(
-  "auth/logoutUser",
-  async (_, thunkAPI) => {
-    try {
-      const response = await normalInstance.post("/auth/logout");
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Logout failed"));
-    }
+export const logoutUser = createAsyncThunk<
+  GenericResponse,
+  void,
+  { rejectValue: AuthError }
+>("auth/logoutUser", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/auth/logout");
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(extractError(error, "Logout failed"));
   }
-);
+});
 
-export const logoutAll = createAsyncThunk<GenericResponse, void, { rejectValue: AuthError }>(
-  "auth/logoutAll",
-  async (_, thunkAPI) => {
-    try {
-      const response = await normalInstance.post("/auth/logout-all");
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(extractError(error, "Logout from all devices failed"));
-    }
+export const logoutAll = createAsyncThunk<
+  GenericResponse,
+  void,
+  { rejectValue: AuthError }
+>("auth/logoutAll", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/auth/logout-all");
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Logout from all devices failed"),
+    );
   }
-);
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -189,7 +222,9 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loadingRegister = false;
-        state.errorRegister = action.payload ?? { global: "Registration failed" };
+        state.errorRegister = action.payload ?? {
+          global: "Registration failed",
+        };
       })
 
       // LOGIN
@@ -218,7 +253,9 @@ const authSlice = createSlice({
       .addCase(getMe.rejected, (state, action) => {
         state.loadingMe = false;
         state.user = null;
-        state.errorMe = action.payload ?? { global: "Failed to fetch user data" };
+        state.errorMe = action.payload ?? {
+          global: "Failed to fetch user data",
+        };
       })
 
       // FORGOT PASSWORD
@@ -233,7 +270,9 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.loadingForgotPassword = false;
-        state.errorForgotPassword = action.payload ?? { global: "Failed to send reset email" };
+        state.errorForgotPassword = action.payload ?? {
+          global: "Failed to send reset email",
+        };
       })
 
       // RESET PASSWORD
@@ -248,7 +287,9 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loadingResetPassword = false;
-        state.errorResetPassword = action.payload ?? { global: "Failed to reset password" };
+        state.errorResetPassword = action.payload ?? {
+          global: "Failed to reset password",
+        };
       })
 
       // VERIFY EMAIL
@@ -263,7 +304,9 @@ const authSlice = createSlice({
       })
       .addCase(verifyEmail.rejected, (state, action) => {
         state.loadingVerifyEmail = false;
-        state.errorVerifyEmail = action.payload ?? { global: "Email verification failed" };
+        state.errorVerifyEmail = action.payload ?? {
+          global: "Email verification failed",
+        };
       })
 
       // LOGOUT
