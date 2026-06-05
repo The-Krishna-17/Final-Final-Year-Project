@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
 import Footer from "@/components/Footer/Footer";
 import ReduxProvider from "@/store/provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -35,6 +36,7 @@ export default function RootLayout({
             <Navbar />
             {children}
             <Footer />
+            <Toaster position="bottom-right" richColors />
           </ThemeProvider>
         </ReduxProvider>
       </body>

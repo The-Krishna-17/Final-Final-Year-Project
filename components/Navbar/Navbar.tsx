@@ -13,23 +13,38 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDown, FaRegUser } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { getMe } from "@/store/features/auth/authSlice";
+import { getMe, logoutUser } from "@/store/features/auth/authSlice";
 import avatar from "@/public/avatar.png";
+import { Skeleton } from "../ui/skeleton";
+import { TbLayoutDashboard } from "react-icons/tb";
+import { IoKeyOutline } from "react-icons/io5";
+import { MdOutlineLogout } from "react-icons/md";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loadingMe } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getMe());
-  }, [dispatch]);
+    const fetchUser = async () => {
+      await dispatch(getMe());
+      setAuthLoading(false);
+    };
 
-  console.log("useeeeerrrrrrrrrrrrrrrrrrrrrrrrrrr:", user);
+    fetchUser();
+  }, []);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    router.push("/");
+    toast.success("Logged out successfully");
+  };
 
   return (
     <nav className="flex items-center justify-between p-4 border-b border-gray-400  sticky top-0 bg-background/80 backdrop-blur-md z-50">
@@ -95,12 +110,67 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {user ? (
-            <Image
-              src={user.avatar || avatar}
-              alt="user profile"
-              className="h-10 w-10 rounded-full object-center object-cover"
-            />
+          {authLoading ? (
+            <Skeleton className="h-10 w-10 rounded-full" />
+          ) : user ? (
+            loadingMe ? (
+              <Skeleton className="h-10 w-10 rounded-full" />
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Image
+                    src={user.avatar || avatar}
+                    alt="user profile"
+                    className="h-10 w-10 rounded-full object-cover cursor-pointer"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-fit mr-4 space-y-1 p-2"
+                  align="start"
+                >
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/dashboard"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <TbLayoutDashboard />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Link href="/change-password">
+                      <IoKeyOutline />
+                      Change Password
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Link href="/my-account">
+                      {" "}
+                      <FaRegUser />
+                      My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Button
+                      onClick={() => handleLogout()}
+                      variant="ghost"
+                      className="w-full flex items-center justify-start"
+                    >
+                      <MdOutlineLogout /> Logout
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
           ) : (
             <div className="flex items-center gap-3">
               <ThemeToggle />

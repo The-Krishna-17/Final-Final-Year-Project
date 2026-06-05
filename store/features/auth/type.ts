@@ -16,8 +16,14 @@ export interface ForgotPasswordPayload {
 
 export interface ResetPasswordPayload {
   token: string;
-  password: string;
-  confirmPassword: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword?: string;
+  newPassword?: string;
+  confirmPassword?: string;
 }
 
 export interface UserData {
@@ -78,6 +84,10 @@ export interface AuthState {
   loadingVerifyEmail: boolean;
   errorVerifyEmail: AuthError | null;
   successVerifyEmail: string | null;
+
+  loadingChangePassword: boolean;
+  errorChangePassword: AuthError | null;
+  successChangePassword: string | null;
   
   loadingLogout: boolean;
 }

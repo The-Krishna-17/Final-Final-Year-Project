@@ -9,6 +9,7 @@ import {
   LoginPayload,
   ForgotPasswordPayload,
   ResetPasswordPayload,
+  ChangePasswordPayload,
   AuthError,
 } from "./type";
 import { axiosInstance } from "@/utils/axiosInstance";
@@ -36,6 +37,10 @@ const initialState: AuthState = {
   loadingVerifyEmail: false,
   errorVerifyEmail: null,
   successVerifyEmail: null,
+
+  loadingChangePassword: false,
+  errorChangePassword: null,
+  successChangePassword: null,
 
   loadingLogout: false,
 };
@@ -168,6 +173,21 @@ export const verifyEmail = createAsyncThunk<
   }
 });
 
+export const changePassword = createAsyncThunk<
+  GenericResponse,
+  ChangePasswordPayload,
+  { rejectValue: AuthError }
+>("auth/changePassword", async (formData, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/auth/change-password", formData);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to change password"),
+    );
+  }
+});
+
 export const logoutUser = createAsyncThunk<
   GenericResponse,
   void,
@@ -207,6 +227,7 @@ const authSlice = createSlice({
       state.errorForgotPassword = null;
       state.errorResetPassword = null;
       state.errorVerifyEmail = null;
+      state.errorChangePassword = null;
     },
   },
   extraReducers: (builder) => {
@@ -306,6 +327,23 @@ const authSlice = createSlice({
         state.loadingVerifyEmail = false;
         state.errorVerifyEmail = action.payload ?? {
           global: "Email verification failed",
+        };
+      })
+
+      // CHANGE PASSWORD
+      .addCase(changePassword.pending, (state) => {
+        state.loadingChangePassword = true;
+        state.errorChangePassword = null;
+        state.successChangePassword = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.loadingChangePassword = false;
+        state.successChangePassword = action.payload.message;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.loadingChangePassword = false;
+        state.errorChangePassword = action.payload ?? {
+          global: "Failed to change password",
         };
       })
 
