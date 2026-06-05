@@ -5,7 +5,7 @@ import lightLogo from "@/public/light-logo.png";
 import darkLogo from "@/public/dark-logo.png";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ThemeToggle } from "../ThemeProvider/ThemeToggle";
 import {
   DropdownMenu,
@@ -45,6 +45,12 @@ const Navbar = () => {
     router.push("/");
     toast.success("Logged out successfully");
   };
+
+  const pathname = usePathname();
+
+  if (pathname === "/dashboard") {
+    return null;
+  }
 
   return (
     <nav className="flex items-center justify-between p-4 border-b border-gray-400  sticky top-0 bg-background/80 backdrop-blur-md z-50">
