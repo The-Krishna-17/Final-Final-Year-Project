@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import { FaBookOpen, FaBriefcase, FaChartLine } from "react-icons/fa6";
+import { motion } from "framer-motion";
 import Layout from "../Layout/Layout";
 
 const MissionSection = () => {
@@ -10,7 +13,13 @@ const MissionSection = () => {
         className="space-y-6 bg-muted/40 p-4 border border-border/50"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="space-y-4"
+          >
             <p className="text-sm uppercase tracking-widest text-muted-foreground">
               Our Mission
             </p>
@@ -33,9 +42,15 @@ const MissionSection = () => {
                 shape their future.
               </p>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          >
             <div className="p-5 rounded-xl border bg-background hover:shadow-md transition">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-primary">SDG 4</span>
@@ -78,7 +93,7 @@ const MissionSection = () => {
                 Removing financial barriers to skill development
               </p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </Layout>

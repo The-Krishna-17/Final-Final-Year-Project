@@ -1,4 +1,7 @@
+"use client";
+
 import { PROCESS_STEPS } from "@/constant/data";
+import { motion } from "framer-motion";
 import Layout from "../Layout/Layout";
 import Image from "next/image";
 import { FaUsers } from "react-icons/fa6";
@@ -12,7 +15,13 @@ const ProcessSection = () => {
         id="process"
         className="space-y-6 bg-muted/40 p-4 border border-border/50"
       >
-        <div className="space-y-3 text-center max-w-2xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="space-y-3 text-center max-w-2xl mx-auto"
+        >
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
             The Process
           </p>
@@ -23,14 +32,21 @@ const ProcessSection = () => {
             SkillXchange makes peer learning frictionless with a clear four step
             journey powered by AI matching and real-time communication.
           </p>
-        </div>
+        </motion.div>
         <div className="flex items-center gap-4">
           <div className="flex-1 p-4 flex flex-col gap-6">
-            {PROCESS_STEPS.map((c) => {
+            {PROCESS_STEPS.map((c, index) => {
               const Icon = c.icon;
 
               return (
-                <div key={c.title} className="group flex items-start gap-4">
+                <motion.div
+                  key={c.title}
+                  className="group flex items-start gap-4"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                >
                   <div className="mb-4 flex min-h-12 min-w-12 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition">
                     <Icon className="text-xl" />
                   </div>
@@ -41,11 +57,17 @@ const ProcessSection = () => {
                       {c.description}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
-          <div className="flex-1 p-4 relative">
+          <motion.div
+            className="flex-1 p-4 relative"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
             <Image
               src={processImage}
               alt="Process"
@@ -85,7 +107,7 @@ const ProcessSection = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </Layout>

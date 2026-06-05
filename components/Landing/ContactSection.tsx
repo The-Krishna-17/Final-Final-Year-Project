@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FaCheckCircle, FaEnvelope, FaPaperPlane } from "react-icons/fa";
@@ -15,7 +16,13 @@ export default function ContactSection() {
         className="space-y-6 mb-16 bg-muted/40 p-4 border border-border/50"
       >
         <div className="flex items-stretch gap-6">
-          <div className="space-y-4 w-[60%]">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="space-y-4 w-[60%]"
+          >
             <div className="space-y-3 max-w-2xl">
               <p className="text-sm uppercase tracking-widest text-muted-foreground">
                 Get In Touch
@@ -54,8 +61,14 @@ export default function ContactSection() {
                 </p>
               </div>
             </div>
-          </div>
-          <div className="rounded-xl border bg-card p-4 shadow-sm flex-1 w-[40%]">
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="rounded-xl border bg-card p-4 shadow-sm flex-1 w-[40%]"
+          >
             <div className="mb-5 text-center">
               <h2 className="text-xl font-bold">Contact SkillXchange</h2>
 
@@ -106,7 +119,7 @@ export default function ContactSection() {
                 <FaPaperPlane />
               </Button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </section>
     </Layout>

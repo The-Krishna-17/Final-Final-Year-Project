@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Layout from "../Layout/Layout";
+import { motion } from "framer-motion";
 import { FaQuestionCircle } from "react-icons/fa";
 import {
   Accordion,
@@ -14,7 +17,13 @@ const FaqSection = () => {
     <Layout>
       <section className="space-y-6" id="faqs">
         <div className="px-6 space-y-10">
-          <div className="text-center space-y-3">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-3"
+          >
             <div className="flex items-center justify-center gap-2 text-primary">
               <FaQuestionCircle className="text-xl" />
               <p className="text-sm uppercase tracking-widest text-muted-foreground">
@@ -27,21 +36,28 @@ const FaqSection = () => {
             <p className="text-muted-foreground">
               Everything you need to know about SkillXchange and how it works.
             </p>
-          </div>
+          </motion.div>
 
-          <Accordion type="single" collapsible className="w-full">
-            {FAQS.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left text-base font-medium">
-                  {faq.question}
-                </AccordionTrigger>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Accordion type="single" collapsible className="w-full">
+              {FAQS.map((faq, index) => (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger className="text-left text-base font-medium">
+                    {faq.question}
+                  </AccordionTrigger>
 
-                <AccordionContent className="text-muted-foreground leading-relaxed">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </motion.div>
         </div>
       </section>
     </Layout>

@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Layout from "../Layout/Layout";
+import { motion } from "framer-motion";
 import { RESEARCH_STATS } from "@/constant/data";
 
 const ResearchSection = () => {
@@ -7,7 +10,13 @@ const ResearchSection = () => {
     <Layout>
       <section id="research" className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="space-y-4"
+          >
             <div className="space-y-3">
               <p className="text-sm uppercase tracking-widest text-muted-foreground">
                 Research Backed
@@ -61,12 +70,16 @@ const ResearchSection = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {RESEARCH_STATS.map((item, i) => (
-              <div
+              <motion.div
                 key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 * i }}
                 className="rounded-2xl border bg-background/70 backdrop-blur-sm p-6 hover:shadow-lg transition"
               >
                 <h3 className="text-3xl font-bold text-primary">
@@ -76,7 +89,7 @@ const ResearchSection = () => {
                 <p className="text-sm text-muted-foreground mt-2">
                   {item.label}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

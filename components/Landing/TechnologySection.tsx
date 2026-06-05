@@ -1,11 +1,20 @@
+"use client";
+
 import { ARCHITECTURE, TECH_STACK } from "@/constant/data";
+import { motion } from "framer-motion";
 import Layout from "../Layout/Layout";
 
 const TechnologySection = () => {
   return (
     <Layout>
       <section id="technology" className="space-y-6">
-        <div className="space-y-3 max-w-2xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="space-y-3 max-w-2xl mx-auto text-center"
+        >
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
             Technology
           </p>
@@ -17,14 +26,18 @@ const TechnologySection = () => {
             from server side rendering for SEO to type safety across the
             codebase.
           </p>
-        </div>
+        </motion.div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {TECH_STACK.map((item) => {
+          {TECH_STACK.map((item, index) => {
             const Icon = item.icon;
 
             return (
-              <div
+              <motion.div
                 key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
                 className="rounded-xl border bg-background p-5 hover:shadow-md transition"
               >
                 <div className="flex items-center gap-3">
@@ -35,17 +48,21 @@ const TechnologySection = () => {
                 <p className="text-sm text-muted-foreground mt-2">
                   {item.role}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {ARCHITECTURE.map((section) => {
+          {ARCHITECTURE.map((section, index) => {
             const Icon = section.icon;
 
             return (
-              <div
+              <motion.div
                 key={section.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
                 className="rounded-xl border bg-background p-6 hover:shadow-lg transition"
               >
                 {/* Header */}
@@ -63,7 +80,7 @@ const TechnologySection = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </motion.div>
             );
           })}
         </div>
