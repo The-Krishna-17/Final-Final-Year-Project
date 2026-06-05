@@ -1,14 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import loginImg from "@/public/login.webp";
 import Image from "next/image";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { loginUser } from "@/store/features/auth/authSlice";
 
 const page = () => {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { loadingLogin, errorLogin } = useAppSelector((state) => state.auth);
+
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await dispatch(loginUser(formData));
+    if (loginUser.fulfilled.match(result)) {
+      router.push("/");
+    }
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-background relative overflow-hidden">
@@ -28,30 +48,74 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
               Welcome back
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Continue your journey learn new skills, share knowledge, and grow
+              Continue your journey — learn new skills, share knowledge, and grow
               every day.
             </p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Email
-              </label>
-              <Input type="email" placeholder="email@gmail.com" />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">
-                Password
-              </label>
-              <Input type="password" placeholder="••••••••" />
-            </div>
-            <span className="text-xs text-right text-muted-foreground underline underline-offset-2 cursor-pointer hover:text-foreground transition-colors">
-              Forgot password?
-            </span>
-          </div>
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-foreground">
+                  Email
+                </label>
+                <Input
+                  name="email"
+                  type="email"
+                  placeholder="email@gmail.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={errorLogin?.fields?.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                />
+                {errorLogin?.fields?.email && (
+                  <p className="text-xs text-red-500">{errorLogin.fields.email}</p>
+                )}
+              </div>
 
-          <Button className="w-full">Login</Button>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-foreground">
+                  Password
+                </label>
+                <div className="relative">
+                  <Input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className={`pr-10 ${errorLogin?.fields?.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                  </button>
+                </div>
+                {errorLogin?.fields?.password && (
+                  <p className="text-xs text-red-500">{errorLogin.fields.password}</p>
+                )}
+              </div>
+
+              <span
+                className="text-xs text-right text-muted-foreground underline underline-offset-2 cursor-pointer hover:text-foreground transition-colors"
+                onClick={() => router.push("/forgot-password")}
+              >
+                Forgot password?
+              </span>
+            </div>
+
+            {errorLogin?.global && (
+              <p className="text-sm text-red-500 font-medium">{errorLogin.global}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={loadingLogin}>
+              {loadingLogin ? "Logging in..." : "Login"}
+            </Button>
+          </form>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-border" />
@@ -68,7 +132,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button
               variant="link"
               className="p-0 h-auto text-sm font-medium"
@@ -81,7 +145,6 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
 
         {/* Right - Image */}
         <section className="relative z-10 flex-1 bg-primary hidden sm:flex justify-center items-center p-4 overflow-hidden">
-          {/* wave background */}
           <div
             className="absolute inset-0 opacity-10 pointer-events-none"
             style={{
@@ -89,8 +152,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
               backgroundRepeat: "repeat",
             }}
           />
-
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-md relative z-10 ">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-md relative z-10">
             <Image src={loginImg} alt="login" className="object-cover" />
           </div>
         </section>

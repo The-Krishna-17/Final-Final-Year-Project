@@ -5,6 +5,21 @@ export interface RegisterUser {
   password: string;
 }
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface UserData {
   firstName: string;
   lastName: string;
@@ -21,13 +36,18 @@ export interface UserData {
   id: string;
 }
 
-export interface RegisterResponse {
+export interface AuthResponse {
   success: boolean;
   message: string;
   data: {
     user: UserData;
-    accessToken: string;
+    accessToken?: string;
   };
+}
+
+export interface GenericResponse {
+  success: boolean;
+  message: string;
 }
 
 export interface AuthError {
@@ -36,7 +56,28 @@ export interface AuthError {
 }
 
 export interface AuthState {
-  user: RegisterResponse | null;
+  user: UserData | null;
+  
   loadingRegister: boolean;
   errorRegister: AuthError | null;
+  
+  loadingLogin: boolean;
+  errorLogin: AuthError | null;
+  
+  loadingMe: boolean;
+  errorMe: AuthError | null;
+
+  loadingForgotPassword: boolean;
+  errorForgotPassword: AuthError | null;
+  successForgotPassword: string | null;
+  
+  loadingResetPassword: boolean;
+  errorResetPassword: AuthError | null;
+  successResetPassword: string | null;
+
+  loadingVerifyEmail: boolean;
+  errorVerifyEmail: AuthError | null;
+  successVerifyEmail: string | null;
+  
+  loadingLogout: boolean;
 }
