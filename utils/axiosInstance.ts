@@ -1,60 +1,50 @@
 import axios from "axios";
-import Cookies from "js-cookie";
-import process from "process";
 import { toast } from "sonner";
-// import { triggerOpenLogin } from "./authEvents";
 
 export const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
 });
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const access = Cookies.get("access");
-    if (access) {
-      config.headers.Authorization = `Bearer ${access}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error),
-);
 
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config;
 
+    // Do not intercept auth-related routes to avoid infinite retry loops
+    if (
+      originalRequest.url?.includes("/auth/login") ||
+      originalRequest.url?.includes("/auth/register") ||
+      originalRequest.url?.includes("/auth/refresh-token")
+    ) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refresh = Cookies.get("refresh");
-
-      if (!refresh) {
-        // Only redirect if we are not already on login/home
-        if (window.location.pathname !== "/") {
-          Cookies.remove("access");
-          Cookies.remove("refresh");
-          toast.error("Please login", { richColors: true });
-          window.location.replace("/");
-        }
-        return Promise.reject("No refresh token.");
-      }
 
       try {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/accounts/token/refresh`,
-          {
-            refresh,
-          },
+        // Attempt to refresh the token.
+        // We use a fresh axios instance to prevent interceptor loops.
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
+          {},
+          { withCredentials: true },
         );
 
-        Cookies.set("access", res.data.access, { expires: 1 });
-        originalRequest.headers.Authorization = `Bearer ${res.data.access}`;
+        // If successful, the backend automatically sets the new HttpOnly cookies.
+        // We can now retry the original request.
         return axiosInstance(originalRequest);
       } catch (err) {
-        Cookies.remove("access");
-        Cookies.remove("refresh");
-        if (window.location.pathname !== "/") {
-          window.location.replace("/");
+        // If the refresh token request fails (e.g., refresh token expired)
+        if (
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/"
+        ) {
+          toast.error("Session expired. Please login again.", {
+            richColors: true,
+          });
+          window.location.replace("/login");
         }
         return Promise.reject(err);
       }

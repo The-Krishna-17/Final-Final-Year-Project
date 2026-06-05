@@ -14,12 +14,22 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { FaAngleDown } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { getMe } from "@/store/features/auth/authSlice";
+import avatar from "@/public/avatar.png";
 
 const Navbar = () => {
   const router = useRouter();
-
   const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  console.log("useeeeerrrrrrrrrrrrrrrrrrrrrrrrrrr:", user);
 
   return (
     <nav className="flex items-center justify-between p-4 border-b border-gray-400  sticky top-0 bg-background/80 backdrop-blur-md z-50">
@@ -85,15 +95,23 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Button
-              onClick={() => router.push("/login")}
-              className="rounded-full px-6 py-5"
-            >
-              Sign In
-            </Button>
-          </div>
+          {user ? (
+            <Image
+              src={user.avatar || avatar}
+              alt="user profile"
+              className="h-10 w-10 rounded-full object-center object-cover"
+            />
+          ) : (
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              <Button
+                onClick={() => router.push("/login")}
+                className="rounded-full px-6 py-5"
+              >
+                Sign In
+              </Button>
+            </div>
+          )}
         </li>
       </ul>
     </nav>
