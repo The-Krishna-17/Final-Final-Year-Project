@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
 import ReduxProvider from "@/store/provider";
 import { Toaster } from "@/components/ui/sonner";
-import Footer from "@/components/Footer/Footer";
+import LayoutContent from "@/components/LayoutContent/LayoutContent";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -33,9 +32,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
-            <main className="flex-1 flex flex-col">{children}</main>
-            <Footer />
+            <LayoutContent>{children}</LayoutContent>
             <Toaster position="bottom-right" richColors />
           </ThemeProvider>
         </ReduxProvider>

@@ -5,15 +5,8 @@ import Link from "next/link";
 import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
 import lightLogo from "@/public/light-logo.png";
 import darkLogo from "@/public/dark-logo.png";
-import { usePathname } from "next/navigation";
 
 export default function Footer() {
-  const pathname = usePathname();
-
-  if (pathname === "/dashboard") {
-    return null;
-  }
-
   return (
     <footer className="border-t bg-background/80 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-6 py-12">
