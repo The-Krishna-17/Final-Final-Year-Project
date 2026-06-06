@@ -23,6 +23,7 @@ import { TbLayoutDashboard } from "react-icons/tb";
 import { IoKeyOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 
 const Navbar = () => {
   const router = useRouter();
@@ -110,6 +111,8 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <ThemeToggle />
+
           {authLoading ? (
             <Skeleton className="h-10 w-10 rounded-full" />
           ) : user ? (
@@ -118,11 +121,14 @@ const Navbar = () => {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Image
-                    src={user.avatar || avatar}
-                    alt="user profile"
-                    className="h-10 w-10 rounded-full object-cover cursor-pointer"
-                  />
+                  <div className="cursor-pointer">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>
+                        {user.firstName[0].toUpperCase() +
+                          user.lastName[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-fit mr-4 space-y-1 p-2"
@@ -150,7 +156,7 @@ const Navbar = () => {
                     asChild
                     className="flex items-center gap-2 cursor-pointer"
                   >
-                    <Link href="/my-account">
+                    <Link href="/profile">
                       {" "}
                       <FaRegUser />
                       My Account
@@ -173,7 +179,6 @@ const Navbar = () => {
             )
           ) : (
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <Button
                 onClick={() => router.push("/login")}
                 className="rounded-full px-6 py-5"

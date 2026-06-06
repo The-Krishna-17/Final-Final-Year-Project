@@ -1,5 +1,6 @@
 import { AppSideBar } from "@/components/AppSideBar/AppSideBar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import DashboardNav from "@/components/DashboardNav/DashboardNav";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function DashboardLayout({
   children,
@@ -12,9 +13,9 @@ export default function DashboardLayout({
         <div className="border-r">
           <AppSideBar />
         </div>
-        <main>
-          <SidebarTrigger />
-          {children}
+        <main className="w-full">
+          <DashboardNav />
+          <div className="p-4 bg-muted min-h-screen">{children}</div>
         </main>
       </SidebarProvider>
     </main>
