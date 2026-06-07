@@ -3,22 +3,50 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getMe } from "@/store/features/auth/authSlice";
+import { getMe, resendVerificationEmail } from "@/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { CalendarIcon, ClipboardEdit } from "lucide-react";
+import {
+  Activity,
+  CalendarIcon,
+  CircleCheck,
+  ClipboardEdit,
+  ClipboardEditIcon,
+  Clock,
+  Mail,
+  ShieldHalf,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-import { uploadAvatar } from "@/store/features/profile/profileSlice";
+import {
+  updateProfile,
+  uploadAvatar,
+} from "@/store/features/profile/profileSlice";
 import Image from "next/image";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const dispatch = useAppDispatch();
   const { user, loadingMe } = useAppSelector((state) => state.auth);
   const [loadingUser, setLoadingUser] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -73,6 +101,36 @@ const page = () => {
     };
 
     reader.readAsDataURL(file);
+  };
+
+  const handleUpdateProfile = async () => {
+    const payload = {
+      firstName,
+      lastName,
+    };
+    try {
+      await dispatch(updateProfile(payload)).unwrap();
+      toast.success("Profile updated successfully!");
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(
+        error?.message || "Failed to update profile. Please try again later.",
+      );
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setResending(true);
+    try {
+      await dispatch(resendVerificationEmail()).unwrap();
+      toast.success("Verification email sent!", {
+        description: "Please check your inbox and click the link.",
+      });
+    } catch (error: any) {
+      toast.error(error?.global || "Failed to send verification email.");
+    } finally {
+      setResending(false);
+    }
   };
 
   return (
@@ -280,9 +338,159 @@ const page = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-2 pb-1">
-              <Button className="rounded-full px-4 py-5">
-                <ClipboardEdit className="w-4 h-4" /> Edit profile
-              </Button>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="rounded-full px-4 py-5">
+                    <ClipboardEdit className="h-4 w-4" />
+                    Edit Profile
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-semibold">
+                      Edit Profile
+                    </DialogTitle>
+                    <DialogDescription className="text-sm text-muted-foreground">
+                      Update your personal information and profile details
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="relative flex flex-col items-center gap-3 py-6">
+                    {/* BACKGROUND LAYER */}
+                    <div className="absolute inset-0 overflow-hidden border-b border-border -z-10 rounded-xl">
+                      {/* Gradient */}
+                      <div className="absolute inset-0 bg-linear-to-r from-primary/60 via-primary/70 to-primary/50 dark:from-primary/20 dark:via-primary/30 dark:to-primary/10" />
+
+                      {/* SVG Pattern */}
+                      <svg
+                        className="absolute inset-0 w-full h-full opacity-70"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          cx="10%"
+                          cy="40%"
+                          r="30"
+                          stroke="white"
+                          fill="none"
+                          opacity="0.15"
+                        />
+                        <circle
+                          cx="80%"
+                          cy="30%"
+                          r="45"
+                          stroke="white"
+                          fill="none"
+                          opacity="0.1"
+                        />
+                        <circle
+                          cx="60%"
+                          cy="80%"
+                          r="35"
+                          stroke="white"
+                          fill="none"
+                          opacity="0.12"
+                        />
+
+                        <circle
+                          cx="25%"
+                          cy="60%"
+                          r="4"
+                          fill="white"
+                          opacity="0.2"
+                        />
+                        <circle
+                          cx="70%"
+                          cy="50%"
+                          r="3"
+                          fill="white"
+                          opacity="0.25"
+                        />
+                        <circle
+                          cx="90%"
+                          cy="70%"
+                          r="5"
+                          fill="white"
+                          opacity="0.15"
+                        />
+                      </svg>
+                    </div>
+
+                    {/* PROFILE IMAGE */}
+                    <div className="relative z-10 mt-10">
+                      {user?.avatar ? (
+                        <Image
+                          src={user.avatar}
+                          alt="profile picture"
+                          width={96}
+                          height={96}
+                          className="h-24 w-24 rounded-full border-4 border-background ring-2 ring-border object-cover"
+                        />
+                      ) : (
+                        <Avatar className="h-24 w-24 border-4 border-background ring-2 ring-border">
+                          <AvatarFallback className="text-xl bg-muted text-primary">
+                            {user?.firstName?.[0]?.toUpperCase()}
+                            {user?.lastName?.[0]?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                    </div>
+
+                    {/* BUTTON */}
+                    <Button
+                      variant="outline"
+                      className="relative z-10"
+                      onClick={openFilePicker}
+                    >
+                      <MdOutlineFileUpload />
+                      Change Photo
+                    </Button>
+                  </div>
+
+                  {/* Form Fields */}
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-base font-medium">
+                        First Name
+                      </label>
+                      <Input
+                        type="text"
+                        defaultValue={
+                          user?.firstName
+                            ? user.firstName.charAt(0).toUpperCase() +
+                              user.firstName.slice(1)
+                            : ""
+                        }
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label className="text-base font-medium">Last Name</label>
+                      <Input
+                        type="text"
+                        defaultValue={
+                          user?.lastName
+                            ? user.lastName.charAt(0).toUpperCase() +
+                              user.lastName.slice(1)
+                            : ""
+                        }
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <DialogFooter>
+                    <Button onClick={handleUpdateProfile}>
+                      <ClipboardEditIcon />
+                      Update Profile
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <>
                 <input
                   type="file"
@@ -304,39 +512,84 @@ const page = () => {
             </div>
           </div>
 
-          {/* Stats strip */}
-          <div className="grid grid-cols-4 gap-2 mt-6 pt-5 border-t border-border pb-6">
-            <div className="bg-muted rounded-lg px-3 py-3">
-              <p className="text-xs text-muted-foreground mb-1">Role</p>
-              <p className="text-sm font-medium ">{user?.role}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-6 border-t border-border pb-6">
+            {/* ROLE */}
+            <div className="rounded-xl border border-border/60 bg-muted/40 p-4 space-y-3 hover:bg-muted/60 transition">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <ShieldHalf className="w-4 h-4" />
+                <p className="text-xs font-medium uppercase tracking-wide">
+                  Role
+                </p>
+              </div>
+              <p className="text-base font-semibold text-foreground">
+                {user &&
+                  user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1)}
+              </p>
             </div>
-            <div className="bg-muted rounded-lg px-3 py-3">
-              <p className="text-xs text-muted-foreground mb-1">Last Login</p>
-              <p className="text-sm font-medium ">
+
+            {/* LAST LOGIN */}
+            <div className="rounded-xl border border-border/60 bg-muted/40 p-4 space-y-3 hover:bg-muted/60 transition">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Clock className="w-4 h-4" />
+                <p className="text-xs font-medium uppercase tracking-wide">
+                  Last login
+                </p>
+              </div>
+              <p className="text-base font-semibold text-foreground">
                 {user?.lastLogin
                   ? format(new Date(user.lastLogin), "PPP")
                   : "—"}
               </p>
             </div>
-            <div className="bg-muted rounded-lg px-3 py-3">
-              <p className="text-xs text-muted-foreground mb-1">
-                Email Verification
-              </p>
-              <p
-                className={`text-sm font-medium ${
-                  user?.isEmailVerified ? "text-green-600" : "text-yellow-600"
-                }`}
-              >
-                {user?.isEmailVerified
-                  ? "Email verified"
-                  : "Verification pending"}
-              </p>
+
+            {/* EMAIL */}
+            <div className="rounded-xl border border-border/60 bg-muted/40 p-4 space-y-3 hover:bg-muted/60 transition">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Mail className="w-4 h-4" />
+                <p className="text-xs font-medium uppercase tracking-wide">
+                  Email
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between">
+                {user?.isEmailVerified ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400">
+                    <CircleCheck className="w-3 h-3" />
+                    Verified
+                  </span>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full text-xs px-3 py-1"
+                    onClick={handleResendVerification}
+                    disabled={resending}
+                  >
+                    {resending ? "Sending..." : "Verify Email"}
+                  </Button>
+                )}
+              </div>
             </div>
-            <div className="bg-muted rounded-lg px-3 py-3">
-              <p className="text-xs text-muted-foreground mb-1">Status</p>
-              <p className="text-sm font-medium text-green-600">
-                {user?.isLocked ? "Locked" : "Active"}
-              </p>
+
+            {/* STATUS */}
+            <div className="rounded-xl border border-border/60 bg-muted/40 p-4 space-y-3 hover:bg-muted/60 transition">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Activity className="w-4 h-4" />
+                <p className="text-xs font-medium uppercase tracking-wide">
+                  Status
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${user?.isLocked ? "bg-red-500" : "bg-green-500"}`}
+                />
+                <p
+                  className={`text-base font-semibold ${user?.isLocked ? "text-red-500" : "text-green-600"}`}
+                >
+                  {user?.isLocked ? "Locked" : "Active"}
+                </p>
+              </div>
             </div>
           </div>
         </Card>

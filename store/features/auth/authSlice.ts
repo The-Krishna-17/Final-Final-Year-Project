@@ -220,6 +220,21 @@ export const logoutAll = createAsyncThunk<
   }
 });
 
+export const resendVerificationEmail = createAsyncThunk<
+  GenericResponse,
+  void,
+  { rejectValue: AuthError }
+>("auth/resendVerificationEmail", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/auth/resend-verification");
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to send verification email"),
+    );
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,

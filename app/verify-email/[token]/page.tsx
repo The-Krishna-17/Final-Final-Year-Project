@@ -11,9 +11,8 @@ const page = () => {
   const params = useParams();
   const token = params?.token as string;
   const dispatch = useAppDispatch();
-  const { loadingVerifyEmail, errorVerifyEmail, successVerifyEmail } = useAppSelector(
-    (state) => state.auth
-  );
+  const { loadingVerifyEmail, errorVerifyEmail, successVerifyEmail } =
+    useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (token) {
@@ -33,8 +32,12 @@ const page = () => {
           <>
             <div className="w-14 h-14 rounded-full border-4 border-primary border-t-transparent animate-spin" />
             <div>
-              <h1 className="font-semibold text-2xl text-foreground">Verifying your email</h1>
-              <p className="text-sm text-muted-foreground mt-1">Please wait a moment…</p>
+              <h1 className="font-semibold text-2xl text-foreground">
+                Verifying your email
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Please wait a moment…
+              </p>
             </div>
           </>
         )}
@@ -45,8 +48,12 @@ const page = () => {
               ✓
             </div>
             <div>
-              <h1 className="font-semibold text-2xl text-foreground">Email verified!</h1>
-              <p className="text-sm text-muted-foreground mt-1">{successVerifyEmail}</p>
+              <h1 className="font-semibold text-2xl text-foreground">
+                Email verified!
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                {successVerifyEmail}
+              </p>
             </div>
             <Button className="w-full" onClick={() => router.push("/login")}>
               Continue to Login
@@ -60,16 +67,23 @@ const page = () => {
               ✕
             </div>
             <div>
-              <h1 className="font-semibold text-2xl text-foreground">Verification failed</h1>
+              <h1 className="font-semibold text-2xl text-foreground">
+                Verification failed
+              </h1>
               <p className="text-sm text-red-500 mt-1">
-                {errorVerifyEmail.global ?? "This link may be invalid or expired."}
+                {errorVerifyEmail.global ??
+                  "This link may be invalid or expired."}
               </p>
             </div>
             <div className="flex flex-col gap-2 w-full">
               <Button className="w-full" onClick={() => router.push("/signup")}>
                 Register again
               </Button>
-              <Button variant="ghost" className="w-full text-muted-foreground" onClick={() => router.push("/login")}>
+              <Button
+                variant="ghost"
+                className="w-full text-muted-foreground"
+                onClick={() => router.push("/login")}
+              >
                 Back to Login
               </Button>
             </div>
