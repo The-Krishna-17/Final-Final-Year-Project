@@ -24,22 +24,28 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   addOfferSkill,
   addWantSkill,
+  updateSkill,
+  removeSkill,
   getUserSkills,
 } from "@/store/features/skills/skillSlice";
 import { CiSearch } from "react-icons/ci";
 import { IoSchoolSharp } from "react-icons/io5";
 import { MdAdd, MdMenuBook } from "react-icons/md";
 import { toast } from "sonner";
-import { Divide, Loader2, Star } from "lucide-react";
+import { Loader2, Star, Trash2, Pencil } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { getMe } from "@/store/features/auth/authSlice";
 import { Badge } from "@/components/ui/badge";
 
 const MySkillsPage = () => {
   const dispatch = useAppDispatch();
-  const { profile, loadingAddOffer, loadingAddWant } = useAppSelector(
-    (state) => state.skills,
-  );
+  const {
+    profile,
+    loadingAddOffer,
+    loadingAddWant,
+    loadingUpdate,
+    loadingRemove,
+  } = useAppSelector((state) => state.skills);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -56,9 +62,69 @@ const MySkillsPage = () => {
   const [wantSkillName, setWantSkillName] = useState("");
   const [wantSkillLevel, setWantSkillLevel] = useState("");
 
+  // Update dialog state
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [updateSkillId, setUpdateSkillId] = useState("");
+  const [updateListType, setUpdateListType] = useState<"offer" | "want">(
+    "offer",
+  );
+  const [updateLevel, setUpdateLevel] = useState("");
+  const [updateSkillName, setUpdateSkillName] = useState("");
+
+  // Remove state
+  const [removingSkillId, setRemovingSkillId] = useState<string | null>(null);
+
   useEffect(() => {
     dispatch(getMe());
   }, [dispatch]);
+
+  const handleRemoveSkill = async (
+    skillId: string,
+    listType: "offer" | "want",
+  ) => {
+    setRemovingSkillId(skillId);
+    try {
+      await dispatch(removeSkill({ skillId, listType })).unwrap();
+      toast.success("Skill removed successfully!");
+    } catch (error: any) {
+      toast.error(error || "Failed to remove skill");
+    } finally {
+      setRemovingSkillId(null);
+    }
+  };
+
+  const openUpdateFor = (
+    skillId: string,
+    listType: "offer" | "want",
+    currentLevel: number,
+    name: string,
+  ) => {
+    setUpdateSkillId(skillId);
+    setUpdateListType(listType);
+    setUpdateLevel(currentLevel.toString());
+    setUpdateSkillName(name);
+    setOpenUpdateDialog(true);
+  };
+
+  const handleUpdateSkill = async () => {
+    if (!updateLevel) {
+      toast.error("Please select a new skill level");
+      return;
+    }
+    try {
+      await dispatch(
+        updateSkill({
+          skillId: updateSkillId,
+          listType: updateListType,
+          newLevel: Number(updateLevel),
+        }),
+      ).unwrap();
+      toast.success("Skill updated successfully!");
+      setOpenUpdateDialog(false);
+    } catch (error: any) {
+      toast.error(error || "Failed to update skill");
+    }
+  };
 
   const handleAddOfferSkill = async () => {
     if (!offerSkillName.trim()) {
@@ -135,21 +201,21 @@ const MySkillsPage = () => {
             Manage what you can teach and what you want to learn!
           </h2>
         </div>
-        <div className="relative max-w-[250px] lg:min-w-xl">
+        {/* <div className="relative max-w-[250px] lg:min-w-xl">
           <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search skills..."
             className="pl-10 bg-white dark:bg-white dark:text-black"
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Tabs */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Teaching Skills */}
         <Card className="p-6 flex flex-col justify-between">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-primary/10 p-3">
                 <IoSchoolSharp className="h-6 w-6 text-primary" />
@@ -168,7 +234,7 @@ const MySkillsPage = () => {
             </span>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-4">
             {offerSkills &&
               offerSkills.map((skill) => (
                 <Card
@@ -178,15 +244,109 @@ const MySkillsPage = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-lg">{skill.name}</h3>
-
                       <Badge variant="secondary" className="mt-1">
                         {skill.category}
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span>{skill.level}/5</span>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm mr-4">
+                        <Star className="h-3 w-3 fill-current" />
+                        <span>{skill.level}/5</span>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                        onClick={() =>
+                          openUpdateFor(
+                            skill._id,
+                            "offer",
+                            skill.level,
+                            skill.name,
+                          )
+                        }
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                          >
+                            {removingSkillId === skill._id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </DialogTrigger>
+
+                        <DialogContent className="sm:max-w-md">
+                          <DialogHeader>
+                            <div className="mb-2 flex justify-center">
+                              <div className="rounded-full bg-red-100 p-3">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                              </div>
+                            </div>
+
+                            <DialogTitle className="text-center">
+                              Remove Skill
+                            </DialogTitle>
+
+                            <DialogDescription className="text-center">
+                              Are you sure you want to remove{" "}
+                              <span className="font-medium text-foreground">
+                                {skill.name}
+                              </span>
+                              ?
+                              <br />
+                              This skill will no longer appear in your teaching
+                              profile and may affect your skill match
+                              recommendations.
+                            </DialogDescription>
+                          </DialogHeader>
+
+                          <div className="rounded-lg border bg-muted/50 p-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-medium">{skill.name}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {skill.category}
+                                </p>
+                              </div>
+
+                              <div className="rounded-md bg-background px-2 py-1 text-sm">
+                                Level {skill.level}/5
+                              </div>
+                            </div>
+                          </div>
+
+                          <DialogFooter>
+                            <Button
+                              variant="destructive"
+                              disabled={removingSkillId === skill._id}
+                              onClick={() =>
+                                handleRemoveSkill(skill._id, "offer")
+                              }
+                            >
+                              {removingSkillId === skill._id ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  Removing...
+                                </>
+                              ) : (
+                                <>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Remove Skill
+                                </>
+                              )}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
 
@@ -345,7 +505,7 @@ const MySkillsPage = () => {
 
         {/* Learning Skills */}
         <Card className="p-6 flex flex-col justify-between">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-primary/10 p-3">
                 <MdMenuBook className="h-6 w-6 text-primary" />
@@ -364,7 +524,7 @@ const MySkillsPage = () => {
             </span>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex flex-col gap-4">
             {wantSkills &&
               wantSkills.map((skill) => (
                 <Card
@@ -374,15 +534,110 @@ const MySkillsPage = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-lg">{skill.name}</h3>
-
                       <Badge variant="secondary" className="mt-1">
                         {skill.category}
                       </Badge>
                     </div>
 
-                    <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm">
-                      <Star className="h-4 w-4 fill-current" />
-                      <span>{skill.level}/5</span>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm mr-4">
+                        <Star className="h-3 w-3 fill-current" />
+                        <span>{skill.level}/5</span>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-7 w-7 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                        onClick={() =>
+                          openUpdateFor(
+                            skill._id,
+                            "want",
+                            skill.level,
+                            skill.name,
+                          )
+                        }
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                      </Button>
+
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                          >
+                            {removingSkillId === skill._id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
+                          </Button>
+                        </DialogTrigger>
+
+                        <DialogContent className="sm:max-w-md">
+                          <DialogHeader>
+                            <div className="mb-2 flex justify-center">
+                              <div className="rounded-full bg-red-100 p-3">
+                                <Trash2 className="h-6 w-6 text-red-600" />
+                              </div>
+                            </div>
+
+                            <DialogTitle className="text-center">
+                              Remove Skill
+                            </DialogTitle>
+
+                            <DialogDescription className="text-center">
+                              Are you sure you want to remove{" "}
+                              <span className="font-medium text-foreground">
+                                {skill.name}
+                              </span>
+                              ?
+                              <br />
+                              This skill will no longer appear in your teaching
+                              profile and may affect your skill match
+                              recommendations.
+                            </DialogDescription>
+                          </DialogHeader>
+
+                          <div className="rounded-lg border bg-muted/50 p-3">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-medium">{skill.name}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {skill.category}
+                                </p>
+                              </div>
+
+                              <div className="rounded-md bg-background px-2 py-1 text-sm">
+                                Level {skill.level}/5
+                              </div>
+                            </div>
+                          </div>
+
+                          <DialogFooter>
+                            <Button
+                              variant="destructive"
+                              disabled={removingSkillId === skill._id}
+                              onClick={() =>
+                                handleRemoveSkill(skill._id, "want")
+                              }
+                            >
+                              {removingSkillId === skill._id ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  Removing...
+                                </>
+                              ) : (
+                                <>
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Remove Skill
+                                </>
+                              )}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
 
@@ -542,6 +797,77 @@ const MySkillsPage = () => {
           </div>
         </Card>
       </div>
+
+      {/* ─── Shared Update Level Dialog ─────────────────────── */}
+      <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Update Skill Level</DialogTitle>
+            <DialogDescription>
+              Update your proficiency level for{" "}
+              <span className="font-semibold">{updateSkillName}</span>.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4">
+            <Select value={updateLevel} onValueChange={setUpdateLevel}>
+              <SelectTrigger className="w-full rounded-full py-5 cursor-pointer">
+                <SelectValue placeholder="Select new level" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1" className="cursor-pointer">
+                  <FaStar className="inline mr-1" /> Beginner
+                </SelectItem>
+                <SelectItem value="2" className="cursor-pointer">
+                  <span className="inline-flex gap-0.5 mr-1">
+                    <FaStar />
+                    <FaStar />
+                  </span>{" "}
+                  Basic
+                </SelectItem>
+                <SelectItem value="3" className="cursor-pointer">
+                  <span className="inline-flex gap-0.5 mr-1">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </span>{" "}
+                  Intermediate
+                </SelectItem>
+                <SelectItem value="4" className="cursor-pointer">
+                  <span className="inline-flex gap-0.5 mr-1">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </span>{" "}
+                  Advanced
+                </SelectItem>
+                <SelectItem value="5" className="cursor-pointer">
+                  <span className="inline-flex gap-0.5 mr-1">
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                    <FaStar />
+                  </span>{" "}
+                  Expert
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <DialogFooter>
+            <Button onClick={handleUpdateSkill} disabled={loadingUpdate}>
+              {loadingUpdate ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Pencil className="mr-2 h-4 w-4" />
+              )}
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
