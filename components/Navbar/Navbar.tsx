@@ -122,12 +122,22 @@ const Navbar = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="cursor-pointer">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>
-                        {user.firstName[0].toUpperCase() +
-                          user.lastName[0].toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
+                    {user?.avatar ? (
+                      <Image
+                        src={user.avatar}
+                        alt="profile picture"
+                        width={200}
+                        height={200}
+                        className="h-9 w-9 rounded-full object-cover object-center"
+                      />
+                    ) : (
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>
+                          {user.firstName[0].toUpperCase() +
+                            user.lastName[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
