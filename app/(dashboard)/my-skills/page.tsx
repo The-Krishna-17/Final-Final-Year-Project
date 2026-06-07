@@ -214,7 +214,7 @@ const MySkillsPage = () => {
       {/* Tabs */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Teaching Skills */}
-        <Card className="p-6 flex flex-col justify-between">
+        <Card className="p-6 flex flex-col justify-between h-fit">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-primary/10 p-3">
@@ -504,7 +504,7 @@ const MySkillsPage = () => {
         </Card>
 
         {/* Learning Skills */}
-        <Card className="p-6 flex flex-col justify-between">
+        <Card className="p-6 flex flex-col justify-between h-fit">
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-primary/10 p-3">
