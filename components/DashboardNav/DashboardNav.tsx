@@ -47,7 +47,7 @@ const DashboardNav = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between w-full border-b px-4 py-1.5 sticky top-0 bg-background/80 backdrop-blur-md z-50">
+    <nav className="flex items-center justify-between w-full border-b px-4 py-1.5 sticky top-0 bg-background backdrop-blur-md z-50">
       <SidebarTrigger />
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">

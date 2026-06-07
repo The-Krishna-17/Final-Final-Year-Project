@@ -13,6 +13,7 @@ import {
   AuthError,
 } from "./type";
 import { axiosInstance } from "@/utils/axiosInstance";
+import { updateProfile, uploadAvatar, deactivateAccount } from "../profile/profileSlice";
 
 const initialState: AuthState = {
   user: null,
@@ -179,7 +180,10 @@ export const changePassword = createAsyncThunk<
   { rejectValue: AuthError }
 >("auth/changePassword", async (formData, thunkAPI) => {
   try {
-    const response = await axiosInstance.post("/auth/change-password", formData);
+    const response = await axiosInstance.post(
+      "/auth/change-password",
+      formData,
+    );
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(
@@ -371,6 +375,17 @@ const authSlice = createSlice({
       .addCase(logoutAll.rejected, (state) => {
         state.loadingLogout = false;
         state.user = null; // Still clear user on client
+      })
+      
+      // Update User state from Profile Slice Actions
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.user = action.payload.data.user;
+      })
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        state.user = action.payload.data.user;
+      })
+      .addCase(deactivateAccount.fulfilled, (state) => {
+        state.user = null; // Effectively logout the user upon deactivation
       });
   },
 });

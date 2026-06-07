@@ -52,7 +52,7 @@ const page = () => {
     );
 
     if (registerUser.fulfilled.match(resultAction)) {
-      router.push("/");
+      router.push("/dashboard");
     }
   };
 
@@ -112,10 +112,16 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     type="text"
                     placeholder="joe"
                     required
-                    className={errorRegister?.fields?.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                    className={
+                      errorRegister?.fields?.firstName
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
                   />
                   {errorRegister?.fields?.firstName && (
-                    <p className="text-xs text-red-500">{errorRegister.fields.firstName}</p>
+                    <p className="text-xs text-red-500">
+                      {errorRegister.fields.firstName}
+                    </p>
                   )}
                 </div>
                 <div className="flex flex-col gap-1.5 w-full">
@@ -129,10 +135,16 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     type="text"
                     placeholder="doe"
                     required
-                    className={errorRegister?.fields?.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
+                    className={
+                      errorRegister?.fields?.lastName
+                        ? "border-red-500 focus-visible:ring-red-500"
+                        : ""
+                    }
                   />
                   {errorRegister?.fields?.lastName && (
-                    <p className="text-xs text-red-500">{errorRegister.fields.lastName}</p>
+                    <p className="text-xs text-red-500">
+                      {errorRegister.fields.lastName}
+                    </p>
                   )}
                 </div>
               </div>
@@ -148,10 +160,16 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   type="email"
                   placeholder="email@gmail.com"
                   required
-                  className={errorRegister?.fields?.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  className={
+                    errorRegister?.fields?.email
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }
                 />
                 {errorRegister?.fields?.email && (
-                  <p className="text-xs text-red-500">{errorRegister.fields.email}</p>
+                  <p className="text-xs text-red-500">
+                    {errorRegister.fields.email}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -173,11 +191,17 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="text-lg" />
+                    ) : (
+                      <FaEye className="text-lg" />
+                    )}
                   </button>
                 </div>
                 {errorRegister?.fields?.password && (
-                  <p className="text-xs text-red-500">{errorRegister.fields.password}</p>
+                  <p className="text-xs text-red-500">
+                    {errorRegister.fields.password}
+                  </p>
                 )}
               </div>
               <div className="flex flex-col gap-1.5">
@@ -199,7 +223,11 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showConfirmPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                    {showConfirmPassword ? (
+                      <FaEyeSlash className="text-lg" />
+                    ) : (
+                      <FaEye className="text-lg" />
+                    )}
                   </button>
                 </div>
               </div>

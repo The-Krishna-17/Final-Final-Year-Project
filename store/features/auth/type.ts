@@ -63,20 +63,20 @@ export interface AuthError {
 
 export interface AuthState {
   user: UserData | null;
-  
+
   loadingRegister: boolean;
   errorRegister: AuthError | null;
-  
+
   loadingLogin: boolean;
   errorLogin: AuthError | null;
-  
+
   loadingMe: boolean;
   errorMe: AuthError | null;
 
   loadingForgotPassword: boolean;
   errorForgotPassword: AuthError | null;
   successForgotPassword: string | null;
-  
+
   loadingResetPassword: boolean;
   errorResetPassword: AuthError | null;
   successResetPassword: string | null;
@@ -88,6 +88,6 @@ export interface AuthState {
   loadingChangePassword: boolean;
   errorChangePassword: AuthError | null;
   successChangePassword: string | null;
-  
+
   loadingLogout: boolean;
 }

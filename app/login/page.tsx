@@ -26,7 +26,7 @@ const page = () => {
     e.preventDefault();
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
-      router.push("/");
+      router.push("/dashboard");
     }
   };
 
@@ -48,8 +48,8 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
               Welcome back
             </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Continue your journey — learn new skills, share knowledge, and grow
-              every day.
+              Continue your journey — learn new skills, share knowledge, and
+              grow every day.
             </p>
           </div>
 
@@ -66,10 +66,16 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className={errorLogin?.fields?.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  className={
+                    errorLogin?.fields?.email
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }
                 />
                 {errorLogin?.fields?.email && (
-                  <p className="text-xs text-red-500">{errorLogin.fields.email}</p>
+                  <p className="text-xs text-red-500">
+                    {errorLogin.fields.email}
+                  </p>
                 )}
               </div>
 
@@ -92,11 +98,17 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="text-lg" />
+                    ) : (
+                      <FaEye className="text-lg" />
+                    )}
                   </button>
                 </div>
                 {errorLogin?.fields?.password && (
-                  <p className="text-xs text-red-500">{errorLogin.fields.password}</p>
+                  <p className="text-xs text-red-500">
+                    {errorLogin.fields.password}
+                  </p>
                 )}
               </div>
 
@@ -109,7 +121,9 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
             </div>
 
             {errorLogin?.global && (
-              <p className="text-sm text-red-500 font-medium">{errorLogin.global}</p>
+              <p className="text-sm text-red-500 font-medium">
+                {errorLogin.global}
+              </p>
             )}
 
             <Button type="submit" className="w-full" disabled={loadingLogin}>
