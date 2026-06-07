@@ -15,7 +15,7 @@ export default function DashboardLayout({
         </div>
         <main className="w-full">
           <DashboardNav />
-          <div className="p-4 bg-muted min-h-screen">{children}</div>
+          <div className="p-4 pt-6 bg-muted min-h-screen">{children}</div>
         </main>
       </SidebarProvider>
     </main>
