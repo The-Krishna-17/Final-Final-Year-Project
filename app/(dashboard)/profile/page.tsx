@@ -3,7 +3,10 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getMe, resendVerificationEmail } from "@/store/features/auth/authSlice";
+import {
+  getMe,
+  resendVerificationEmail,
+} from "@/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Activity,
@@ -36,6 +39,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { IoKeyOutline } from "react-icons/io5";
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -338,10 +342,29 @@ const page = () => {
 
             {/* Actions */}
             <div className="flex items-center gap-2 pb-1">
+              <>
+                <input
+                  type="file"
+                  ref={fileRef}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  onClick={openFilePicker}
+                >
+                  <MdOutlineFileUpload />
+                  Upload Photo
+                </Button>
+              </>
+
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
-                  <Button className="rounded-full px-4 py-5">
-                    <ClipboardEdit className="h-4 w-4" />
+                  <Button className="flex items-center gap-2">
+                    <ClipboardEdit />
                     Edit Profile
                   </Button>
                 </DialogTrigger>
@@ -491,24 +514,14 @@ const page = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <>
-                <input
-                  type="file"
-                  ref={fileRef}
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
 
-                <Button
-                  variant="outline"
-                  className="rounded-full px-4 py-5"
-                  onClick={openFilePicker}
-                >
-                  <MdOutlineFileUpload className="w-4 h-4" />
-                  Upload Photo
-                </Button>
-              </>
+              <Button
+                onClick={() => router.push("/change-password")}
+                className="flex items-center gap-2"
+              >
+                <IoKeyOutline />
+                Change Password
+              </Button>
             </div>
           </div>
 
