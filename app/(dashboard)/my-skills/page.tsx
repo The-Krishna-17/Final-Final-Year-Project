@@ -214,7 +214,7 @@ const MySkillsPage = () => {
       {/* Tabs */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Teaching Skills ── */}
-        <Card className="flex flex-col gap-5 p-5">
+        <Card className="flex flex-col gap-5 p-5 h-fit">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -489,7 +489,7 @@ const MySkillsPage = () => {
         </Card>
 
         {/* ── Learning Skills ── */}
-        <Card className="flex flex-col gap-5 p-5">
+        <Card className="flex flex-col gap-5 p-5 h-fit">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
