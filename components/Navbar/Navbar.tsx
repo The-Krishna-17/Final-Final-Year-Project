@@ -123,11 +123,9 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <div className="cursor-pointer">
                     {user?.avatar ? (
-                      <Image
+                      <img
                         src={user.avatar}
                         alt="profile picture"
-                        width={200}
-                        height={200}
                         className="h-9 w-9 rounded-full object-cover object-center"
                       />
                     ) : (

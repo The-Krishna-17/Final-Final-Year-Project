@@ -1,4 +1,10 @@
 import {
+  CurrentWork,
+  DateField,
+  UserData,
+  WorkExperience,
+} from "@/store/features/auth/type";
+import {
   FaMoneyBillWave,
   FaRandom,
   FaShieldAlt,
@@ -23,6 +29,15 @@ import {
   SiVercel,
   SiTypescript,
 } from "react-icons/si";
+import {
+  FaLinkedin,
+  FaGithub,
+  FaTwitter,
+  FaInstagram,
+  FaFacebook,
+  FaGlobe,
+} from "react-icons/fa";
+import { RiShareBoxLine } from "react-icons/ri";
 
 export const LANDING_PAGE_MARQUEE = [
   "Exchange Skills, Build Together",
@@ -273,3 +288,82 @@ export const CONTACT_BENEFITS = [
   "Built around lifelong learning and accessibility",
   "Aligned with UN Sustainable Development Goals",
 ];
+
+export const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+export const NOW_YEAR = new Date().getFullYear();
+export const NOW_MONTH = new Date().getMonth() + 1;
+
+export const EMPTY_DATE: DateField = {
+  year: NOW_YEAR,
+  month: NOW_MONTH,
+  day: null,
+};
+export const EMPTY_EXP: WorkExperience = {
+  company: "",
+  role: "",
+  startDate: { ...EMPTY_DATE },
+  endDate: null,
+  description: "",
+};
+export const EMPTY_CW: CurrentWork = {
+  company: "",
+  role: "",
+  startDate: { ...EMPTY_DATE },
+  endDate: null,
+  description: "",
+};
+
+export const SOCIAL_LINKS = [
+  {
+    key: "linkedin",
+    label: "LinkedIn",
+    icon: FaLinkedin,
+    hoverClass: "hover:border-blue-600 hover:bg-blue-50 hover:text-blue-700",
+  },
+  {
+    key: "github",
+    label: "GitHub",
+    icon: FaGithub,
+    hoverClass:
+      "hover:border-slate-800 hover:bg-slate-100 hover:text-slate-900",
+  },
+  {
+    key: "twitter",
+    label: "Twitter",
+    icon: FaTwitter,
+    hoverClass: "hover:border-sky-500 hover:bg-sky-50 hover:text-sky-600",
+  },
+  {
+    key: "instagram",
+    label: "Instagram",
+    icon: FaInstagram,
+    hoverClass: "hover:border-pink-500 hover:bg-pink-50 hover:text-pink-600",
+  },
+  {
+    key: "facebook",
+    label: "Facebook",
+    icon: FaFacebook,
+    hoverClass: "hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600",
+  },
+  {
+    key: "website",
+    label: "Website",
+    icon: FaGlobe,
+    hoverClass:
+      "hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600",
+  },
+] as const;

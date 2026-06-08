@@ -1,8 +1,12 @@
-import { AuthError } from "../auth/type";
+import { AuthError, WorkExperience, SocialLinks, CurrentWork } from "../auth/type";
 
 export interface UpdateProfilePayload {
   firstName?: string;
   lastName?: string;
+  bio?: string | null;
+  currentWork?: CurrentWork | null;
+  workExperience?: WorkExperience[];
+  socialLinks?: SocialLinks;
 }
 
 export interface UploadAvatarPayload {
@@ -10,6 +14,9 @@ export interface UploadAvatarPayload {
 }
 
 export interface ProfileState {
+  loadingGetProfile: boolean;
+  errorGetProfile: AuthError | null;
+
   loadingUpdateProfile: boolean;
   errorUpdateProfile: AuthError | null;
 
@@ -19,3 +26,4 @@ export interface ProfileState {
   loadingDeactivateAccount: boolean;
   errorDeactivateAccount: AuthError | null;
 }
+

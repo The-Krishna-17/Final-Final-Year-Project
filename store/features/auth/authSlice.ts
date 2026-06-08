@@ -13,7 +13,7 @@ import {
   AuthError,
 } from "./type";
 import { axiosInstance } from "@/utils/axiosInstance";
-import { updateProfile, uploadAvatar, deactivateAccount } from "../profile/profileSlice";
+import { updateProfile, uploadAvatar, deactivateAccount, getProfile } from "../profile/profileSlice";
 
 const initialState: AuthState = {
   user: null,
@@ -248,6 +248,10 @@ const authSlice = createSlice({
       state.errorVerifyEmail = null;
       state.errorChangePassword = null;
     },
+    // Used by profileSlice thunks to sync enriched user data into auth state
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -393,6 +397,9 @@ const authSlice = createSlice({
       })
       
       // Update User state from Profile Slice Actions
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.user = action.payload.data.user;
+      })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.user = action.payload.data.user;
       })
@@ -405,6 +412,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearErrors } = authSlice.actions;
+export const { clearErrors, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

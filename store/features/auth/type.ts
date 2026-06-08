@@ -26,6 +26,38 @@ export interface ChangePasswordPayload {
   confirmPassword?: string;
 }
 
+// ─── Extended Profile Types ───────────────────────────────────────────────────
+
+export interface DateField {
+  year: number;
+  month: number;  // 1–12
+  day?: number | null;
+}
+
+export interface WorkExperience {
+  _id?: string;
+  id?: string;
+  company: string;
+  role: string;
+  startDate: DateField;
+  endDate: DateField | null; // null = Present / Ongoing
+  description?: string | null;
+}
+
+/** currentWork has the exact same shape as a WorkExperience entry */
+export type CurrentWork = Omit<WorkExperience, "_id" | "id"> & { _id?: string; id?: string };
+
+export interface SocialLinks {
+  linkedin?: string | null;
+  github?: string | null;
+  twitter?: string | null;
+  instagram?: string | null;
+  website?: string | null;
+  facebook?: string | null;
+}
+
+// ─── Core User Shape ──────────────────────────────────────────────────────────
+
 export interface UserData {
   firstName: string;
   lastName: string;
@@ -40,6 +72,12 @@ export interface UserData {
   fullName: string;
   isLocked: boolean;
   id: string;
+
+  // Extended profile
+  bio?: string | null;
+  currentWork?: CurrentWork | null;
+  workExperience?: WorkExperience[];
+  socialLinks?: SocialLinks;
 }
 
 export interface AuthResponse {
@@ -91,3 +129,4 @@ export interface AuthState {
 
   loadingLogout: boolean;
 }
+

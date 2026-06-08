@@ -7,6 +7,7 @@ import {
   UploadAvatarPayload,
   ProfileState,
 } from "./type";
+import { setUser } from "../auth/authSlice";
 
 // Helper function to extract AuthError from Axios error
 const extractError = (error: unknown, defaultMessage: string): AuthError => {
@@ -41,6 +42,9 @@ const extractError = (error: unknown, defaultMessage: string): AuthError => {
 };
 
 const initialState: ProfileState = {
+  loadingGetProfile: false,
+  errorGetProfile: null,
+
   loadingUpdateProfile: false,
   errorUpdateProfile: null,
 
@@ -51,6 +55,25 @@ const initialState: ProfileState = {
   errorDeactivateAccount: null,
 };
 
+// ─── Thunks ───────────────────────────────────────────────────────────────────
+
+export const getProfile = createAsyncThunk<
+  AuthResponse,
+  void,
+  { rejectValue: AuthError }
+>("profile/getProfile", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.get("/users/profile");
+    // Keep auth.user in sync with the full profile data
+    thunkAPI.dispatch(setUser(response.data.data.user));
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to fetch profile"),
+    );
+  }
+});
+
 export const updateProfile = createAsyncThunk<
   AuthResponse,
   UpdateProfilePayload,
@@ -58,6 +81,8 @@ export const updateProfile = createAsyncThunk<
 >("profile/updateProfile", async (formData, thunkAPI) => {
   try {
     const response = await axiosInstance.put("/users/profile", formData);
+    // Keep auth.user in sync after every profile update
+    thunkAPI.dispatch(setUser(response.data.data.user));
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(
@@ -73,6 +98,7 @@ export const uploadAvatar = createAsyncThunk<
 >("profile/uploadAvatar", async (formData, thunkAPI) => {
   try {
     const response = await axiosInstance.post("/users/avatar", formData);
+    thunkAPI.dispatch(setUser(response.data.data.user));
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(
@@ -96,11 +122,14 @@ export const deactivateAccount = createAsyncThunk<
   }
 });
 
+// ─── Slice ────────────────────────────────────────────────────────────────────
+
 const profileSlice = createSlice({
   name: "profile",
   initialState,
   reducers: {
     clearProfileErrors: (state) => {
+      state.errorGetProfile = null;
       state.errorUpdateProfile = null;
       state.errorUploadAvatar = null;
       state.errorDeactivateAccount = null;
@@ -108,6 +137,21 @@ const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // GET PROFILE
+      .addCase(getProfile.pending, (state) => {
+        state.loadingGetProfile = true;
+        state.errorGetProfile = null;
+      })
+      .addCase(getProfile.fulfilled, (state) => {
+        state.loadingGetProfile = false;
+      })
+      .addCase(getProfile.rejected, (state, action) => {
+        state.loadingGetProfile = false;
+        state.errorGetProfile = action.payload ?? {
+          global: "Failed to fetch profile",
+        };
+      })
+
       // UPDATE PROFILE
       .addCase(updateProfile.pending, (state) => {
         state.loadingUpdateProfile = true;
@@ -158,3 +202,4 @@ const profileSlice = createSlice({
 export const { clearProfileErrors } = profileSlice.actions;
 
 export default profileSlice.reducer;
+
