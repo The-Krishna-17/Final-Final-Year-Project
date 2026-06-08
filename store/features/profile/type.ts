@@ -1,4 +1,9 @@
-import { AuthError, WorkExperience, SocialLinks, CurrentWork } from "../auth/type";
+import {
+  AuthError,
+  WorkExperience,
+  SocialLinks,
+  CurrentWork,
+} from "../auth/type";
 
 export interface UpdateProfilePayload {
   firstName?: string;
@@ -23,7 +28,9 @@ export interface ProfileState {
   loadingUploadAvatar: boolean;
   errorUploadAvatar: AuthError | null;
 
+  loadingDeleteAvatar: boolean;
+  errorDeleteAvatar: AuthError | null;
+
   loadingDeactivateAccount: boolean;
   errorDeactivateAccount: AuthError | null;
 }
-

@@ -26,6 +26,7 @@ import { MdOutlineFileUpload } from "react-icons/md";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  deleteAvatar,
   updateProfile,
   uploadAvatar,
 } from "@/store/features/profile/profileSlice";
@@ -33,6 +34,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -70,6 +72,7 @@ import {
 import Link from "next/link";
 import { RiShareBoxLine } from "react-icons/ri";
 import { GoDash } from "react-icons/go";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 const page = () => {
   const dispatch = useAppDispatch();
@@ -94,6 +97,17 @@ const page = () => {
     };
     fetchUser();
   }, [dispatch]);
+
+  const handleAvatarDelete = async () => {
+    try {
+      await dispatch(deleteAvatar()).unwrap();
+      toast.success("Avatar removed successfully!");
+    } catch (error: any) {
+      toast.error(
+        error?.global || error?.message || "Failed to remove avatar.",
+      );
+    }
+  };
 
   // Pre-fill form when dialog opens
   useEffect(() => {
@@ -456,7 +470,7 @@ const page = () => {
               {/* Avatar + info */}
               <div className="flex items-end gap-5">
                 <div
-                  className="relative cursor-pointer group"
+                  className="relative cursor-pointer group w-fit"
                   onClick={openFilePicker}
                 >
                   <input
@@ -471,10 +485,10 @@ const page = () => {
                     <img
                       src={user.avatar}
                       alt="profile picture"
-                      className="h-24 w-24 rounded-full border-[3px] border-background ring-1 ring-border object-cover object-center transition-[filter] group-hover:brightness-75"
+                      className="h-24 w-24 rounded-full border-[3px] border-background ring-1 ring-border object-cover object-center transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]"
                     />
                   ) : (
-                    <Avatar className="h-24 w-24 border-[3px] border-background ring-1 ring-border transition-[filter] group-hover:brightness-75">
+                    <Avatar className="h-24 w-24 border-[3px] border-background ring-1 ring-border transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]">
                       <AvatarFallback className="text-2xl bg-muted text-primary">
                         {user?.firstName?.[0]?.toUpperCase()}
                         {user?.lastName?.[0]?.toUpperCase()}
@@ -483,15 +497,51 @@ const page = () => {
                   )}
 
                   {/* Upload overlay */}
-                  <div className="absolute inset-0 rounded-full flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <MdOutlineFileUpload className="text-white text-xl" />
-                    <span className="text-white text-[10px] font-medium leading-tight mt-0.5">
+                  <div className="absolute inset-0 rounded-full flex flex-col items-center justify-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <MdOutlineFileUpload className="text-white text-[22px] drop-shadow" />
+                    <span className="text-white text-[10px] font-semibold tracking-wide drop-shadow">
                       Upload
                     </span>
                   </div>
 
+                  {/* Delete button — only when avatar exists */}
+                  {user?.avatar && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="absolute -top-1 right-0 w-6 h-6 rounded-full cursor-pointer bg-destructive text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-destructive/80 shadow-sm z-10"
+                          aria-label="Remove avatar"
+                        >
+                          <FaRegTrashAlt className="w-3 h-3" />
+                        </button>
+                      </DialogTrigger>
+
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Remove profile photo?</DialogTitle>
+                          <DialogDescription>
+                            This will permanently delete your current profile
+                            photo. You can always upload a new one later.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button
+                              variant="destructive"
+                              onClick={handleAvatarDelete}
+                            >
+                              <FaRegTrashAlt className="w-3 h-3" />
+                              Remove Photo
+                            </Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  )}
+
                   {/* Online dot — hidden on hover */}
-                  <span className="absolute bottom-1 right-2 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background group-hover:opacity-0 transition-opacity" />
+                  <span className="absolute bottom-1 right-1.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background group-hover:opacity-0 transition-opacity duration-200" />
                 </div>
 
                 <div className="pb-1 mt-8">

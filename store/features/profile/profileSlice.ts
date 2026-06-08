@@ -51,6 +51,9 @@ const initialState: ProfileState = {
   loadingUploadAvatar: false,
   errorUploadAvatar: null,
 
+  loadingDeleteAvatar: false,
+  errorDeleteAvatar: null,
+
   loadingDeactivateAccount: false,
   errorDeactivateAccount: null,
 };
@@ -103,6 +106,22 @@ export const uploadAvatar = createAsyncThunk<
   } catch (error) {
     return thunkAPI.rejectWithValue(
       extractError(error, "Failed to upload avatar"),
+    );
+  }
+});
+
+export const deleteAvatar = createAsyncThunk<
+  AuthResponse,
+  void,
+  { rejectValue: AuthError }
+>("profile/deleteAvatar", async (_, thunkAPI) => {
+  try {
+    const response = await axiosInstance.delete("/users/avatar");
+    thunkAPI.dispatch(setUser(response.data.data.user));
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(
+      extractError(error, "Failed to delete avatar"),
     );
   }
 });
@@ -182,6 +201,21 @@ const profileSlice = createSlice({
         };
       })
 
+      // DELETE AVATAR
+      .addCase(deleteAvatar.pending, (state) => {
+        state.loadingDeleteAvatar = true;
+        state.errorDeleteAvatar = null;
+      })
+      .addCase(deleteAvatar.fulfilled, (state) => {
+        state.loadingDeleteAvatar = false;
+      })
+      .addCase(deleteAvatar.rejected, (state, action) => {
+        state.loadingDeleteAvatar = false;
+        state.errorDeleteAvatar = action.payload ?? {
+          global: "Failed to delete avatar",
+        };
+      })
+
       // DEACTIVATE ACCOUNT
       .addCase(deactivateAccount.pending, (state) => {
         state.loadingDeactivateAccount = true;
@@ -202,4 +236,3 @@ const profileSlice = createSlice({
 export const { clearProfileErrors } = profileSlice.actions;
 
 export default profileSlice.reducer;
-
