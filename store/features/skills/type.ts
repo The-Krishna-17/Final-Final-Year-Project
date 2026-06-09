@@ -1,10 +1,16 @@
 export interface SkillItem {
   _id: string;
-  name: string;
-  level: number;
-  category: string;
-  normalizedName: string;
-  tags: string[];
+  rawInput: string;
+  domain: string;
+  primarySkill: {
+    name: string;
+    category: string;
+  };
+  topics: string[];
+  technologies: string[];
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  tokens: string[];
+  processedAt: string;
 }
 
 export interface SkillProfile {
@@ -40,14 +46,13 @@ export interface SkillState {
 
 // Payloads
 export interface AddSkillPayload {
-  name: string;
-  level?: number;
+  name: string; // natural language raw input
 }
 
 export interface UpdateSkillPayload {
   skillId: string;
   listType: "offer" | "want";
-  newLevel: number;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
 }
 
 export interface RemoveSkillPayload {

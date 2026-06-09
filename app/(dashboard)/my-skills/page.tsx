@@ -29,12 +29,10 @@ import {
   removeSkill,
   getUserSkills,
 } from "@/store/features/skills/skillSlice";
-import { CiSearch } from "react-icons/ci";
 import { IoSchoolSharp } from "react-icons/io5";
 import { MdAdd, MdMenuBook } from "react-icons/md";
 import { toast } from "sonner";
-import { Loader2, Star, Trash2, Pencil } from "lucide-react";
-import { FaStar } from "react-icons/fa";
+import { Loader2, Star, Trash2, Pencil, Sparkles } from "lucide-react";
 import { getMe } from "@/store/features/auth/authSlice";
 import { Badge } from "@/components/ui/badge";
 
@@ -55,13 +53,11 @@ const MySkillsPage = () => {
 
   // Dialog state for Offer Skills
   const [openOfferDialog, setOpenOfferDialog] = useState(false);
-  const [offerSkillName, setOfferSkillName] = useState("");
-  const [offerSkillLevel, setOfferSkillLevel] = useState("");
+  const [offerSkillInput, setOfferSkillInput] = useState("");
 
   // Dialog state for Want Skills
   const [openWantDialog, setOpenWantDialog] = useState(false);
-  const [wantSkillName, setWantSkillName] = useState("");
-  const [wantSkillLevel, setWantSkillLevel] = useState("");
+  const [wantSkillInput, setWantSkillInput] = useState("");
 
   // Update dialog state
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
@@ -69,7 +65,7 @@ const MySkillsPage = () => {
   const [updateListType, setUpdateListType] = useState<"offer" | "want">(
     "offer",
   );
-  const [updateLevel, setUpdateLevel] = useState("");
+  const [updateDifficulty, setUpdateDifficulty] = useState("");
   const [updateSkillName, setUpdateSkillName] = useState("");
 
   // Remove state
@@ -97,19 +93,19 @@ const MySkillsPage = () => {
   const openUpdateFor = (
     skillId: string,
     listType: "offer" | "want",
-    currentLevel: number,
+    currentDifficulty: string,
     name: string,
   ) => {
     setUpdateSkillId(skillId);
     setUpdateListType(listType);
-    setUpdateLevel(currentLevel.toString());
+    setUpdateDifficulty(currentDifficulty || "Beginner");
     setUpdateSkillName(name);
     setOpenUpdateDialog(true);
   };
 
   const handleUpdateSkill = async () => {
-    if (!updateLevel) {
-      toast.error("Please select a new skill level");
+    if (!updateDifficulty) {
+      toast.error("Please select a difficulty level");
       return;
     }
     try {
@@ -117,7 +113,10 @@ const MySkillsPage = () => {
         updateSkill({
           skillId: updateSkillId,
           listType: updateListType,
-          newLevel: Number(updateLevel),
+          difficulty: updateDifficulty as
+            | "Beginner"
+            | "Intermediate"
+            | "Advanced",
         }),
       ).unwrap();
       toast.success("Skill updated successfully!");
@@ -128,53 +127,30 @@ const MySkillsPage = () => {
   };
 
   const handleAddOfferSkill = async () => {
-    if (!offerSkillName.trim()) {
-      toast.error("Please enter a skill name");
+    if (!offerSkillInput.trim()) {
+      toast.error("Please describe what you can teach");
       return;
     }
-    if (!offerSkillLevel) {
-      toast.error("Please select a skill level");
-      return;
-    }
-
     try {
-      await dispatch(
-        addOfferSkill({
-          name: offerSkillName,
-          level: Number(offerSkillLevel),
-        }),
-      ).unwrap();
-
-      toast.success("Teaching skill added successfully!");
+      await dispatch(addOfferSkill({ name: offerSkillInput })).unwrap();
+      toast.success("Teaching skill added! AI is processing…");
       setOpenOfferDialog(false);
-      setOfferSkillName("");
-      setOfferSkillLevel("");
+      setOfferSkillInput("");
     } catch (error: any) {
       toast.error(error || "Failed to add teaching skill");
     }
   };
 
   const handleAddWantSkill = async () => {
-    if (!wantSkillName.trim()) {
-      toast.error("Please enter a skill name");
+    if (!wantSkillInput.trim()) {
+      toast.error("Please describe what you want to learn");
       return;
     }
-
     try {
-      await dispatch(
-        addWantSkill({
-          name: wantSkillName,
-          // level is optional for want skills, but if they selected one, send it
-          ...(wantSkillLevel
-            ? { level: Number(wantSkillLevel) }
-            : { level: 1 }),
-        }),
-      ).unwrap();
-
-      toast.success("Learning skill added successfully!");
+      await dispatch(addWantSkill({ name: wantSkillInput })).unwrap();
+      toast.success("Learning skill added! AI is processing…");
       setOpenWantDialog(false);
-      setWantSkillName("");
-      setWantSkillLevel("");
+      setWantSkillInput("");
     } catch (error: any) {
       toast.error(error || "Failed to add learning skill");
     }
@@ -199,22 +175,16 @@ const MySkillsPage = () => {
         <div className="space-y-1">
           <h1 className="font-semibold text-2xl">My Skills</h1>
           <h2 className="text-base text-muted-foreground">
-            Manage what you can teach and what you want to learn!
+            Describe what you can teach or want to learn — our AI structures it
+            for you.
           </h2>
         </div>
-        {/* <div className="relative max-w-[250px] lg:min-w-xl">
-          <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search skills..."
-            className="pl-10 bg-white dark:bg-white dark:text-black"
-          />
-        </div> */}
       </div>
+
       {/* Tabs */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Teaching Skills ── */}
-        <Card className="flex flex-col gap-5 p-5 h-fit">
+        <Card className="flex flex-col gap-5 p-5 h-fit border border-primary">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -234,7 +204,6 @@ const MySkillsPage = () => {
               {offerSkillsCount} Skills
             </span>
           </div>
-
           {/* Empty state */}
           {offerSkillsCount === 0 && (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 py-10 text-center">
@@ -248,44 +217,77 @@ const MySkillsPage = () => {
               </p>
             </div>
           )}
-
           {/* Skill cards */}
           {offerSkillsCount > 0 && (
             <div className="flex flex-col gap-3">
-              {offerSkills &&
-                offerSkills.length > 0 &&
-                offerSkills.map((skill) => (
+              {offerSkills?.map((skill) => {
+                const categoryColors: Record<string, string> = {
+                  Frontend: "bg-[#EEEDFE] text-[#3C3489]",
+                  Backend: "bg-[#E6F1FB] text-[#0C447C]",
+                  Data: "bg-[#E1F5EE] text-[#085041]",
+                  Design: "bg-[#FBEAF0] text-[#72243E]",
+                  DevOps: "bg-[#FAEEDA] text-[#633806]",
+                  Other: "bg-[#F1EFE8] text-[#444441]",
+                };
+                const difficultyColors: Record<string, string> = {
+                  Beginner: "bg-[#E1F5EE] text-[#085041]",
+                  Intermediate: "bg-[#FAEEDA] text-[#633806]",
+                  Advanced: "bg-[#EAF3DE] text-[#27500A]",
+                  Expert: "bg-[#EEEDFE] text-[#3C3489]",
+                };
+                const cat = skill.primarySkill?.category || "Other";
+                const diff = skill.difficulty || "Beginner";
+
+                return (
                   <div
                     key={skill._id}
-                    className="rounded-xl border border-border bg-muted/20 p-4 transition-shadow hover:shadow-sm"
+                    className="rounded-xl border bg-background p-5 border-l-4 border-primary"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      {/* Left */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="truncate font-semibold">{skill.name}</h3>
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {skill.category}
-                          </Badge>
-                          <div className="flex items-center gap-1 rounded-md bg-background border border-border px-2 py-0.5 text-xs">
-                            <Star className="h-3 w-3 fill-current" />
-                            <span>{skill.level}/5</span>
-                          </div>
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-sm font-medium capitalize">
+                            {skill.primarySkill?.name || "Unknown Skill"}
+                          </h3>
+                          <span
+                            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
+                          >
+                            {cat}
+                          </span>
+                        </div>
+
+                        {skill.rawInput && (
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground italic">
+                            "{skill.rawInput}"
+                          </p>
+                        )}
+
+                        <div className="mt-2">
+                          <span
+                            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${difficultyColors[diff] ?? difficultyColors.Beginner}`}
+                          >
+                            <Star
+                              className="h-2.5 w-2.5 fill-current"
+                              strokeWidth={0}
+                            />
+                            {diff}
+                          </span>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex shrink-0 items-center gap-1.5">
                         <Button
                           size="icon"
-                          variant="outline"
-                          className="h-8 w-8 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                          variant="ghost"
+                          className="h-8 w-8 border border-transparent hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                           onClick={() =>
                             openUpdateFor(
                               skill._id,
                               "offer",
-                              skill.level,
-                              skill.name,
+                              skill.difficulty || "Beginner",
+                              skill.primarySkill?.name || "Skill",
                             )
                           }
                         >
@@ -296,8 +298,8 @@ const MySkillsPage = () => {
                           <DialogTrigger asChild>
                             <Button
                               size="icon"
-                              variant="outline"
-                              className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              variant="ghost"
+                              className="h-8 w-8 border border-transparent hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                             >
                               {removingSkillId === skill._id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -307,40 +309,34 @@ const MySkillsPage = () => {
                             </Button>
                           </DialogTrigger>
 
-                          <DialogContent className="sm:max-w-md">
+                          <DialogContent className="sm:max-w-sm">
                             <DialogHeader>
-                              <div className="mb-2 flex justify-center">
-                                <div className="rounded-full bg-red-100 p-3">
-                                  <Trash2 className="h-6 w-6 text-red-600" />
-                                </div>
-                              </div>
-                              <DialogTitle className="text-center">
-                                Remove Skill
-                              </DialogTitle>
-                              <DialogDescription className="text-center">
-                                Are you sure you want to remove{" "}
-                                <span className="font-medium text-foreground">
-                                  {skill.name}
-                                </span>
-                                ?
-                                <br />
-                                This skill will no longer appear in your
-                                teaching profile and may affect your skill match
-                                recommendations.
+                              <DialogTitle>Remove skill</DialogTitle>
+                              <DialogDescription>
+                                This will remove{" "}
+                                <span className="font-medium text-foreground capitalize">
+                                  {skill.primarySkill?.name || "this skill"}
+                                </span>{" "}
+                                from your teaching profile. You can always
+                                re-add it later.
                               </DialogDescription>
                             </DialogHeader>
 
-                            <div className="rounded-lg border bg-muted/50 p-3">
+                            <div className="rounded-lg border bg-muted/50 px-3 py-2.5">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="font-medium">{skill.name}</p>
-                                  <p className="text-sm text-muted-foreground">
-                                    {skill.category}
+                                  <p className="text-sm font-medium capitalize">
+                                    {skill.primarySkill?.name || "Unknown"}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                    {cat} · {diff}
                                   </p>
                                 </div>
-                                <div className="rounded-md bg-background px-2 py-1 text-sm">
-                                  Level {skill.level}/5
-                                </div>
+                                <span
+                                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
+                                >
+                                  {cat}
+                                </span>
                               </div>
                             </div>
 
@@ -355,12 +351,12 @@ const MySkillsPage = () => {
                                 {removingSkillId === skill._id ? (
                                   <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Removing...
+                                    Removing…
                                   </>
                                 ) : (
                                   <>
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    Remove Skill
+                                    Remove
                                   </>
                                 )}
                               </Button>
@@ -370,116 +366,117 @@ const MySkillsPage = () => {
                       </div>
                     </div>
 
-                    {skill.tags.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {skill.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="capitalize text-xs"
-                          >
-                            #{tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
+                    {/* Divider */}
+                    <div className="my-3 h-px bg-border" />
+
+                    {/* Meta */}
+                    <div className="flex flex-col gap-2.5">
+                      {skill.topics?.length > 0 && (
+                        <div>
+                          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            Topics
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {skill.topics.map((topic) => (
+                              <span
+                                key={topic}
+                                className="rounded-md border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
+                              >
+                                {topic}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {skill.tokens?.length > 0 && (
+                        <div>
+                          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                            Keywords
+                          </p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {skill.tokens.slice(0, 8).map((tag) => (
+                              <span
+                                key={tag}
+                                className="rounded-md bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                          {skill.tokens.length > 8 && (
+                            <p className="mt-1 text-[10px] text-muted-foreground">
+                              +{skill.tokens.length - 8} more keywords
+                            </p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                ))}
+                );
+              })}
             </div>
           )}
-
           {/* Add button */}
           <Dialog open={openOfferDialog} onOpenChange={setOpenOfferDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full border-dashed">
+              <Button
+                variant="outline"
+                className="w-full border-dashed border-primary hover:bg-muted/50"
+              >
                 <MdAdd className="mr-2 h-4 w-4" />
                 Add Teaching Skill
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Add Teaching Skill</DialogTitle>
+                <DialogTitle>What can you teach?</DialogTitle>
                 <DialogDescription>
-                  Add a skill you can teach to other members of the platform.
+                  Write naturally, we’ll convert it into structured skills,
+                  topics, and difficulty levels.
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-4 py-4">
+              <div className="space-y-4">
                 <div className="flex flex-col gap-2">
-                  <label className="text-base">Skill Name</label>
-                  <Input
-                    id="skill-name"
-                    placeholder="e.g. React, Backend, Guitar, Plumbing, Public Speaking..."
-                    value={offerSkillName}
-                    onChange={(e) => setOfferSkillName(e.target.value)}
+                  <label className="text-sm font-medium">
+                    Describe your teaching skill
+                  </label>
+
+                  <textarea
+                    id="offer-skill-input"
+                    placeholder="I can teach React including hooks, state management, Redux, and real-world project structure..."
+                    value={offerSkillInput}
+                    onChange={(e) => setOfferSkillInput(e.target.value)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && !e.shiftKey && handleAddOfferSkill()
+                    }
+                    className="w-full min-h-[110px] resize-none rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-base">Skill Level</label>
-                  <Select
-                    value={offerSkillLevel}
-                    onValueChange={setOfferSkillLevel}
-                  >
-                    <SelectTrigger
-                      id="skill-level"
-                      className="w-full rounded-full py-5 cursor-pointer"
-                    >
-                      <SelectValue placeholder="Select your proficiency level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1" className="cursor-pointer">
-                        <FaStar className="inline mr-1" />
-                        Beginner
-                      </SelectItem>
-                      <SelectItem value="2" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Basic
-                      </SelectItem>
-                      <SelectItem value="3" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Intermediate
-                      </SelectItem>
-                      <SelectItem value="4" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Advanced
-                      </SelectItem>
-                      <SelectItem value="5" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Expert
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                <div className="flex items-start gap-2 rounded-md bg-muted/40 p-3 text-xs text-muted-foreground">
+                  <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                  <div>
+                    AI will extract{" "}
+                    <span className="font-medium">
+                      skills, topics, difficulty level, and search tags
+                    </span>{" "}
+                    to help match learners with you.
+                  </div>
                 </div>
               </div>
 
               <DialogFooter>
                 <Button
                   onClick={handleAddOfferSkill}
-                  disabled={loadingAddOffer}
+                  disabled={loadingAddOffer || !offerSkillInput.trim()}
                 >
                   {loadingAddOffer ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <MdAdd className="mr-2 h-4 w-4" />
+                    <MdAdd className="h-4 w-4" />
                   )}
                   Add Skill
                 </Button>
@@ -489,7 +486,7 @@ const MySkillsPage = () => {
         </Card>
 
         {/* ── Learning Skills ── */}
-        <Card className="flex flex-col gap-5 p-5 h-fit">
+        <Card className="flex flex-col gap-5 p-5 h-fit border border-primary">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -529,40 +526,74 @@ const MySkillsPage = () => {
           {/* Skill cards */}
           {wantSkillsCount > 0 && (
             <div className="flex flex-col gap-3">
-              {wantSkills &&
-                wantSkills.length > 0 &&
-                wantSkills.map((skill) => (
+              {wantSkills?.map((skill) => {
+                const categoryColors: Record<string, string> = {
+                  Frontend: "bg-[#EEEDFE] text-[#3C3489]",
+                  Backend: "bg-[#E6F1FB] text-[#0C447C]",
+                  Data: "bg-[#E1F5EE] text-[#085041]",
+                  Design: "bg-[#FBEAF0] text-[#72243E]",
+                  DevOps: "bg-[#FAEEDA] text-[#633806]",
+                  Other: "bg-[#F1EFE8] text-[#444441]",
+                };
+                const difficultyColors: Record<string, string> = {
+                  Beginner: "bg-[#E1F5EE] text-[#085041]",
+                  Intermediate: "bg-[#FAEEDA] text-[#633806]",
+                  Advanced: "bg-[#EAF3DE] text-[#27500A]",
+                  Expert: "bg-[#EEEDFE] text-[#3C3489]",
+                };
+                const cat = skill.primarySkill?.category || "Other";
+                const diff = skill.difficulty || "Beginner";
+
+                return (
                   <div
                     key={skill._id}
-                    className="rounded-xl border border-border bg-muted/20 p-4 transition-shadow hover:shadow-sm"
+                    className="rounded-xl border bg-background p-5 border-l-4 border-primary"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      {/* Left */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="truncate font-semibold">{skill.name}</h3>
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {skill.category}
-                          </Badge>
-                          <div className="flex items-center gap-1 rounded-md bg-background border border-border px-2 py-0.5 text-xs">
-                            <Star className="h-3 w-3 fill-current" />
-                            <span>{skill.level}/5</span>
-                          </div>
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-sm font-medium capitalize">
+                            {skill.primarySkill?.name || "Unknown Skill"}
+                          </h3>
+                          <span
+                            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
+                          >
+                            {cat}
+                          </span>
+                        </div>
+
+                        {skill.rawInput && (
+                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground italic">
+                            "{skill.rawInput}"
+                          </p>
+                        )}
+
+                        <div className="mt-2">
+                          <span
+                            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${difficultyColors[diff] ?? difficultyColors.Beginner}`}
+                          >
+                            <Star
+                              className="h-2.5 w-2.5 fill-current"
+                              strokeWidth={0}
+                            />
+                            {diff}
+                          </span>
                         </div>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex shrink-0 items-center gap-1.5">
                         <Button
                           size="icon"
-                          variant="outline"
-                          className="h-8 w-8 border-blue-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                          variant="ghost"
+                          className="h-8 w-8 border border-transparent hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                           onClick={() =>
                             openUpdateFor(
                               skill._id,
                               "want",
-                              skill.level,
-                              skill.name,
+                              skill.difficulty || "Beginner",
+                              skill.primarySkill?.name || "Skill",
                             )
                           }
                         >
@@ -573,8 +604,8 @@ const MySkillsPage = () => {
                           <DialogTrigger asChild>
                             <Button
                               size="icon"
-                              variant="outline"
-                              className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              variant="ghost"
+                              className="h-8 w-8 border border-transparent hover:border-red-200 hover:bg-red-50 hover:text-red-600"
                             >
                               {removingSkillId === skill._id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -584,40 +615,34 @@ const MySkillsPage = () => {
                             </Button>
                           </DialogTrigger>
 
-                          <DialogContent className="sm:max-w-md">
+                          <DialogContent className="sm:max-w-sm">
                             <DialogHeader>
-                              <div className="mb-2 flex justify-center">
-                                <div className="rounded-full bg-red-100 p-3">
-                                  <Trash2 className="h-6 w-6 text-red-600" />
-                                </div>
-                              </div>
-                              <DialogTitle className="text-center">
-                                Remove Skill
-                              </DialogTitle>
-                              <DialogDescription className="text-center">
-                                Are you sure you want to remove{" "}
-                                <span className="font-medium text-foreground">
-                                  {skill.name}
-                                </span>
-                                ?
-                                <br />
-                                This skill will no longer appear in your
-                                teaching profile and may affect your skill match
-                                recommendations.
+                              <DialogTitle>Remove skill</DialogTitle>
+                              <DialogDescription>
+                                This will remove{" "}
+                                <span className="font-medium text-foreground capitalize">
+                                  {skill.primarySkill?.name || "this skill"}
+                                </span>{" "}
+                                from your learning profile. You can always
+                                re-add it later.
                               </DialogDescription>
                             </DialogHeader>
 
-                            <div className="rounded-lg border bg-muted/50 p-3">
+                            <div className="rounded-lg border bg-muted/50 px-3 py-2.5">
                               <div className="flex items-center justify-between">
                                 <div>
-                                  <p className="font-medium">{skill.name}</p>
-                                  <p className="text-sm text-muted-foreground">
-                                    {skill.category}
+                                  <p className="text-sm font-medium capitalize">
+                                    {skill.primarySkill?.name || "Unknown"}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                    {cat} · {diff}
                                   </p>
                                 </div>
-                                <div className="rounded-md bg-background px-2 py-1 text-sm">
-                                  Level {skill.level}/5
-                                </div>
+                                <span
+                                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
+                                >
+                                  {cat}
+                                </span>
                               </div>
                             </div>
 
@@ -632,12 +657,12 @@ const MySkillsPage = () => {
                                 {removingSkillId === skill._id ? (
                                   <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Removing...
+                                    Removing…
                                   </>
                                 ) : (
                                   <>
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    Remove Skill
+                                    Remove
                                   </>
                                 )}
                               </Button>
@@ -647,116 +672,107 @@ const MySkillsPage = () => {
                       </div>
                     </div>
 
-                    {skill.tags.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {skill.tags.map((tag) => (
-                          <Badge
+                    {/* Divider */}
+                    <div className="my-3 h-px bg-border" />
+
+                    {/* Topics */}
+                    {skill.topics?.length > 0 && (
+                      <div className="mb-2.5">
+                        <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                          Topics
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {skill.topics.map((topic) => (
+                            <span
+                              key={topic}
+                              className="rounded-md border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
+                            >
+                              {topic}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tokens */}
+                    {skill.tokens?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {skill.tokens.slice(0, 5).map((tag) => (
+                          <span
                             key={tag}
-                            variant="outline"
-                            className="capitalize text-xs"
+                            className="rounded-md bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
                           >
                             #{tag}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
                     )}
                   </div>
-                ))}
+                );
+              })}
             </div>
           )}
 
           {/* Add button */}
           <Dialog open={openWantDialog} onOpenChange={setOpenWantDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="w-full border-dashed">
+              <Button
+                variant="outline"
+                className="w-full border-dashed border-primary hover:bg-muted/50"
+              >
                 <MdAdd className="mr-2 h-4 w-4" />
                 Add Learning Skill
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-lg">
               <DialogHeader>
-                <DialogTitle>Add Learning Skill</DialogTitle>
+                <DialogTitle>What do you want to learn?</DialogTitle>
                 <DialogDescription>
-                  Add a skill you want to learn. We'll connect you with people
-                  who can teach it.
+                  Write naturally we’ll convert it into structured learning
+                  goals, topics, and difficulty levels.
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-4 py-4">
+              <div className="space-y-4">
                 <div className="flex flex-col gap-2">
-                  <label className="text-base">Skill Name</label>
-                  <Input
-                    id="want-skill-name"
-                    placeholder="e.g. Python, Digital Marketing, Piano..."
-                    value={wantSkillName}
-                    onChange={(e) => setWantSkillName(e.target.value)}
+                  <label className="text-sm font-medium">
+                    Describe your learning goal
+                  </label>
+
+                  <textarea
+                    id="want-skill-input"
+                    placeholder="I want to learn JWT authentication with Node.js, Express, refresh tokens, and secure APIs..."
+                    value={wantSkillInput}
+                    onChange={(e) => setWantSkillInput(e.target.value)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && !e.shiftKey && handleAddWantSkill()
+                    }
+                    className="w-full min-h-[110px] resize-none rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-base">
-                    Your Current Level (Optional)
-                  </label>
-                  <Select
-                    value={wantSkillLevel}
-                    onValueChange={setWantSkillLevel}
-                  >
-                    <SelectTrigger
-                      id="want-skill-level"
-                      className="w-full rounded-full py-5 cursor-pointer"
-                    >
-                      <SelectValue placeholder="Select your current level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1" className="cursor-pointer">
-                        <FaStar className="inline mr-1" />
-                        Beginner
-                      </SelectItem>
-                      <SelectItem value="2" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Basic
-                      </SelectItem>
-                      <SelectItem value="3" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Intermediate
-                      </SelectItem>
-                      <SelectItem value="4" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Advanced
-                      </SelectItem>
-                      <SelectItem value="5" className="cursor-pointer">
-                        <span className="inline-flex gap-0.5 mr-1">
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                          <FaStar />
-                        </span>
-                        Expert
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+
+                <div className="flex items-start gap-2 rounded-md bg-muted/40 p-3 text-xs text-muted-foreground">
+                  <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                  <div>
+                    AI will extract{" "}
+                    <span className="font-medium">
+                      learning goals, topics, difficulty level, and search tags
+                    </span>{" "}
+                    to match you with the right mentors or resources.
+                  </div>
                 </div>
               </div>
 
               <DialogFooter>
-                <Button onClick={handleAddWantSkill} disabled={loadingAddWant}>
+                <Button
+                  onClick={handleAddWantSkill}
+                  disabled={loadingAddWant || !wantSkillInput.trim()}
+                >
                   {loadingAddWant ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <MdAdd className="mr-2 h-4 w-4" />
+                    <MdAdd className="h-4 w-4" />
                   )}
                   Add Skill
                 </Button>
@@ -766,60 +782,37 @@ const MySkillsPage = () => {
         </Card>
       </div>
 
-      {/* ── Shared Update Level Dialog ── */}
+      {/* ── Shared Update Difficulty Dialog ── */}
       <Dialog open={openUpdateDialog} onOpenChange={setOpenUpdateDialog}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Update Skill Level</DialogTitle>
+            <DialogTitle>Update Difficulty</DialogTitle>
             <DialogDescription>
-              Update your proficiency level for{" "}
-              <span className="font-semibold">{updateSkillName}</span>.
+              Update the difficulty level for{" "}
+              <span className="font-semibold capitalize">
+                {updateSkillName}
+              </span>
+              .
             </DialogDescription>
           </DialogHeader>
 
           <div className="py-4">
-            <Select value={updateLevel} onValueChange={setUpdateLevel}>
+            <Select
+              value={updateDifficulty}
+              onValueChange={setUpdateDifficulty}
+            >
               <SelectTrigger className="w-full rounded-full py-5 cursor-pointer">
-                <SelectValue placeholder="Select new level" />
+                <SelectValue placeholder="Select difficulty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1" className="cursor-pointer">
-                  <FaStar className="inline mr-1" />
+                <SelectItem value="Beginner" className="cursor-pointer">
                   Beginner
                 </SelectItem>
-                <SelectItem value="2" className="cursor-pointer">
-                  <span className="inline-flex gap-0.5 mr-1">
-                    <FaStar />
-                    <FaStar />
-                  </span>
-                  Basic
-                </SelectItem>
-                <SelectItem value="3" className="cursor-pointer">
-                  <span className="inline-flex gap-0.5 mr-1">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                  </span>
+                <SelectItem value="Intermediate" className="cursor-pointer">
                   Intermediate
                 </SelectItem>
-                <SelectItem value="4" className="cursor-pointer">
-                  <span className="inline-flex gap-0.5 mr-1">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                  </span>
+                <SelectItem value="Advanced" className="cursor-pointer">
                   Advanced
-                </SelectItem>
-                <SelectItem value="5" className="cursor-pointer">
-                  <span className="inline-flex gap-0.5 mr-1">
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                    <FaStar />
-                  </span>
-                  Expert
                 </SelectItem>
               </SelectContent>
             </Select>
