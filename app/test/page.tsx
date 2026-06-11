@@ -1039,8 +1039,10 @@ function SkillsTab() {
                     marginBottom: 8,
                   }}
                 >
-                  <span>{s.sessions} sessions taught</span>
-                  <span style={{ color: "#f59e0b" }}>★ {s.rating}</span>
+                  <span>{(s as any).sessions} sessions taught</span>
+                  <span style={{ color: "#f59e0b" }}>
+                    ★ {(s as any).rating}
+                  </span>
                 </div>
                 <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
                   <button
@@ -1081,10 +1083,11 @@ function SkillsTab() {
                   Priority:{" "}
                   <span
                     style={{
-                      color: s.priority === "High" ? "#ef4444" : "#f59e0b",
+                      color:
+                        (s as any).priority === "High" ? "#ef4444" : "#f59e0b",
                     }}
                   >
-                    {s.priority}
+                    {(s as any).priority}
                   </span>
                 </div>
                 <button
@@ -1133,7 +1136,7 @@ function SkillsTab() {
 }
 
 /* ─── MATCHES TAB ─── */
-function MatchesTab({ matches }) {
+function MatchesTab({ matches }: { matches: any[] }) {
   return (
     <div>
       <div style={{ marginBottom: 28 }}>
@@ -1151,7 +1154,7 @@ function MatchesTab({ matches }) {
           gap: 18,
         }}
       >
-        {matches.map((m) => (
+        {matches.map((m: any) => (
           <div
             key={m.id}
             style={{
@@ -1305,10 +1308,12 @@ function MatchesTab({ matches }) {
 }
 
 /* ─── SESSIONS TAB ─── */
-function SessionsTab({ sessions }) {
+function SessionsTab({ sessions }: { sessions: any[] }) {
   const [filter, setFilter] = useState("all");
   const filtered =
-    filter === "all" ? sessions : sessions.filter((s) => s.status === filter);
+    filter === "all"
+      ? sessions
+      : sessions.filter((s: any) => s.status === filter);
   return (
     <div>
       <div
@@ -1369,7 +1374,7 @@ function SessionsTab({ sessions }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {filtered.map((s) => (
+        {filtered.map((s: any) => (
           <div
             key={s.id}
             style={{
@@ -1479,6 +1484,14 @@ function MessagesTab({
   msgInput,
   setMsgInput,
   sendMsg,
+}: {
+  messages: any;
+  active: any;
+  setActive: any;
+  chatHistory: any;
+  msgInput: any;
+  setMsgInput: any;
+  sendMsg: any;
 }) {
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
@@ -1499,7 +1512,7 @@ function MessagesTab({
             Messages
           </h2>
         </div>
-        {messages.map((m) => (
+        {messages.map((m: any) => (
           <div
             key={m.id}
             onClick={() => setActive(m)}
@@ -1662,7 +1675,7 @@ function MessagesTab({
             gap: 14,
           }}
         >
-          {chatHistory.map((c, i) => (
+          {chatHistory.map((c: any, i: any) => (
             <div
               key={i}
               style={{
