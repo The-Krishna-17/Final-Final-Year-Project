@@ -13,9 +13,36 @@ export interface SkillItem {
   processedAt: string;
 }
 
+export type DateStruct = {
+  year: number;
+  month: number;
+  day: number;
+};
+
+export type CurrentWork = {
+  startDate: DateStruct;
+  endDate: DateStruct | null;
+  company: string;
+  role: string;
+  description: string;
+};
+
+export type UserProfile = {
+  _id: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  role: "user" | "admin" | string;
+  avatar: string;
+  bio: string;
+  isLocked: boolean;
+  currentWork: CurrentWork;
+};
+
 export interface SkillProfile {
   _id: string;
-  user: any; // Can be typed fully if User interface exists
+  user: UserProfile;
   offerSkills: SkillItem[];
   wantSkills: SkillItem[];
   availability: "available" | "busy" | "not_looking";

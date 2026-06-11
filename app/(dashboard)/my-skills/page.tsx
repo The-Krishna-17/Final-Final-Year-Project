@@ -175,7 +175,7 @@ const MySkillsPage = () => {
         <div className="space-y-1">
           <h1 className="font-semibold text-2xl">My Skills</h1>
           <h2 className="text-base text-muted-foreground">
-            Describe what you can teach or want to learn — our AI structures it
+            Describe what you can teach or want to learn our AI structures it
             for you.
           </h2>
         </div>
