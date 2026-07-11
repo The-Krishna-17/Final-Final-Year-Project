@@ -7,20 +7,27 @@ import { useRouter, useParams } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { resetPassword } from "@/store/features/auth/authSlice";
+import {
+  PasswordStrengthHints,
+  isPasswordValid,
+} from "@/components/ui/password-strength-hints";
 
 const page = () => {
   const router = useRouter();
   const params = useParams();
   const token = params?.token as string;
   const dispatch = useAppDispatch();
-  const { loadingResetPassword, errorResetPassword, successResetPassword } = useAppSelector(
-    (state) => state.auth
-  );
+  const { loadingResetPassword, errorResetPassword, successResetPassword } =
+    useAppSelector((state) => state.auth);
 
-  const [formData, setFormData] = useState({ password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [validationError, setValidationError] = useState("");
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,6 +36,12 @@ const page = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError("");
+    setSubmitAttempted(true);
+
+    if (!isPasswordValid(formData.password)) {
+      setValidationError("Please meet all password requirements below.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setValidationError("Passwords do not match");
@@ -47,9 +60,12 @@ const page = () => {
 
       <div className="relative z-10 bg-background border border-border rounded-xl shadow-sm p-8 w-full max-w-md flex flex-col gap-6">
         <div>
-          <h1 className="font-semibold text-2xl text-foreground">Reset password</h1>
+          <h1 className="font-semibold text-2xl text-foreground">
+            Reset password
+          </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Enter your new password below. Make sure it&apos;s strong and unique.
+            Enter your new password below. Make sure it&apos;s strong and
+            unique.
           </p>
         </div>
 
@@ -72,7 +88,9 @@ const page = () => {
             <div className="flex flex-col gap-3">
               {/* New Password */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-foreground">New Password</label>
+                <label className="text-sm font-medium text-foreground">
+                  New Password
+                </label>
                 <div className="relative">
                   <Input
                     name="password"
@@ -88,17 +106,29 @@ const page = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showPassword ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                    {showPassword ? (
+                      <FaEyeSlash className="text-lg" />
+                    ) : (
+                      <FaEye className="text-lg" />
+                    )}
                   </button>
                 </div>
+                <PasswordStrengthHints
+                  password={formData.password}
+                  show={submitAttempted}
+                />
                 {errorResetPassword?.fields?.password && (
-                  <p className="text-xs text-red-500">{errorResetPassword.fields.password}</p>
+                  <p className="text-xs text-red-500">
+                    {errorResetPassword.fields.password}
+                  </p>
                 )}
               </div>
 
               {/* Confirm Password */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-foreground">Confirm Password</label>
+                <label className="text-sm font-medium text-foreground">
+                  Confirm Password
+                </label>
                 <div className="relative">
                   <Input
                     name="confirmPassword"
@@ -114,7 +144,11 @@ const page = () => {
                     onClick={() => setShowConfirm(!showConfirm)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    {showConfirm ? <FaEyeSlash className="text-lg" /> : <FaEye className="text-lg" />}
+                    {showConfirm ? (
+                      <FaEyeSlash className="text-lg" />
+                    ) : (
+                      <FaEye className="text-lg" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -126,7 +160,11 @@ const page = () => {
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={loadingResetPassword}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loadingResetPassword}
+            >
               {loadingResetPassword ? "Resetting..." : "Reset password"}
             </Button>
 

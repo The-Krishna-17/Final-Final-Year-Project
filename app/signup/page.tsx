@@ -9,6 +9,10 @@ import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { registerUser } from "@/store/features/auth/authSlice";
+import {
+  PasswordStrengthHints,
+  isPasswordValid,
+} from "@/components/ui/password-strength-hints";
 
 const page = () => {
   const router = useRouter();
@@ -28,6 +32,7 @@ const page = () => {
   const [validationError, setValidationError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,6 +41,12 @@ const page = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setValidationError("");
+    setSubmitAttempted(true);
+
+    if (!isPasswordValid(formData.password)) {
+      setValidationError("Please meet all password requirements below.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setValidationError("Passwords do not match");
@@ -52,7 +63,7 @@ const page = () => {
     );
 
     if (registerUser.fulfilled.match(resultAction)) {
-      router.push("/dashboard");
+      router.push("/verify-email");
     }
   };
 
@@ -198,6 +209,10 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     )}
                   </button>
                 </div>
+                <PasswordStrengthHints
+                  password={formData.password}
+                  show={submitAttempted}
+                />
                 {errorRegister?.fields?.password && (
                   <p className="text-xs text-red-500">
                     {errorRegister.fields.password}
