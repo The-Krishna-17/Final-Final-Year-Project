@@ -17,7 +17,6 @@ import { FaAngleDown, FaRegUser } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getMe, logoutUser } from "@/store/features/auth/authSlice";
-import avatar from "@/public/avatar.png";
 import { Skeleton } from "../ui/skeleton";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { IoKeyOutline } from "react-icons/io5";

@@ -19,7 +19,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { fetchMutualMatches, fetchRecommendedMatches, searchMatches, filterMatches } from "@/store/features/matches/matchSlice";
+import {
+  fetchMutualMatches,
+  fetchRecommendedMatches,
+  searchMatches,
+  filterMatches,
+} from "@/store/features/matches/matchSlice";
 import { requestSwap } from "@/store/features/swaps/swapSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import React, { useEffect, useState, useRef } from "react";
@@ -55,10 +60,13 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
   const firstName = match.userProfile.user.firstName || "";
   const lastName = match.userProfile.user.lastName || "";
   const fullName = `${firstName} ${lastName}`.trim() || "Unknown User";
-  const initials = `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() || "U";
+  const initials =
+    `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() || "U";
 
-  const learnSkillName = match.matchDetails?.aWantsB?.offerSkill?.primarySkill?.name;
-  const teachSkillName = match.matchDetails?.bWantsA?.offerSkill?.primarySkill?.name;
+  const learnSkillName =
+    match.matchDetails?.aWantsB?.offerSkill?.primarySkill?.name;
+  const teachSkillName =
+    match.matchDetails?.bWantsA?.offerSkill?.primarySkill?.name;
 
   const [offersSkill, setOffersSkill] = useState(teachSkillName || "");
   const [wantsSkill, setWantsSkill] = useState(learnSkillName || "");
@@ -73,7 +81,7 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
           requesterOffersSkill: offersSkill || undefined,
           requesterWantsSkill: wantsSkill || undefined,
           message: message || undefined,
-        })
+        }),
       ).unwrap();
       setSuccess(true);
       toast.success(`Swap request sent to ${fullName}!`);
@@ -88,24 +96,28 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md border border-gray-100 dark:border-gray-800">
+      <div className="bg-background rounded-2xl shadow-2xl w-full max-w-md border border-border">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-border">
           <div className="flex items-center gap-3">
             <Avatar className="w-10 h-10">
               <AvatarImage src={match.userProfile.user.avatar} alt={fullName} />
-              <AvatarFallback className="bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-sm font-medium">
+              <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-semibold text-sm text-gray-900 dark:text-white">{fullName}</p>
-              <p className="text-xs text-muted-foreground">Request skill swap</p>
+              <p className="font-semibold text-sm text-foreground">
+                {fullName}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Request skill swap
+              </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,8 +125,8 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
 
         {success ? (
           <div className="flex flex-col items-center justify-center py-12 gap-3">
-            <CheckCircle2 className="w-12 h-12 text-emerald-500" />
-            <p className="font-semibold text-gray-900 dark:text-white">Request Sent!</p>
+            <CheckCircle2 className="w-12 h-12 text-success" />
+            <p className="font-semibold text-foreground">Request Sent!</p>
             <p className="text-sm text-muted-foreground">
               {fullName} will be notified of your swap request.
             </p>
@@ -152,21 +164,32 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
                 <span className="normal-case font-normal">(optional)</span>
               </label>
               <textarea
-                className="w-full text-sm px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full text-sm px-3 py-2 border border-border rounded-lg bg-background resize-none focus:outline-none focus:ring-2 focus:ring-ring"
                 rows={3}
                 placeholder={`Hi ${firstName}, I'd love to swap skills with you!`}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 maxLength={500}
               />
-              <p className="text-[11px] text-muted-foreground text-right">{message.length}/500</p>
+              <p className="text-[11px] text-muted-foreground text-right">
+                {message.length}/500
+              </p>
             </div>
 
             <div className="flex gap-3 pt-1">
-              <Button variant="outline" onClick={onClose} className="flex-1" disabled={loadingAction}>
+              <Button
+                variant="outline"
+                onClick={onClose}
+                className="flex-1"
+                disabled={loadingAction}
+              >
                 Cancel
               </Button>
-              <Button onClick={handleSend} className="flex-1 gap-2" disabled={loadingAction}>
+              <Button
+                onClick={handleSend}
+                className="flex-1 gap-2"
+                disabled={loadingAction}
+              >
                 {loadingAction ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
@@ -182,7 +205,6 @@ const SwapRequestModal = ({ match, onClose }: SwapModalProps) => {
   );
 };
 
-
 const MatchCard = ({ m }: { m: any }) => {
   const isMutual = m.matchDetails?.isMutual;
   const learnSkill = m.matchDetails?.aWantsB?.offerSkill;
@@ -193,7 +215,8 @@ const MatchCard = ({ m }: { m: any }) => {
   const firstName = m.userProfile.user.firstName || "";
   const lastName = m.userProfile.user.lastName || "";
   const fullName = `${firstName} ${lastName}`.trim() || "Unknown User";
-  const initials = `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() || "U";
+  const initials =
+    `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() || "U";
 
   const [showSwapModal, setShowSwapModal] = useState(false);
 
@@ -204,29 +227,19 @@ const MatchCard = ({ m }: { m: any }) => {
       )}
 
       <Card className="flex flex-col overflow-hidden gap-0 py-0">
-        {/* TOP ACCENT BAR */}
-        <div
-          className={`h-[3px] w-full ${
-            isMutual ? "bg-emerald-500" : "bg-amber-400"
-          }`}
-        />
-
         <CardHeader className="flex flex-row items-center justify-between gap-3 px-4 pt-4 pb-3 space-y-0">
           {/* AVATAR + USER INFO */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative shrink-0">
               <Avatar className="w-[42px] h-[42px]">
-                <AvatarImage
-                  src={m.userProfile.user.avatar}
-                  alt={fullName}
-                />
-                <AvatarFallback className="bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-[13px] font-medium">
+                <AvatarImage src={m.userProfile.user.avatar} alt={fullName} />
+                <AvatarFallback className="bg-muted text-muted-foreground text-[13px] font-medium">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <span
                 className={`absolute -bottom-0.5 -right-0.5 w-[11px] h-[11px] rounded-full border-2 border-background ${
-                  isMutual ? "bg-emerald-500" : "bg-amber-400"
+                  isMutual ? "bg-success" : "bg-warning"
                 }`}
               />
             </div>
@@ -235,8 +248,12 @@ const MatchCard = ({ m }: { m: any }) => {
                 {fullName}
               </p>
               <p className="text-xs text-muted-foreground truncate mt-0.5">
-                {m.userProfile.user.currentWork?.role || m.userProfile.user.role || "Professional"}
-                {m.userProfile.user.currentWork?.company ? ` · ${m.userProfile.user.currentWork.company}` : ""}
+                {m.userProfile.user.currentWork?.role ||
+                  m.userProfile.user.role ||
+                  "Professional"}
+                {m.userProfile.user.currentWork?.company
+                  ? ` · ${m.userProfile.user.currentWork.company}`
+                  : ""}
               </p>
             </div>
           </div>
@@ -251,17 +268,11 @@ const MatchCard = ({ m }: { m: any }) => {
             </div>
             <Badge
               variant="outline"
-              className={`text-[11px] font-medium gap-1 ${
-                isMutual
-                  ? "border-emerald-300 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800"
-                  : "border-amber-300 text-amber-700 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800"
-              }`}
+              className="text-[11px] font-medium gap-1 border-border text-muted-foreground bg-transparent"
             >
-              {isMutual ? (
-                <RiExchangeLine className="text-[11px]" />
-              ) : (
-                <RiArrowRightLine className="text-[11px]" />
-              )}
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${isMutual ? "bg-success" : "bg-warning"}`}
+              />
               {isMutual ? "Mutual" : "One-way"}
             </Badge>
           </div>
@@ -272,8 +283,8 @@ const MatchCard = ({ m }: { m: any }) => {
         <CardContent className="px-4 py-3 flex flex-col gap-2">
           {/* YOU LEARN */}
           {learnSkill ? (
-            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed bg-muted/30">
-              <div className="w-[30px] h-[30px] rounded-lg bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/30">
+              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiBookOpenLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -287,12 +298,12 @@ const MatchCard = ({ m }: { m: any }) => {
                   {learnSkill?.domain} · {learnSkill?.difficulty}
                 </p>
               </div>
-              <span className="text-[11px] font-medium text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-950/50 px-2 py-1 rounded-full shrink-0">
+              <span className="text-[11px] font-medium text-muted-foreground bg-muted px-2 py-1 rounded-full shrink-0">
                 {learnScore} pts
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed bg-muted/10 opacity-60">
+            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/10 opacity-60">
               <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiBookOpenLine className="text-[15px]" />
               </div>
@@ -310,7 +321,7 @@ const MatchCard = ({ m }: { m: any }) => {
           {/* SWAP ICON */}
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <div className="h-px w-7 bg-border" />
-            <div className="w-[22px] h-[22px] rounded-full border bg-background flex items-center justify-center">
+            <div className="w-[22px] h-[22px] rounded-full border border-border bg-background flex items-center justify-center">
               <RiArrowUpDownLine className="text-xs" />
             </div>
             <div className="h-px w-7 bg-border" />
@@ -318,8 +329,8 @@ const MatchCard = ({ m }: { m: any }) => {
 
           {/* YOU TEACH */}
           {teachSkill ? (
-            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed bg-muted/30">
-              <div className="w-[30px] h-[30px] rounded-lg bg-violet-100 dark:bg-violet-950/50 text-violet-700 dark:text-violet-300 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/30">
+              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiPresentationLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -333,12 +344,12 @@ const MatchCard = ({ m }: { m: any }) => {
                   {teachSkill?.domain} · {teachSkill?.difficulty}
                 </p>
               </div>
-              <span className="text-[11px] font-medium text-violet-700 dark:text-violet-300 bg-violet-100 dark:bg-violet-950/50 px-2 py-1 rounded-full shrink-0">
+              <span className="text-[11px] font-medium text-muted-foreground bg-muted px-2 py-1 rounded-full shrink-0">
                 {teachScore} pts
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed bg-muted/10 opacity-60">
+            <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/10 opacity-60">
               <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiPresentationLine className="text-[15px]" />
               </div>
@@ -373,7 +384,8 @@ const MatchCard = ({ m }: { m: any }) => {
                 Mutual interest
               </Badge>
             )}
-            {(m.matchDetails?.aWantsB?.breakdown?.tokenSimilarity > 0 || m.matchDetails?.bWantsA?.breakdown?.tokenSimilarity > 0) && (
+            {(m.matchDetails?.aWantsB?.breakdown?.tokenSimilarity > 0 ||
+              m.matchDetails?.bWantsA?.breakdown?.tokenSimilarity > 0) && (
               <Badge
                 variant="secondary"
                 className="text-[11px] gap-1 font-normal"
@@ -382,7 +394,8 @@ const MatchCard = ({ m }: { m: any }) => {
                 Token match
               </Badge>
             )}
-            {(m.matchDetails?.aWantsB?.breakdown?.domainSimilarity > 0 || m.matchDetails?.bWantsA?.breakdown?.domainSimilarity > 0) && (
+            {(m.matchDetails?.aWantsB?.breakdown?.domainSimilarity > 0 ||
+              m.matchDetails?.bWantsA?.breakdown?.domainSimilarity > 0) && (
               <Badge
                 variant="secondary"
                 className="text-[11px] gap-1 font-normal"
@@ -398,17 +411,11 @@ const MatchCard = ({ m }: { m: any }) => {
 
         <CardFooter className="px-4 py-2.5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <RiShieldStarLine className="text-sm text-amber-500" />
-            <span>
-              +{m.matchDetails?.reputationBoost ?? 0} rep boost
-            </span>
+            <RiShieldStarLine className="text-sm" />
+            <span>+{m.matchDetails?.reputationBoost ?? 0} rep boost</span>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 text-xs gap-1.5"
-            >
+            <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
               <RiUserLine className="text-sm" />
               Profile
             </Button>
@@ -429,7 +436,14 @@ const MatchCard = ({ m }: { m: any }) => {
 
 const page = () => {
   const dispatch = useAppDispatch();
-  const { recommendedMatches, mutualMatches, searchResults, loadingSearch, filteredMatches, loadingFilter } = useAppSelector((state) => state.matches);
+  const {
+    recommendedMatches,
+    mutualMatches,
+    searchResults,
+    loadingSearch,
+    filteredMatches,
+    loadingFilter,
+  } = useAppSelector((state) => state.matches);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -474,7 +488,10 @@ const page = () => {
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowDropdown(false);
       }
     };
@@ -499,7 +516,7 @@ const page = () => {
             <Input
               type="text"
               placeholder="Search for skills..."
-              className="pl-10 bg-background dark:bg-background w-full"
+              className="pl-10 bg-background w-full"
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -510,19 +527,25 @@ const page = () => {
 
             {/* Search Results Dropdown */}
             {showDropdown && searchQuery.trim().length > 0 && (
-              <div className="absolute top-full right-0 mt-2 w-[800px] max-w-[calc(100vw-2rem)] z-50 bg-background border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col">
-                <div className="p-4 border-b sticky top-0 bg-background/95 backdrop-blur z-10 flex justify-between items-center">
+              <div className="absolute top-full right-0 mt-2 w-[800px] max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col">
+                <div className="p-4 border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10 flex justify-between items-center">
                   <h3 className="font-medium">
-                    Search Results for <span className="text-primary">"{searchQuery}"</span>
+                    Search Results for{" "}
+                    <span className="text-foreground">"{searchQuery}"</span>
                   </h3>
-                  <Button variant="ghost" size="sm" onClick={() => setShowDropdown(false)} className="h-8 px-2 text-xs">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDropdown(false)}
+                    className="h-8 px-2 text-xs"
+                  >
                     Close
                   </Button>
                 </div>
                 <div className="p-4">
                   {loadingSearch ? (
                     <div className="py-12 flex flex-col items-center justify-center text-muted-foreground gap-3">
-                      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      <Loader2 className="w-6 h-6 animate-spin text-foreground" />
                       <p className="text-sm">Searching matches...</p>
                     </div>
                   ) : searchResults?.length > 0 ? (
@@ -534,15 +557,17 @@ const page = () => {
                   ) : (
                     <div className="py-12 flex flex-col items-center justify-center text-muted-foreground gap-2">
                       <RiUserLine className="text-4xl opacity-20" />
-                      <p className="text-sm">No matches found for "{searchQuery}".</p>
+                      <p className="text-sm">
+                        No matches found for "{searchQuery}".
+                      </p>
                     </div>
                   )}
                 </div>
               </div>
             )}
           </div>
-          <Button 
-            variant={showFilters ? "secondary" : "outline"} 
+          <Button
+            variant={showFilters ? "secondary" : "outline"}
             onClick={() => setShowFilters(!showFilters)}
             className="shrink-0"
           >
@@ -554,15 +579,22 @@ const page = () => {
 
       {/* FILTER UI */}
       {showFilters && (
-        <Card className="p-5 bg-card border shadow-sm rounded-xl mb-2">
-          <div className="flex items-center gap-2 mb-4 pb-2 border-b text-sm font-semibold">
-            <RiEqualizerLine className="text-lg text-primary" />
+        <Card className="p-5 bg-card border border-border shadow-sm rounded-xl mb-2">
+          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-border text-sm font-semibold">
+            <RiEqualizerLine className="text-lg text-foreground" />
             <h3>Refine Recommendations</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
             <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Mode</label>
-              <Select value={filters.mode || "all"} onValueChange={(val) => setFilters({...filters, mode: val === "all" ? "" : val})}>
+              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Mode
+              </label>
+              <Select
+                value={filters.mode || "all"}
+                onValueChange={(val) =>
+                  setFilters({ ...filters, mode: val === "all" ? "" : val })
+                }
+              >
                 <SelectTrigger className="h-9 w-full bg-background">
                   <SelectValue placeholder="Any Mode" />
                 </SelectTrigger>
@@ -575,8 +607,18 @@ const page = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Availability</label>
-              <Select value={filters.availability || "all"} onValueChange={(val) => setFilters({...filters, availability: val === "all" ? "" : val})}>
+              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Availability
+              </label>
+              <Select
+                value={filters.availability || "all"}
+                onValueChange={(val) =>
+                  setFilters({
+                    ...filters,
+                    availability: val === "all" ? "" : val,
+                  })
+                }
+              >
                 <SelectTrigger className="h-9 w-full bg-background">
                   <SelectValue placeholder="Any Availability" />
                 </SelectTrigger>
@@ -588,8 +630,18 @@ const page = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Difficulty</label>
-              <Select value={filters.difficulty || "all"} onValueChange={(val) => setFilters({...filters, difficulty: val === "all" ? "" : val})}>
+              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Difficulty
+              </label>
+              <Select
+                value={filters.difficulty || "all"}
+                onValueChange={(val) =>
+                  setFilters({
+                    ...filters,
+                    difficulty: val === "all" ? "" : val,
+                  })
+                }
+              >
                 <SelectTrigger className="h-9 w-full bg-background">
                   <SelectValue placeholder="Any Difficulty" />
                 </SelectTrigger>
@@ -602,18 +654,26 @@ const page = () => {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Domain</label>
-              <Input 
-                placeholder="e.g. Frontend" 
+              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Domain
+              </label>
+              <Input
+                placeholder="e.g. Frontend"
                 value={filters.domain}
-                onChange={(e) => setFilters({...filters, domain: e.target.value})}
+                onChange={(e) =>
+                  setFilters({ ...filters, domain: e.target.value })
+                }
                 className="h-9 bg-background"
               />
             </div>
           </div>
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-dashed">
-            <Button variant="ghost" size="sm" onClick={handleClearFilters}>Reset</Button>
-            <Button size="sm" className="px-6" onClick={handleApplyFilters}>Apply Filters</Button>
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-dashed border-border">
+            <Button variant="ghost" size="sm" onClick={handleClearFilters}>
+              Reset
+            </Button>
+            <Button size="sm" className="px-6" onClick={handleApplyFilters}>
+              Apply Filters
+            </Button>
           </div>
         </Card>
       )}
@@ -648,11 +708,12 @@ const page = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/20 border-dashed mt-4">
+            <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
               <RiHeartLine className="text-4xl text-muted-foreground mb-4 opacity-50" />
               <h3 className="font-medium text-lg">No mutual matches yet</h3>
               <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                Mutual matches appear here when you offer a skill someone wants, and they offer a skill you want.
+                Mutual matches appear here when you offer a skill someone wants,
+                and they offer a skill you want.
               </p>
             </div>
           )}
@@ -660,7 +721,7 @@ const page = () => {
         <TabsContent value="filtered" className="mt-6">
           {loadingFilter ? (
             <div className="flex items-center justify-center py-12">
-               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+              <Loader2 className="w-8 h-8 animate-spin text-foreground" />
             </div>
           ) : filteredMatches?.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
@@ -669,13 +730,19 @@ const page = () => {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center p-12 text-center border rounded-lg bg-muted/20 border-dashed mt-4">
+            <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
               <RiEqualizerLine className="text-4xl text-muted-foreground mb-4 opacity-50" />
               <h3 className="font-medium text-lg">No matches found</h3>
               <p className="text-sm text-muted-foreground mt-1 max-w-sm">
                 Try adjusting your filters to see more results.
               </p>
-              <Button variant="outline" className="mt-4" onClick={handleClearFilters}>Clear Filters</Button>
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={handleClearFilters}
+              >
+                Clear Filters
+              </Button>
             </div>
           )}
         </TabsContent>

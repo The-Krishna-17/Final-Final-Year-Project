@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -13,7 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -34,17 +32,11 @@ import { MdAdd, MdMenuBook } from "react-icons/md";
 import { toast } from "sonner";
 import { Loader2, Star, Trash2, Pencil, Sparkles } from "lucide-react";
 import { getMe } from "@/store/features/auth/authSlice";
-import { Badge } from "@/components/ui/badge";
 
 const MySkillsPage = () => {
   const dispatch = useAppDispatch();
-  const {
-    profile,
-    loadingAddOffer,
-    loadingAddWant,
-    loadingUpdate,
-    loadingRemove,
-  } = useAppSelector((state) => state.skills);
+  const { profile, loadingAddOffer, loadingAddWant, loadingUpdate } =
+    useAppSelector((state) => state.skills);
 
   const { user } = useAppSelector((state) => state.auth);
 
@@ -184,12 +176,12 @@ const MySkillsPage = () => {
       {/* Tabs */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* ── Teaching Skills ── */}
-        <Card className="flex flex-col gap-5 p-5 h-fit border border-primary">
+        <Card className="flex flex-col gap-5 p-5 h-fit border border-border shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-primary/10 p-2.5">
-                <IoSchoolSharp className="h-5 w-5 text-primary" />
+              <div className="rounded-lg bg-muted p-2.5">
+                <IoSchoolSharp className="h-5 w-5 text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold leading-tight">
@@ -221,27 +213,13 @@ const MySkillsPage = () => {
           {offerSkillsCount > 0 && (
             <div className="flex flex-col gap-3">
               {offerSkills?.map((skill) => {
-                const categoryColors: Record<string, string> = {
-                  Frontend: "bg-[#EEEDFE] text-[#3C3489]",
-                  Backend: "bg-[#E6F1FB] text-[#0C447C]",
-                  Data: "bg-[#E1F5EE] text-[#085041]",
-                  Design: "bg-[#FBEAF0] text-[#72243E]",
-                  DevOps: "bg-[#FAEEDA] text-[#633806]",
-                  Other: "bg-[#F1EFE8] text-[#444441]",
-                };
-                const difficultyColors: Record<string, string> = {
-                  Beginner: "bg-[#E1F5EE] text-[#085041]",
-                  Intermediate: "bg-[#FAEEDA] text-[#633806]",
-                  Advanced: "bg-[#EAF3DE] text-[#27500A]",
-                  Expert: "bg-[#EEEDFE] text-[#3C3489]",
-                };
                 const cat = skill.primarySkill?.category || "Other";
                 const diff = skill.difficulty || "Beginner";
 
                 return (
                   <div
                     key={skill._id}
-                    className="rounded-xl border bg-background p-5 border-l-4 border-primary"
+                    className="rounded-xl border border-border bg-background p-5"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-3">
@@ -250,23 +228,19 @@ const MySkillsPage = () => {
                           <h3 className="text-sm font-medium capitalize">
                             {skill.primarySkill?.name || "Unknown Skill"}
                           </h3>
-                          <span
-                            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
-                          >
+                          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-border text-muted-foreground">
                             {cat}
                           </span>
                         </div>
 
                         {skill.rawInput && (
-                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground italic">
+                          <p className="mt-1 line-clamp-2 text-xs italic text-muted-foreground">
                             "{skill.rawInput}"
                           </p>
                         )}
 
                         <div className="mt-2">
-                          <span
-                            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${difficultyColors[diff] ?? difficultyColors.Beginner}`}
-                          >
+                          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                             <Star
                               className="h-2.5 w-2.5 fill-current"
                               strokeWidth={0}
@@ -281,7 +255,7 @@ const MySkillsPage = () => {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 border border-transparent hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                          className="h-8 w-8 border border-transparent hover:bg-accent hover:text-accent-foreground"
                           onClick={() =>
                             openUpdateFor(
                               skill._id,
@@ -299,7 +273,7 @@ const MySkillsPage = () => {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-8 w-8 border border-transparent hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                              className="h-8 w-8 border border-transparent hover:bg-danger/10 hover:text-danger"
                             >
                               {removingSkillId === skill._id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -332,9 +306,7 @@ const MySkillsPage = () => {
                                     {cat} · {diff}
                                   </p>
                                 </div>
-                                <span
-                                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
-                                >
+                                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-border text-muted-foreground">
                                   {cat}
                                 </span>
                               </div>
@@ -380,7 +352,7 @@ const MySkillsPage = () => {
                             {skill.topics.map((topic) => (
                               <span
                                 key={topic}
-                                className="rounded-md border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
+                                className="rounded-md border border-border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
                               >
                                 {topic}
                               </span>
@@ -420,10 +392,7 @@ const MySkillsPage = () => {
           {/* Add button */}
           <Dialog open={openOfferDialog} onOpenChange={setOpenOfferDialog}>
             <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full border-dashed border-primary hover:bg-muted/50"
-              >
+              <Button variant="outline" className="w-full hover:bg-muted/50">
                 <MdAdd className="mr-2 h-4 w-4" />
                 Add Teaching Skill
               </Button>
@@ -452,15 +421,15 @@ const MySkillsPage = () => {
                     onKeyDown={(e) =>
                       e.key === "Enter" && !e.shiftKey && handleAddOfferSkill()
                     }
-                    className="w-full min-h-[110px] resize-none rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full min-h-[110px] resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 
                 <div className="flex items-start gap-2 rounded-md bg-muted/40 p-3 text-xs text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                  <Sparkles className="h-4 w-4 text-foreground mt-0.5" />
                   <div>
                     AI will extract{" "}
-                    <span className="font-medium">
+                    <span className="font-medium text-foreground">
                       skills, topics, difficulty level, and search tags
                     </span>{" "}
                     to help match learners with you.
@@ -472,6 +441,7 @@ const MySkillsPage = () => {
                 <Button
                   onClick={handleAddOfferSkill}
                   disabled={loadingAddOffer || !offerSkillInput.trim()}
+                  className="w-full"
                 >
                   {loadingAddOffer ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -484,14 +454,13 @@ const MySkillsPage = () => {
             </DialogContent>
           </Dialog>
         </Card>
-
         {/* ── Learning Skills ── */}
-        <Card className="flex flex-col gap-5 p-5 h-fit border border-primary">
+        <Card className="flex flex-col gap-5 p-5 h-fit border border-border shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-primary/10 p-2.5">
-                <MdMenuBook className="h-5 w-5 text-primary" />
+              <div className="rounded-lg bg-muted p-2.5">
+                <MdMenuBook className="h-5 w-5 text-foreground" />
               </div>
               <div>
                 <h3 className="font-semibold leading-tight">
@@ -527,27 +496,13 @@ const MySkillsPage = () => {
           {wantSkillsCount > 0 && (
             <div className="flex flex-col gap-3">
               {wantSkills?.map((skill) => {
-                const categoryColors: Record<string, string> = {
-                  Frontend: "bg-[#EEEDFE] text-[#3C3489]",
-                  Backend: "bg-[#E6F1FB] text-[#0C447C]",
-                  Data: "bg-[#E1F5EE] text-[#085041]",
-                  Design: "bg-[#FBEAF0] text-[#72243E]",
-                  DevOps: "bg-[#FAEEDA] text-[#633806]",
-                  Other: "bg-[#F1EFE8] text-[#444441]",
-                };
-                const difficultyColors: Record<string, string> = {
-                  Beginner: "bg-[#E1F5EE] text-[#085041]",
-                  Intermediate: "bg-[#FAEEDA] text-[#633806]",
-                  Advanced: "bg-[#EAF3DE] text-[#27500A]",
-                  Expert: "bg-[#EEEDFE] text-[#3C3489]",
-                };
                 const cat = skill.primarySkill?.category || "Other";
                 const diff = skill.difficulty || "Beginner";
 
                 return (
                   <div
                     key={skill._id}
-                    className="rounded-xl border bg-background p-5 border-l-4 border-primary"
+                    className="rounded-xl border border-border bg-background p-5"
                   >
                     {/* Header */}
                     <div className="flex items-start justify-between gap-3">
@@ -556,23 +511,19 @@ const MySkillsPage = () => {
                           <h3 className="text-sm font-medium capitalize">
                             {skill.primarySkill?.name || "Unknown Skill"}
                           </h3>
-                          <span
-                            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
-                          >
+                          <span className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-border text-muted-foreground">
                             {cat}
                           </span>
                         </div>
 
                         {skill.rawInput && (
-                          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground italic">
+                          <p className="mt-1 line-clamp-2 text-xs italic text-muted-foreground">
                             "{skill.rawInput}"
                           </p>
                         )}
 
                         <div className="mt-2">
-                          <span
-                            className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${difficultyColors[diff] ?? difficultyColors.Beginner}`}
-                          >
+                          <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                             <Star
                               className="h-2.5 w-2.5 fill-current"
                               strokeWidth={0}
@@ -587,7 +538,7 @@ const MySkillsPage = () => {
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="h-8 w-8 border border-transparent hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
+                          className="h-8 w-8 border border-transparent hover:bg-accent hover:text-accent-foreground"
                           onClick={() =>
                             openUpdateFor(
                               skill._id,
@@ -605,7 +556,7 @@ const MySkillsPage = () => {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-8 w-8 border border-transparent hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                              className="h-8 w-8 border border-transparent hover:bg-danger/10 hover:text-danger"
                             >
                               {removingSkillId === skill._id ? (
                                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -638,9 +589,7 @@ const MySkillsPage = () => {
                                     {cat} · {diff}
                                   </p>
                                 </div>
-                                <span
-                                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${categoryColors[cat] ?? categoryColors.Other}`}
-                                >
+                                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full border border-border text-muted-foreground">
                                   {cat}
                                 </span>
                               </div>
@@ -685,7 +634,7 @@ const MySkillsPage = () => {
                           {skill.topics.map((topic) => (
                             <span
                               key={topic}
-                              className="rounded-md border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
+                              className="rounded-md border border-border px-2 py-0.5 text-[11px] capitalize text-muted-foreground"
                             >
                               {topic}
                             </span>
@@ -716,10 +665,7 @@ const MySkillsPage = () => {
           {/* Add button */}
           <Dialog open={openWantDialog} onOpenChange={setOpenWantDialog}>
             <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full border-dashed border-primary hover:bg-muted/50"
-              >
+              <Button variant="outline" className="w-full hover:bg-muted/50">
                 <MdAdd className="mr-2 h-4 w-4" />
                 Add Learning Skill
               </Button>
@@ -748,15 +694,15 @@ const MySkillsPage = () => {
                     onKeyDown={(e) =>
                       e.key === "Enter" && !e.shiftKey && handleAddWantSkill()
                     }
-                    className="w-full min-h-[110px] resize-none rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full min-h-[110px] resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 
                 <div className="flex items-start gap-2 rounded-md bg-muted/40 p-3 text-xs text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                  <Sparkles className="h-4 w-4 text-foreground mt-0.5" />
                   <div>
                     AI will extract{" "}
-                    <span className="font-medium">
+                    <span className="font-medium text-foreground">
                       learning goals, topics, difficulty level, and search tags
                     </span>{" "}
                     to match you with the right mentors or resources.
@@ -768,6 +714,7 @@ const MySkillsPage = () => {
                 <Button
                   onClick={handleAddWantSkill}
                   disabled={loadingAddWant || !wantSkillInput.trim()}
+                  className="w-full"
                 >
                   {loadingAddWant ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -819,7 +766,11 @@ const MySkillsPage = () => {
           </div>
 
           <DialogFooter>
-            <Button onClick={handleUpdateSkill} disabled={loadingUpdate}>
+            <Button
+              onClick={handleUpdateSkill}
+              disabled={loadingUpdate}
+              className="w-full"
+            >
               {loadingUpdate ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (

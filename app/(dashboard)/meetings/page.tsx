@@ -11,8 +11,12 @@ import { Button } from "@/components/ui/button";
 
 export default function MeetingsPage() {
   const dispatch = useAppDispatch();
-  const { meetings, loadingMeetings } = useAppSelector((state) => state.meetings);
-  const [filter, setFilter] = useState<"upcoming" | "past" | "today">("upcoming");
+  const { meetings, loadingMeetings } = useAppSelector(
+    (state) => state.meetings,
+  );
+  const [filter, setFilter] = useState<"upcoming" | "past" | "today">(
+    "upcoming",
+  );
 
   useEffect(() => {
     dispatch(fetchMeetings());
@@ -20,7 +24,8 @@ export default function MeetingsPage() {
 
   const filteredMeetings = meetings.filter((meeting) => {
     const scheduled = new Date(meeting.scheduledAt);
-    if (filter === "upcoming") return isFuture(scheduled) && !isToday(scheduled);
+    if (filter === "upcoming")
+      return isFuture(scheduled) && !isToday(scheduled);
     if (filter === "today") return isToday(scheduled);
     if (filter === "past") return isPast(scheduled) && !isToday(scheduled);
     return true;
@@ -30,7 +35,9 @@ export default function MeetingsPage() {
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Meetings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            Meetings
+          </h1>
           <p className="text-gray-500 mt-2">Manage your video conferences</p>
         </div>
         <Link href="/meetings/create">
@@ -64,8 +71,12 @@ export default function MeetingsPage() {
       ) : filteredMeetings.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-dashed">
           <Video className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">No {filter} meetings</h3>
-          <p className="text-gray-500 mt-1">You don't have any {filter} meetings right now.</p>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+            No {filter} meetings
+          </h3>
+          <p className="text-gray-500 mt-1">
+            You don't have any {filter} meetings right now.
+          </p>
           {filter !== "past" && (
             <Link href="/meetings/create">
               <Button variant="outline" className="mt-4">
@@ -97,10 +108,10 @@ function MeetingCard({ meeting }: { meeting: Meeting }) {
             meeting.status === "scheduled"
               ? "bg-blue-100 text-blue-700"
               : meeting.status === "ongoing"
-              ? "bg-green-100 text-green-700"
-              : meeting.status === "completed"
-              ? "bg-gray-100 text-gray-700"
-              : "bg-red-100 text-red-700"
+                ? "bg-green-100 text-green-700"
+                : meeting.status === "completed"
+                  ? "bg-gray-100 text-gray-700"
+                  : "bg-red-100 text-red-700"
           }`}
         >
           {meeting.status}
@@ -108,7 +119,7 @@ function MeetingCard({ meeting }: { meeting: Meeting }) {
       </div>
 
       {meeting.description && (
-        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 flex-grow">
+        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 grow">
           {meeting.description}
         </p>
       )}

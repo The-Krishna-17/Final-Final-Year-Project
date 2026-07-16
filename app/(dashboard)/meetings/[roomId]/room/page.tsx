@@ -108,7 +108,7 @@ export default function MeetingRoomPage() {
 
   if (loadingCurrent || !currentMeeting || !user || loadingToken) {
     return (
-      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-gray-900 text-white">
+      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-background text-foreground">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-xl">Preparing your meeting environment...</p>
@@ -120,50 +120,49 @@ export default function MeetingRoomPage() {
   // JaaS not configured — show setup instructions
   if (tokenError === "jaas_not_configured") {
     return (
-      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-gray-900 text-white p-8">
+      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-background text-foreground p-8">
         <div className="max-w-lg text-center space-y-4">
-          <AlertCircle className="w-12 h-12 text-amber-400 mx-auto" />
+          <AlertCircle className="w-12 h-12 text-warning mx-auto" />
           <h2 className="text-2xl font-bold">JaaS Setup Required</h2>
-          <p className="text-gray-300">
+          <p className="text-muted-foreground">
             To use video meetings without a login wall, you need a free{" "}
             <strong>Jitsi as a Service (JaaS)</strong> account.
           </p>
-          <ol className="text-left text-sm text-gray-300 space-y-2 bg-gray-800 rounded-xl p-5 border border-gray-700">
+          <ol className="text-left text-sm text-muted-foreground space-y-2 bg-muted rounded-xl p-5 border border-border">
             <li>
-              <strong className="text-white">1.</strong> Go to{" "}
+              <strong className="text-foreground">1.</strong> Go to{" "}
               <a
                 href="https://jaas.8x8.vc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 underline"
+                className="text-primary underline"
               >
                 https://jaas.8x8.vc
               </a>{" "}
               and sign up free
             </li>
             <li>
-              <strong className="text-white">2.</strong> Create a new App — copy
-              your <code className="text-amber-300">App ID</code>
+              <strong className="text-foreground">2.</strong> Create a new App —
+              copy your <code className="text-warning">App ID</code>
             </li>
             <li>
-              <strong className="text-white">3.</strong> Generate an API Key —
-              copy the <code className="text-amber-300">Key ID</code> and
-              download the{" "}
-              <code className="text-amber-300">RSA Private Key</code>
+              <strong className="text-foreground">3.</strong> Generate an API
+              Key — copy the <code className="text-warning">Key ID</code> and
+              download the <code className="text-warning">RSA Private Key</code>
             </li>
             <li>
-              <strong className="text-white">4.</strong> Add to your backend{" "}
-              <code className="text-amber-300">.env</code>:
-              <pre className="mt-2 bg-gray-900 rounded p-3 text-xs text-green-300 overflow-x-auto">{`JAAS_APP_ID=vpaas-magic-cookie-xxxxx\nJAAS_PRIVATE_KEY_ID=your_key_id\nJAAS_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...your key...\n-----END RSA PRIVATE KEY-----"`}</pre>
+              <strong className="text-foreground">4.</strong> Add to your
+              backend <code className="text-warning">.env</code>:
+              <pre className="mt-2 bg-background rounded p-3 text-xs text-foreground overflow-x-auto border border-border">{`JAAS_APP_ID=vpaas-magic-cookie-xxxxx\nJAAS_PRIVATE_KEY_ID=your_key_id\nJAAS_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...your key...\n-----END RSA PRIVATE KEY-----"`}</pre>
             </li>
             <li>
-              <strong className="text-white">5.</strong> Restart your backend
-              server
+              <strong className="text-foreground">5.</strong> Restart your
+              backend server
             </li>
           </ol>
           <button
             onClick={() => router.push("/meetings")}
-            className="mt-2 px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90"
+            className="mt-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
           >
             Back to Meetings
           </button>
@@ -175,14 +174,14 @@ export default function MeetingRoomPage() {
   // Generic token error
   if (tokenError) {
     return (
-      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-gray-900 text-white p-8">
+      <div className="flex h-[calc(100vh-100px)] items-center justify-center bg-background text-foreground p-8">
         <div className="text-center space-y-4">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto" />
+          <AlertCircle className="w-12 h-12 text-danger mx-auto" />
           <h2 className="text-xl font-bold">Could not start meeting</h2>
-          <p className="text-gray-400">{tokenError}</p>
+          <p className="text-muted-foreground">{tokenError}</p>
           <button
             onClick={() => router.push("/meetings")}
-            className="px-6 py-2 bg-primary text-white rounded-lg hover:opacity-90"
+            className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
           >
             Back to Meetings
           </button>
@@ -202,7 +201,7 @@ export default function MeetingRoomPage() {
     : `skillxchange_${roomId}`;
 
   return (
-    <div className="h-[calc(100vh-80px)] w-full bg-black -m-6 p-0 overflow-hidden relative">
+    <div className="h-[calc(100vh-80px)] w-full bg-background -m-6 p-0 overflow-hidden relative">
       <JitsiMeeting
         domain={domain}
         roomName={roomName}
@@ -236,7 +235,7 @@ export default function MeetingRoomPage() {
       {/* Fallback leave button */}
       <button
         onClick={handleLeave}
-        className="absolute top-4 left-4 z-50 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-lg text-sm font-medium transition-colors"
+        className="absolute top-4 left-4 z-50 bg-danger hover:opacity-90 text-primary-foreground px-4 py-2 rounded-md shadow-lg text-sm font-medium transition-colors"
       >
         Leave Meeting Room
       </button>

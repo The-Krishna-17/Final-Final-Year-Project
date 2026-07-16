@@ -23,46 +23,28 @@ import {
   RiExchangeLine,
   RiInboxLine,
   RiSendPlaneLine,
-  RiErrorWarningLine,
 } from "react-icons/ri";
 import { Loader2, Clock, CheckCircle2, XCircle, Ban } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
-const StatusBadge = ({ status }: { status: SkillSwap["status"] }) => {
-  const map = {
-    pending: {
-      label: "Pending",
-      icon: <Clock className="w-3 h-3" />,
-      className:
-        "border-amber-300 text-amber-700 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800",
-    },
-    accepted: {
-      label: "Accepted",
-      icon: <CheckCircle2 className="w-3 h-3" />,
-      className:
-        "border-emerald-300 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800",
-    },
-    rejected: {
-      label: "Rejected",
-      icon: <XCircle className="w-3 h-3" />,
-      className:
-        "border-red-300 text-red-700 bg-red-50 dark:bg-red-950/40 dark:text-red-400 dark:border-red-800",
-    },
-    cancelled: {
-      label: "Cancelled",
-      icon: <Ban className="w-3 h-3" />,
-      className:
-        "border-gray-300 text-gray-600 bg-gray-50 dark:bg-gray-800/40 dark:text-gray-400 dark:border-gray-700",
-    },
-  };
+const statusMeta = {
+  pending: { label: "Pending", dot: "bg-warning" },
+  accepted: { label: "Accepted", dot: "bg-success" },
+  rejected: { label: "Rejected", dot: "bg-danger" },
+  cancelled: { label: "Cancelled", dot: "bg-muted-foreground" },
+};
 
-  const { label, icon, className } = map[status];
+const StatusBadge = ({ status }: { status: SkillSwap["status"] }) => {
+  const { label, dot } = statusMeta[status];
 
   return (
-    <Badge variant="outline" className={`text-[11px] font-medium gap-1.5 ${className}`}>
-      {icon}
+    <Badge
+      variant="outline"
+      className="text-[11px] font-medium gap-1.5 text-muted-foreground border-border bg-transparent"
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
       {label}
     </Badge>
   );
@@ -96,7 +78,9 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
   const handleAccept = async () => {
     setActioningId(swap._id);
     try {
-      await dispatch(respondToSwap({ swapId: swap._id, action: "accepted" })).unwrap();
+      await dispatch(
+        respondToSwap({ swapId: swap._id, action: "accepted" }),
+      ).unwrap();
       toast.success(`Swap with ${fullName} accepted!`);
     } catch (err: any) {
       toast.error(err || "Failed to accept swap");
@@ -108,7 +92,9 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
   const handleReject = async () => {
     setActioningId(swap._id);
     try {
-      await dispatch(respondToSwap({ swapId: swap._id, action: "rejected" })).unwrap();
+      await dispatch(
+        respondToSwap({ swapId: swap._id, action: "rejected" }),
+      ).unwrap();
       toast.info(`Swap request from ${fullName} rejected.`);
     } catch (err: any) {
       toast.error(err || "Failed to reject swap");
@@ -130,27 +116,14 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
   };
 
   return (
-    <Card className="overflow-hidden gap-0 py-0">
-      {/* Accent bar by status */}
-      <div
-        className={`h-[3px] w-full ${
-          swap.status === "pending"
-            ? "bg-amber-400"
-            : swap.status === "accepted"
-            ? "bg-emerald-500"
-            : swap.status === "rejected"
-            ? "bg-red-400"
-            : "bg-gray-300"
-        }`}
-      />
-
+    <Card className="gap-0 py-0">
       <CardContent className="p-4 space-y-4">
         {/* Header row */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="w-10 h-10 shrink-0">
               <AvatarImage src={peer?.avatar} alt={fullName} />
-              <AvatarFallback className="bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 text-sm font-medium">
+              <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -167,13 +140,15 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
 
         {/* Skill exchange row */}
         <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center">
-          <div className="rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900 p-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1">
+          <div className="rounded-lg border bg-muted/30 p-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
               {type === "received" ? "They offer" : "You offer"}
             </p>
-            <p className="text-sm font-medium text-blue-900 dark:text-blue-200 truncate">
+            <p className="text-sm font-medium truncate">
               {swap.requesterOffersSkill || (
-                <span className="italic text-muted-foreground font-normal">Not specified</span>
+                <span className="italic text-muted-foreground font-normal">
+                  Not specified
+                </span>
               )}
             </p>
           </div>
@@ -184,13 +159,15 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
             </div>
           </div>
 
-          <div className="rounded-lg bg-violet-50 dark:bg-violet-950/30 border border-violet-100 dark:border-violet-900 p-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400 mb-1">
+          <div className="rounded-lg border bg-muted/30 p-2.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
               {type === "received" ? "They want" : "You want"}
             </p>
-            <p className="text-sm font-medium text-violet-900 dark:text-violet-200 truncate">
+            <p className="text-sm font-medium truncate">
               {swap.requesterWantsSkill || (
-                <span className="italic text-muted-foreground font-normal">Not specified</span>
+                <span className="italic text-muted-foreground font-normal">
+                  Not specified
+                </span>
               )}
             </p>
           </div>
@@ -217,7 +194,7 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  className="flex-1 h-9 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="flex-1 h-9 gap-1.5"
                   onClick={handleAccept}
                   disabled={isActioning}
                 >
@@ -231,7 +208,7 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="flex-1 h-9 gap-1.5 border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/30"
+                  className="flex-1 h-9 gap-1.5 text-muted-foreground"
                   onClick={handleReject}
                   disabled={isActioning}
                 >
@@ -247,7 +224,7 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
               <Button
                 size="sm"
                 variant="outline"
-                className="w-full h-9 gap-1.5 border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800/40"
+                className="w-full h-9 gap-1.5 text-muted-foreground"
                 onClick={handleCancel}
                 disabled={isActioning}
               >
@@ -276,11 +253,21 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
 
 // ─── Empty State ──────────────────────────────────────────────────────────────
 
-const EmptyState = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
+const EmptyState = ({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) => (
   <div className="flex flex-col items-center justify-center p-16 text-center border rounded-xl bg-muted/10 border-dashed mt-2">
     <div className="text-4xl text-muted-foreground opacity-30 mb-4">{icon}</div>
     <h3 className="font-medium text-base">{title}</h3>
-    <p className="text-sm text-muted-foreground mt-1.5 max-w-xs">{description}</p>
+    <p className="text-sm text-muted-foreground mt-1.5 max-w-xs">
+      {description}
+    </p>
   </div>
 );
 
@@ -298,13 +285,15 @@ export default function RequestsPage() {
   const myId = user?._id;
 
   const received = swaps.filter(
-    (s) => s.recipient?._id === myId || s.recipient === (myId as any)
+    (s) => s.recipient?._id === myId || s.recipient === (myId as any),
   );
   const sent = swaps.filter(
-    (s) => s.requester?._id === myId || s.requester === (myId as any)
+    (s) => s.requester?._id === myId || s.requester === (myId as any),
   );
 
-  const pendingReceivedCount = received.filter((s) => s.status === "pending").length;
+  const pendingReceivedCount = received.filter(
+    (s) => s.status === "pending",
+  ).length;
   const pendingSentCount = sent.filter((s) => s.status === "pending").length;
 
   return (
@@ -324,34 +313,26 @@ export default function RequestsPage() {
             label: "Received",
             value: received.length,
             sub: `${pendingReceivedCount} pending`,
-            color: "text-blue-600 dark:text-blue-400",
-            bg: "bg-blue-50 dark:bg-blue-950/30",
           },
           {
             label: "Sent",
             value: sent.length,
             sub: `${pendingSentCount} pending`,
-            color: "text-violet-600 dark:text-violet-400",
-            bg: "bg-violet-50 dark:bg-violet-950/30",
           },
           {
             label: "Accepted",
             value: swaps.filter((s) => s.status === "accepted").length,
             sub: "active swaps",
-            color: "text-emerald-600 dark:text-emerald-400",
-            bg: "bg-emerald-50 dark:bg-emerald-950/30",
           },
           {
             label: "Rejected",
             value: swaps.filter((s) => s.status === "rejected").length,
             sub: "declined",
-            color: "text-red-600 dark:text-red-400",
-            bg: "bg-red-50 dark:bg-red-950/30",
           },
-        ].map(({ label, value, sub, color, bg }) => (
-          <Card key={label} className={`${bg} border-0 py-0 gap-0`}>
+        ].map(({ label, value, sub }) => (
+          <Card key={label} className="py-0 gap-0">
             <CardContent className="p-4">
-              <p className={`text-2xl font-bold ${color}`}>{value}</p>
+              <p className="text-2xl font-bold">{value}</p>
               <p className="text-sm font-medium mt-0.5">{label}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>
             </CardContent>

@@ -13,8 +13,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "FMS — Field Management System",
-  description: "Plan projects, track progress, manage teams.",
+  title: "SkillXchange - Swap Skills, Meet People",
+  description: "Swap skills, meet people, and build your professional network.",
 };
 
 export default function RootLayout({

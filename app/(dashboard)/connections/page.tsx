@@ -69,7 +69,7 @@ export default function ConnectionsPage() {
 
       {/* Summary bar */}
       <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full border">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/40 px-3 py-1.5 rounded-full border border-border">
           <RiTeamLine className="text-base text-primary" />
           <span>
             <strong className="text-foreground">{swapPartners.length}</strong>{" "}
@@ -97,7 +97,9 @@ export default function ConnectionsPage() {
           <RiUserHeartLine className="text-5xl text-muted-foreground opacity-25 mb-4" />
           {query ? (
             <>
-              <h3 className="font-medium text-base">No results for "{query}"</h3>
+              <h3 className="font-medium text-base">
+                No results for "{query}"
+              </h3>
               <p className="text-sm text-muted-foreground mt-1.5 max-w-xs">
                 Try searching by a different name or skill.
               </p>
@@ -132,7 +134,8 @@ export default function ConnectionsPage() {
           {filtered.map((partner) => {
             const firstName = partner.user.firstName || "";
             const lastName = partner.user.lastName || "";
-            const fullName = `${firstName} ${lastName}`.trim() || "Unknown User";
+            const fullName =
+              `${firstName} ${lastName}`.trim() || "Unknown User";
             const initials =
               `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() ||
               "U";
@@ -142,26 +145,24 @@ export default function ConnectionsPage() {
                 key={partner.swapId}
                 className="overflow-hidden gap-0 py-0 hover:shadow-md transition-shadow duration-200 group"
               >
-                {/* Top gradient banner */}
-                <div className="h-16 bg-gradient-to-br from-primary/20 via-violet-500/10 to-emerald-500/10 relative">
-                  <div className="absolute inset-0 bg-grid-white/5" />
-                </div>
+                {/* Top banner */}
+                <div className="h-16 bg-muted" />
 
                 <CardContent className="px-4 pb-4 pt-0 -mt-8 space-y-4">
                   {/* Avatar */}
                   <div className="flex justify-between items-end">
-                    <Avatar className="w-16 h-16 border-4 border-background shadow-md ring-2 ring-emerald-500/40">
+                    <Avatar className="w-16 h-16 border-4 border-background shadow-md">
                       <AvatarImage src={partner.user.avatar} alt={fullName} />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-violet-600 text-white text-lg font-semibold">
+                      <AvatarFallback className="bg-secondary text-secondary-foreground text-lg font-semibold">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                     {/* Active connection badge */}
                     <Badge
                       variant="outline"
-                      className="text-[10px] gap-1 border-emerald-300 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800 mb-1"
+                      className="text-[10px] gap-1 border-border text-muted-foreground bg-background mb-1"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-success" />
                       Connected
                     </Badge>
                   </div>
@@ -179,25 +180,25 @@ export default function ConnectionsPage() {
                   {/* Skill exchange pills */}
                   <div className="space-y-2">
                     {partner.offeredSkill && (
-                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50">
-                        <RiPresentationLine className="text-blue-500 shrink-0 text-sm" />
-                        <span className="text-blue-800 dark:text-blue-300 truncate">
+                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border">
+                        <RiPresentationLine className="text-muted-foreground shrink-0 text-sm" />
+                        <span className="text-foreground truncate">
                           <span className="font-medium">Teaches:</span>{" "}
                           {partner.offeredSkill}
                         </span>
                       </div>
                     )}
                     {partner.wantedSkill && (
-                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-violet-50 dark:bg-violet-950/30 border border-violet-100 dark:border-violet-900/50">
-                        <RiBookOpenLine className="text-violet-500 shrink-0 text-sm" />
-                        <span className="text-violet-800 dark:text-violet-300 truncate">
+                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border">
+                        <RiBookOpenLine className="text-muted-foreground shrink-0 text-sm" />
+                        <span className="text-foreground truncate">
                           <span className="font-medium">Learning:</span>{" "}
                           {partner.wantedSkill}
                         </span>
                       </div>
                     )}
                     {!partner.offeredSkill && !partner.wantedSkill && (
-                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/30 border border-dashed">
+                      <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/30 border border-dashed border-border">
                         <RiArrowLeftRightLine className="text-muted-foreground shrink-0 text-sm" />
                         <span className="text-muted-foreground">
                           Skill swap partner
@@ -219,10 +220,7 @@ export default function ConnectionsPage() {
                       </Button>
                     </Link>
                     <Link href="/meetings">
-                      <Button
-                        size="sm"
-                        className="w-full h-8 text-xs gap-1.5"
-                      >
+                      <Button size="sm" className="w-full h-8 text-xs gap-1.5">
                         <RiCalendarLine className="text-sm" />
                         Meet
                       </Button>
