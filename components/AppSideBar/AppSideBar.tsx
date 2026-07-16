@@ -19,6 +19,9 @@ import {
   MessageSquare,
   User,
   Wallet,
+  Video,
+  ArrowLeftRight,
+  UserCheck,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +29,7 @@ import lightLogo from "@/public/light-logo.png";
 import darkLogo from "@/public/dark-logo.png";
 import { Button } from "../ui/button";
 import { MdOutlineLogout } from "react-icons/md";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { logoutUser } from "@/store/features/auth/authSlice";
@@ -34,6 +37,17 @@ import { logoutUser } from "@/store/features/auth/authSlice";
 export function AppSideBar() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { swaps, swapPartners } = useAppSelector((s) => s.swaps);
+  const { user } = useAppSelector((s) => s.auth);
+  const { meetings } = useAppSelector((s) => s.meetings);
+
+  const pendingReceived = swaps.filter(
+    (s) => s.status === "pending" && (s.recipient as any)?._id === user?._id
+  ).length;
+
+  const upcomingMeetings = meetings.filter(
+    (m) => m.status === "scheduled" || m.status === "ongoing"
+  ).length;
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -83,9 +97,57 @@ export function AppSideBar() {
 
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
+                  <Link href="/requests" className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">
+                      <ArrowLeftRight />
+                      <span className="text-base">Requests</span>
+                    </span>
+                    {pendingReceived > 0 && (
+                      <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold rounded-full bg-amber-500 text-white px-1">
+                        {pendingReceived}
+                      </span>
+                    )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/connections" className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">
+                      <UserCheck />
+                      <span className="text-base">Connections</span>
+                    </span>
+                    {swapPartners.length > 0 && (
+                      <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold rounded-full bg-emerald-500 text-white px-1">
+                        {swapPartners.length}
+                      </span>
+                    )}
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
                   <Link href="/sessions">
                     <Calendar />
                     <span className="text-base">Sessions</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/meetings" className="flex items-center justify-between w-full">
+                    <span className="flex items-center gap-2">
+                      <Video />
+                      <span className="text-base">Meetings</span>
+                    </span>
+                    {upcomingMeetings > 0 && (
+                      <span className="ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold rounded-full bg-blue-500 text-white px-1">
+                        {upcomingMeetings}
+                      </span>
+                    )}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

@@ -3,6 +3,8 @@ import authReducer from "./features/auth/authSlice";
 import profileReducer from "./features/profile/profileSlice";
 import skillReducer from "./features/skills/skillSlice";
 import matchReducer from "./features/matches/matchSlice";
+import meetingReducer from "./features/meetings/meetingSlice";
+import swapReducer from "./features/swaps/swapSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     profile: profileReducer,
     skills: skillReducer,
     matches: matchReducer,
+    meetings: meetingReducer,
+    swaps: swapReducer,
   },
 });
 
