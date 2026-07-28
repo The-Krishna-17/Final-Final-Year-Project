@@ -77,8 +77,8 @@ const page = () => {
 
         {successChangePassword ? (
           <div className="flex flex-col gap-4">
-            <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-4">
-              <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+            <div className="rounded-lg border border-success/30 bg-success-muted p-4">
+              <p className="text-sm text-success-muted-foreground font-medium">
                 {successChangePassword}
               </p>
             </div>
@@ -105,7 +105,7 @@ const page = () => {
                     value={formData.currentPassword}
                     onChange={handleChange}
                     required
-                    className={`pr-10 ${errorChangePassword?.fields?.currentPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorChangePassword?.fields?.currentPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -120,7 +120,7 @@ const page = () => {
                   </button>
                 </div>
                 {errorChangePassword?.fields?.currentPassword && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorChangePassword.fields.currentPassword}
                   </p>
                 )}
@@ -139,7 +139,7 @@ const page = () => {
                     value={formData.newPassword}
                     onChange={handleChange}
                     required
-                    className={`pr-10 ${errorChangePassword?.fields?.newPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorChangePassword?.fields?.newPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -158,7 +158,7 @@ const page = () => {
                   show={submitAttempted}
                 />
                 {errorChangePassword?.fields?.newPassword && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorChangePassword.fields.newPassword}
                   </p>
                 )}
@@ -177,7 +177,7 @@ const page = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className={`pr-10 ${errorChangePassword?.fields?.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorChangePassword?.fields?.confirmPassword ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -192,7 +192,7 @@ const page = () => {
                   </button>
                 </div>
                 {errorChangePassword?.fields?.confirmPassword && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorChangePassword.fields.confirmPassword}
                   </p>
                 )}
@@ -200,7 +200,7 @@ const page = () => {
             </div>
 
             {(validationError || errorChangePassword?.global) && (
-              <p className="text-sm text-red-500 font-medium">
+              <p className="text-sm text-destructive font-medium">
                 {validationError || errorChangePassword?.global}
               </p>
             )}

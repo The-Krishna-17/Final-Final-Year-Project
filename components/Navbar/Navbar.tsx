@@ -47,7 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between p-4 border-b border-gray-400  sticky top-0 bg-background/80 backdrop-blur-md z-50">
+    <nav className="flex items-center justify-between p-4 border-b border-border sticky top-0 bg-background/80 backdrop-blur-md z-50">
       <Link href="/" className="max-w-16 block">
         <Image src={lightLogo} alt="logo" className="dark:hidden" />
         <Image src={darkLogo} alt="logo" className="hidden dark:block" />

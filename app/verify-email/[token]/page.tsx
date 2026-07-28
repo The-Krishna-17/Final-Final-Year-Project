@@ -44,7 +44,7 @@ const page = () => {
 
         {successVerifyEmail && !loadingVerifyEmail && (
           <>
-            <div className="w-14 h-14 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-500 text-2xl">
+            <div className="w-14 h-14 rounded-full bg-success-muted border border-success/30 flex items-center justify-center text-success text-2xl">
               ✓
             </div>
             <div>
@@ -63,14 +63,14 @@ const page = () => {
 
         {errorVerifyEmail && !loadingVerifyEmail && (
           <>
-            <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-2xl">
+            <div className="w-14 h-14 rounded-full bg-destructive/10 border border-destructive/30 flex items-center justify-center text-destructive text-2xl">
               ✕
             </div>
             <div>
               <h1 className="font-semibold text-2xl text-foreground">
                 Verification failed
               </h1>
-              <p className="text-sm text-red-500 mt-1">
+              <p className="text-sm text-destructive mt-1">
                 {errorVerifyEmail.global ??
                   "This link may be invalid or expired."}
               </p>

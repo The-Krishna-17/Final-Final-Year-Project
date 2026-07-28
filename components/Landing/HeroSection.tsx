@@ -97,7 +97,7 @@ const HeroSection = () => {
           <Image
             src={dashboardImage}
             alt="dashboard"
-            className="border-gray-800 dark:border-gray-200 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8"
+            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8"
           />
         </motion.div>
       </section>

@@ -125,12 +125,12 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     required
                     className={
                       errorRegister?.fields?.firstName
-                        ? "border-red-500 focus-visible:ring-red-500"
+                        ? "border-destructive focus-visible:ring-destructive"
                         : ""
                     }
                   />
                   {errorRegister?.fields?.firstName && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errorRegister.fields.firstName}
                     </p>
                   )}
@@ -148,12 +148,12 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     required
                     className={
                       errorRegister?.fields?.lastName
-                        ? "border-red-500 focus-visible:ring-red-500"
+                        ? "border-destructive focus-visible:ring-destructive"
                         : ""
                     }
                   />
                   {errorRegister?.fields?.lastName && (
-                    <p className="text-xs text-red-500">
+                    <p className="text-xs text-destructive">
                       {errorRegister.fields.lastName}
                     </p>
                   )}
@@ -173,12 +173,12 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   required
                   className={
                     errorRegister?.fields?.email
-                      ? "border-red-500 focus-visible:ring-red-500"
+                      ? "border-destructive focus-visible:ring-destructive"
                       : ""
                   }
                 />
                 {errorRegister?.fields?.email && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorRegister.fields.email}
                   </p>
                 )}
@@ -195,7 +195,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     required
-                    className={`pr-10 ${errorRegister?.fields?.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorRegister?.fields?.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -214,7 +214,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   show={submitAttempted}
                 />
                 {errorRegister?.fields?.password && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorRegister.fields.password}
                   </p>
                 )}
@@ -249,7 +249,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
             </div>
 
             {(validationError || errorRegister?.global) && (
-              <p className="text-sm text-red-500 font-medium">
+              <p className="text-sm text-destructive font-medium">
                 {validationError || errorRegister?.global}
               </p>
             )}

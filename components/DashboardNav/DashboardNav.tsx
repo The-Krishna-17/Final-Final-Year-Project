@@ -54,7 +54,7 @@ const DashboardNav = () => {
           <FaBell className="cursor-pointer text-xl" />
           <ThemeToggle />
         </div>
-        <div className="h-6 w-px bg-slate-300"></div>
+        <div className="h-6 w-px bg-border"></div>
         {authLoading ? (
           <Skeleton className="h-10 w-10 rounded-full" />
         ) : user ? (

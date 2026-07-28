@@ -68,12 +68,12 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   required
                   className={
                     errorLogin?.fields?.email
-                      ? "border-red-500 focus-visible:ring-red-500"
+                      ? "border-destructive focus-visible:ring-destructive"
                       : ""
                   }
                 />
                 {errorLogin?.fields?.email && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorLogin.fields.email}
                   </p>
                 )}
@@ -91,7 +91,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className={`pr-10 ${errorLogin?.fields?.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorLogin?.fields?.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -106,7 +106,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
                   </button>
                 </div>
                 {errorLogin?.fields?.password && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorLogin.fields.password}
                   </p>
                 )}
@@ -121,7 +121,7 @@ after:content-[''] after:absolute after:-top-16 after:-right-16 after:h-28 after
             </div>
 
             {errorLogin?.global && (
-              <p className="text-sm text-red-500 font-medium">
+              <p className="text-sm text-destructive font-medium">
                 {errorLogin.global}
               </p>
             )}

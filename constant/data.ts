@@ -332,38 +332,38 @@ export const SOCIAL_LINKS = [
     key: "linkedin",
     label: "LinkedIn",
     icon: FaLinkedin,
-    hoverClass: "hover:border-blue-600 hover:bg-blue-50 hover:text-blue-700",
+    hoverClass: "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "github",
     label: "GitHub",
     icon: FaGithub,
     hoverClass:
-      "hover:border-slate-800 hover:bg-slate-100 hover:text-slate-900",
+      "hover:border-foreground/60 hover:bg-muted hover:text-foreground",
   },
   {
     key: "twitter",
     label: "Twitter",
     icon: FaTwitter,
-    hoverClass: "hover:border-sky-500 hover:bg-sky-50 hover:text-sky-600",
+    hoverClass: "hover:border-info/70 hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "instagram",
     label: "Instagram",
     icon: FaInstagram,
-    hoverClass: "hover:border-pink-500 hover:bg-pink-50 hover:text-pink-600",
+    hoverClass: "hover:border-primary hover:bg-primary/10 hover:text-primary",
   },
   {
     key: "facebook",
     label: "Facebook",
     icon: FaFacebook,
-    hoverClass: "hover:border-blue-500 hover:bg-blue-50 hover:text-blue-600",
+    hoverClass: "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "website",
     label: "Website",
     icon: FaGlobe,
     hoverClass:
-      "hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600",
+      "hover:border-success hover:bg-success-muted hover:text-success-muted-foreground",
   },
 ] as const;

@@ -71,8 +71,8 @@ const page = () => {
 
         {successResetPassword ? (
           <div className="flex flex-col gap-4">
-            <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-4">
-              <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+            <div className="rounded-lg border border-success/30 bg-success-muted p-4">
+              <p className="text-sm text-success-muted-foreground font-medium">
                 {successResetPassword}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
@@ -99,7 +99,7 @@ const page = () => {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className={`pr-10 ${errorResetPassword?.fields?.password ? "border-red-500 focus-visible:ring-red-500" : ""}`}
+                    className={`pr-10 ${errorResetPassword?.fields?.password ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -118,7 +118,7 @@ const page = () => {
                   show={submitAttempted}
                 />
                 {errorResetPassword?.fields?.password && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-xs text-destructive">
                     {errorResetPassword.fields.password}
                   </p>
                 )}
@@ -155,7 +155,7 @@ const page = () => {
             </div>
 
             {(validationError || errorResetPassword?.global) && (
-              <p className="text-sm text-red-500 font-medium">
+              <p className="text-sm text-destructive font-medium">
                 {validationError || errorResetPassword?.global}
               </p>
             )}

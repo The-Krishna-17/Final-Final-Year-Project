@@ -541,7 +541,7 @@ const page = () => {
                   )}
 
                   {/* Online dot — hidden on hover */}
-                  <span className="absolute bottom-1 right-1.5 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background group-hover:opacity-0 transition-opacity duration-200" />
+                  <span className="absolute bottom-1 right-1.5 w-3.5 h-3.5 rounded-full bg-success border-2 border-background group-hover:opacity-0 transition-opacity duration-200" />
                 </div>
 
                 <div className="pb-1 mt-8">
@@ -758,7 +758,7 @@ const page = () => {
                           </div>
 
                           {/* Current Position */}
-                          <div className="rounded-xl border border-[#2d5a3d]/15 bg-muted p-4 space-y-3">
+                          <div className="rounded-xl border border-border/60 bg-muted p-4 space-y-3">
                             <p className="text-[11px] font-semibold uppercase tracking-widest text-primary flex items-center gap-1.5">
                               <Briefcase className="w-3.5 h-3.5" />
                               Current Position
@@ -770,7 +770,7 @@ const page = () => {
                                 onChange={(e) =>
                                   updateCW("company", e.target.value)
                                 }
-                                className="bg-background dark:bg-[#1d1d20]"
+                                className="bg-background"
                               />
                               <Input
                                 placeholder="Role / Title"
@@ -778,7 +778,7 @@ const page = () => {
                                 onChange={(e) =>
                                   updateCW("role", e.target.value)
                                 }
-                                className="bg-background dark:bg-[#1d1d20]"
+                                className="bg-background"
                               />
                             </div>
 
@@ -787,7 +787,7 @@ const page = () => {
                             </p>
                             <div className="grid grid-cols-3 gap-2">
                               <select
-                                className="h-9 rounded-full border border-border/60 bg-background dark:bg-[#1d1d20] px-2 text-sm"
+                                className="h-9 rounded-full border border-border/60 bg-background px-2 text-sm"
                                 value={
                                   currentWork?.startDate?.month ?? NOW_MONTH
                                 }
@@ -818,7 +818,7 @@ const page = () => {
                                     Number(e.target.value),
                                   )
                                 }
-                                className="bg-background dark:bg-[#1d1d20]"
+                                className="bg-background"
                               />
                               <Input
                                 type="number"
@@ -835,7 +835,7 @@ const page = () => {
                                       : null,
                                   )
                                 }
-                                className="bg-background dark:bg-[#1d1d20]"
+                                className="bg-background"
                               />
                             </div>
                             <Textarea
@@ -845,7 +845,7 @@ const page = () => {
                               onChange={(e) =>
                                 updateCW("description", e.target.value)
                               }
-                              className="bg-background dark:bg-[#1d1d20]"
+                              className="bg-background"
                             />
                           </div>
                         </TabsContent>
@@ -907,7 +907,7 @@ const page = () => {
                                 </p>
                                 <div className="grid grid-cols-3 gap-2">
                                   <select
-                                    className="h-9 rounded-xl border border-border/60 bg-background dark:bg-[#1d1d20] px-2 text-sm"
+                                    className="h-9 rounded-xl border border-border/60 bg-background px-2 text-sm"
                                     value={exp.startDate?.month ?? NOW_MONTH}
                                     onChange={(e) =>
                                       updateExpDate(
@@ -975,7 +975,7 @@ const page = () => {
                                 {exp.endDate !== null && (
                                   <div className="grid grid-cols-3 gap-2">
                                     <select
-                                      className="h-9 rounded-xl border border-border/60 bg-background dark:bg-[#1d1d20] px-2 text-sm"
+                                      className="h-9 rounded-xl border border-border/60 bg-background px-2 text-sm"
                                       value={exp.endDate?.month ?? NOW_MONTH}
                                       onChange={(e) =>
                                         updateExpDate(
@@ -1153,7 +1153,7 @@ const page = () => {
 
                 <div className="flex items-center justify-between">
                   {user?.isEmailVerified ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400">
+                    <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-success-muted text-success-muted-foreground">
                       <CircleCheck className="w-3 h-3" />
                       Verified
                     </span>
@@ -1182,10 +1182,10 @@ const page = () => {
 
                 <div className="flex items-center gap-2">
                   <span
-                    className={`h-2.5 w-2.5 rounded-full ${user?.isLocked ? "bg-red-500" : "bg-green-500"}`}
+                    className={`h-2.5 w-2.5 rounded-full ${user?.isLocked ? "bg-destructive" : "bg-success"}`}
                   />
                   <p
-                    className={`text-base font-semibold ${user?.isLocked ? "text-red-500" : "text-green-600"}`}
+                    className={`text-base font-semibold ${user?.isLocked ? "text-destructive" : "text-success"}`}
                   >
                     {user?.isLocked ? "Locked" : "Active"}
                   </p>

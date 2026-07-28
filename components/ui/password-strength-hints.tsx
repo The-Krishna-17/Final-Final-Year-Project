@@ -36,8 +36,8 @@ export function PasswordStrengthHints({
             <span
               className={`inline-flex items-center justify-center w-3.5 h-3.5 rounded-full text-[10px] font-bold shrink-0 transition-colors duration-200 ${
                 passed
-                  ? "bg-green-500/20 text-green-500 border border-green-500/30"
-                  : "bg-red-500/10 text-red-500 border border-red-500/20"
+                  ? "bg-success/20 text-success border border-success/30"
+                  : "bg-destructive/10 text-destructive border border-destructive/20"
               }`}
             >
               {passed ? "✓" : "✕"}
