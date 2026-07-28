@@ -5,6 +5,7 @@ import skillReducer from "./features/skills/skillSlice";
 import matchReducer from "./features/matches/matchSlice";
 import meetingReducer from "./features/meetings/meetingSlice";
 import swapReducer from "./features/swaps/swapSlice";
+import notificationReducer from "./features/notifications/notificationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     matches: matchReducer,
     meetings: meetingReducer,
     swaps: swapReducer,
+    notifications: notificationReducer,
   },
 });
 

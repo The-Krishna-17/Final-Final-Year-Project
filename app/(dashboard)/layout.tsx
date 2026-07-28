@@ -1,6 +1,7 @@
 import { AppSideBar } from "@/components/AppSideBar/AppSideBar";
 import DashboardNav from "@/components/DashboardNav/DashboardNav";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { NotificationListener } from "@/components/NotificationListener/NotificationListener";
 
 export default function DashboardLayout({
   children,
@@ -9,6 +10,7 @@ export default function DashboardLayout({
 }) {
   return (
     <main>
+      <NotificationListener />
       <SidebarProvider>
         <div className="border-r">
           <AppSideBar />

@@ -29,6 +29,7 @@ export function AppSideBar() {
   const { swaps, swapPartners } = useAppSelector((s) => s.swaps);
   const { user } = useAppSelector((s) => s.auth);
   const { meetings } = useAppSelector((s) => s.meetings);
+  const { unreadCount } = useAppSelector((s) => s.notifications);
 
   const pendingReceived = swaps.filter(
     (s) => s.status === "pending" && (s.recipient as any)?._id === user?._id,
@@ -61,6 +62,7 @@ export function AppSideBar() {
                 pendingReceived,
                 swapPartnersCount: swapPartners.length,
                 upcomingMeetings,
+                unreadNotifications: unreadCount,
               }).map(({ href, icon: Icon, label, badge, badgeColor }) => (
                 <SidebarMenuItem key={href}>
                   <SidebarMenuButton asChild>
