@@ -38,6 +38,8 @@ export default function CreateMeetingPage() {
   });
   const [selectedPartners, setSelectedPartners] = useState<string[]>([]);
 
+  const activeSwapPartners = swapPartners.filter(p => p.status !== "completed");
+
   useEffect(() => {
     dispatch(fetchSwapPartners());
   }, [dispatch]);
@@ -196,14 +198,14 @@ export default function CreateMeetingPage() {
                   <p className="text-sm">Loading your swap partners...</p>
                 </div>
               </div>
-            ) : swapPartners.length === 0 ? (
+            ) : activeSwapPartners.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-10 border border-dashed border-border rounded-lg bg-muted/40 text-center px-4">
                 <ArrowLeftRight className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-sm font-medium text-foreground">
-                  No swap partners yet
+                  No active swap partners yet
                 </p>
                 <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-                  You can only invite users you&apos;ve completed a skill swap
+                  You can only invite users you have an active skill swap
                   with. Go to{" "}
                   <Link
                     href="/matches"
@@ -216,7 +218,7 @@ export default function CreateMeetingPage() {
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
-                {swapPartners.map((partner) => {
+                {activeSwapPartners.map((partner) => {
                   const isSelected = selectedPartners.includes(
                     partner.user._id,
                   );
@@ -280,7 +282,7 @@ export default function CreateMeetingPage() {
             {selectedPartners.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
                 {selectedPartners.map((id) => {
-                  const partner = swapPartners.find((p) => p.user._id === id);
+                  const partner = activeSwapPartners.find((p) => p.user._id === id);
                   if (!partner) return null;
                   const fullName =
                     `${partner.user.firstName} ${partner.user.lastName}`.trim();
@@ -317,7 +319,7 @@ export default function CreateMeetingPage() {
             </Button>
             <Button
               type="submit"
-              disabled={loadingAction || swapPartners.length === 0}
+              disabled={loadingAction || activeSwapPartners.length === 0}
               className="min-w-35"
             >
               {loadingAction ? (

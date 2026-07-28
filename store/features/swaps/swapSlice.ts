@@ -86,6 +86,19 @@ export const cancelSwap = createAsyncThunk<
   }
 });
 
+export const completeSwap = createAsyncThunk<
+  SkillSwap,
+  string,
+  { rejectValue: string }
+>("swaps/complete", async (swapId, thunkAPI) => {
+  try {
+    const res = await axiosInstance.patch(`/swaps/${swapId}/complete`);
+    return res.data.data.swap;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to complete swap"));
+  }
+});
+
 // ─── SLICE ───────────────────────────────────────────────────────────────────
 
 const swapSlice = createSlice({
@@ -178,6 +191,23 @@ const swapSlice = createSlice({
         if (idx !== -1) state.swaps[idx].status = "cancelled";
       })
       .addCase(cancelSwap.rejected, (state, action) => {
+        state.loadingAction = false;
+        state.error = action.payload as string;
+      })
+
+      // completeSwap
+      .addCase(completeSwap.pending, (state) => {
+        state.loadingAction = true;
+        state.error = null;
+      })
+      .addCase(completeSwap.fulfilled, (state, action) => {
+        state.loadingAction = false;
+        const swapIdx = state.swaps.findIndex((s) => s._id === action.payload._id);
+        if (swapIdx !== -1) state.swaps[swapIdx] = action.payload;
+        const partnerIdx = state.swapPartners.findIndex((p) => p.swapId === action.payload._id);
+        if (partnerIdx !== -1) state.swapPartners[partnerIdx].status = "completed";
+      })
+      .addCase(completeSwap.rejected, (state, action) => {
         state.loadingAction = false;
         state.error = action.payload as string;
       });

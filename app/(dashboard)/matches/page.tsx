@@ -45,6 +45,7 @@ import {
 } from "react-icons/ri";
 import { X, Loader2, ArrowLeftRight, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 // ─── Swap Request Modal ───────────────────────────────────────────────────────
 
@@ -410,15 +411,26 @@ const MatchCard = ({ m }: { m: any }) => {
         <Separator />
 
         <CardFooter className="px-4 py-2.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <RiShieldStarLine className="text-sm" />
-            <span>+{m.matchDetails?.reputationBoost ?? 0} rep boost</span>
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            {m.userProfile.reputationScore > 0 ? (
+              <>
+                <RiShieldStarLine className="text-sm text-yellow-500" />
+                <span>{m.userProfile.reputationScore.toFixed(1)} / 5 Rating</span>
+              </>
+            ) : (
+              <>
+                <RiShieldStarLine className="text-sm opacity-50" />
+                <span>No review yet</span>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
-              <RiUserLine className="text-sm" />
-              Profile
-            </Button>
+            <Link href={`/profile/${m.userProfile.user._id}`}>
+              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                <RiUserLine className="text-sm" />
+                Profile
+              </Button>
+            </Link>
             <Button
               size="sm"
               className="h-8 text-xs gap-1.5"

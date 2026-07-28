@@ -15,7 +15,7 @@ export interface SkillSwap {
   requesterOffersSkill?: string;
   requesterWantsSkill?: string;
   message?: string;
-  status: "pending" | "accepted" | "rejected" | "cancelled";
+  status: "pending" | "accepted" | "rejected" | "cancelled" | "completed";
   respondedAt?: string;
   createdAt: string;
   updatedAt: string;
@@ -26,6 +26,7 @@ export interface SwapPartner {
   user: SwapUser;
   offeredSkill?: string;
   wantedSkill?: string;
+  status?: string;
 }
 
 export interface SwapState {
