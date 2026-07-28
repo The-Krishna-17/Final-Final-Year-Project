@@ -34,6 +34,7 @@ const statusMeta = {
   accepted: { label: "Accepted", dot: "bg-success" },
   rejected: { label: "Rejected", dot: "bg-danger" },
   cancelled: { label: "Cancelled", dot: "bg-muted-foreground" },
+  completed: { label: "Completed", dot: "bg-success" },
 };
 
 const StatusBadge = ({ status }: { status: SkillSwap["status"] }) => {

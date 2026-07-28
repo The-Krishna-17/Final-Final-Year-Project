@@ -37,7 +37,7 @@ const DashboardNav = () => {
   const dispatch = useAppDispatch();
   const { user, loadingMe } = useAppSelector((state) => state.auth);
   const { notifications, unreadCount } = useAppSelector(
-    (state) => state.notifications
+    (state) => state.notifications,
   );
 
   useEffect(() => {
@@ -60,12 +60,14 @@ const DashboardNav = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between w-full border-b px-4 py-1.5 sticky top-0 bg-background backdrop-blur-md z-50">
+    <nav className="flex items-center justify-between w-full border-b px-4 py-1.5 sticky top-0 backdrop-blur-md z-50 bg-sidebar">
       <SidebarTrigger />
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">
           {/* Notifications Dropdown */}
-          <DropdownMenu onOpenChange={(open) => open && handleFetchNotifications()}>
+          <DropdownMenu
+            onOpenChange={(open) => open && handleFetchNotifications()}
+          >
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
@@ -167,7 +169,10 @@ const DashboardNav = () => {
 
               {/* Dropdown Footer */}
               <div className="p-2 border-t border-border bg-muted/20 text-center">
-                <DropdownMenuItem asChild className="w-full justify-center cursor-pointer focus:bg-muted/60">
+                <DropdownMenuItem
+                  asChild
+                  className="w-full justify-center cursor-pointer focus:bg-muted/60"
+                >
                   <Link
                     href="/notifications"
                     className="text-xs font-medium text-primary hover:underline inline-flex items-center justify-center gap-1.5 py-1 w-full"
