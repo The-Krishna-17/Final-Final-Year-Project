@@ -203,7 +203,7 @@ const MySkillsPage = () => {
                 <IoSchoolSharp className="h-7 w-7 text-muted-foreground" />
               </div>
               <h4 className="mb-1 font-semibold">Ready to inspire others?</h4>
-              <p className="mb-0 max-w-[260px] text-sm text-muted-foreground">
+              <p className="mb-0 max-w-65 text-sm text-muted-foreground">
                 Share what you know and connect with people eager to learn from
                 your experience.
               </p>
@@ -421,7 +421,7 @@ const MySkillsPage = () => {
                     onKeyDown={(e) =>
                       e.key === "Enter" && !e.shiftKey && handleAddOfferSkill()
                     }
-                    className="w-full min-h-[110px] resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full min-h-27.5 resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 
@@ -485,7 +485,7 @@ const MySkillsPage = () => {
               <h4 className="mb-1 font-semibold">
                 Ready to learn something new?
               </h4>
-              <p className="mb-0 max-w-[260px] text-sm text-muted-foreground">
+              <p className="mb-0 max-w-65 text-sm text-muted-foreground">
                 Add skills you're interested in learning and we'll help you
                 discover people who can teach them.
               </p>
@@ -694,7 +694,7 @@ const MySkillsPage = () => {
                     onKeyDown={(e) =>
                       e.key === "Enter" && !e.shiftKey && handleAddWantSkill()
                     }
-                    className="w-full min-h-[110px] resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full min-h-27.5 resize-none rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   />
                 </div>
 

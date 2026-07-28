@@ -231,14 +231,14 @@ const MatchCard = ({ m }: { m: any }) => {
           {/* AVATAR + USER INFO */}
           <div className="flex items-center gap-3 min-w-0">
             <div className="relative shrink-0">
-              <Avatar className="w-[42px] h-[42px]">
+              <Avatar className="w-10.5 h-10.5">
                 <AvatarImage src={m.userProfile.user.avatar} alt={fullName} />
                 <AvatarFallback className="bg-muted text-muted-foreground text-[13px] font-medium">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <span
-                className={`absolute -bottom-0.5 -right-0.5 w-[11px] h-[11px] rounded-full border-2 border-background ${
+                className={`absolute -bottom-0.5 -right-0.5 w-2.75 h-2.75 rounded-full border-2 border-background ${
                   isMutual ? "bg-success" : "bg-warning"
                 }`}
               />
@@ -284,7 +284,7 @@ const MatchCard = ({ m }: { m: any }) => {
           {/* YOU LEARN */}
           {learnSkill ? (
             <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/30">
-              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
+              <div className="w-7.5 h-7.5 rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiBookOpenLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -304,7 +304,7 @@ const MatchCard = ({ m }: { m: any }) => {
             </div>
           ) : (
             <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/10 opacity-60">
-              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
+              <div className="w-7.5 h-7.5 rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiBookOpenLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -321,7 +321,7 @@ const MatchCard = ({ m }: { m: any }) => {
           {/* SWAP ICON */}
           <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <div className="h-px w-7 bg-border" />
-            <div className="w-[22px] h-[22px] rounded-full border border-border bg-background flex items-center justify-center">
+            <div className="w-5.5 h-5.5 rounded-full border border-border bg-background flex items-center justify-center">
               <RiArrowUpDownLine className="text-xs" />
             </div>
             <div className="h-px w-7 bg-border" />
@@ -330,7 +330,7 @@ const MatchCard = ({ m }: { m: any }) => {
           {/* YOU TEACH */}
           {teachSkill ? (
             <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/30">
-              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
+              <div className="w-7.5 h-7.5 rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiPresentationLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -350,7 +350,7 @@ const MatchCard = ({ m }: { m: any }) => {
             </div>
           ) : (
             <div className="flex items-center gap-3 p-2.5 rounded-lg border border-dashed border-border bg-muted/10 opacity-60">
-              <div className="w-[30px] h-[30px] rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
+              <div className="w-7.5 h-7.5 rounded-lg bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                 <RiPresentationLine className="text-[15px]" />
               </div>
               <div className="min-w-0 flex-1">
@@ -527,7 +527,7 @@ const page = () => {
 
             {/* Search Results Dropdown */}
             {showDropdown && searchQuery.trim().length > 0 && (
-              <div className="absolute top-full right-0 mt-2 w-[800px] max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col">
+              <div className="absolute top-full right-0 mt-2 w-200 max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col">
                 <div className="p-4 border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10 flex justify-between items-center">
                   <h3 className="font-medium">
                     Search Results for{" "}

@@ -578,7 +578,7 @@ const page = () => {
                   </DialogTrigger>
 
                   <DialogContent
-                    className="p-0 min-w-[560px] max-h-[90vh] overflow-y-auto rounded-2xl border border-border"
+                    className="p-0 min-w-140 max-h-[90vh] overflow-y-auto rounded-2xl border border-border"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
                     {/* ── Hero Banner ── */}
@@ -674,10 +674,10 @@ const page = () => {
                           <img
                             src={user.avatar}
                             alt="profile picture"
-                            className="h-[72px] w-[72px] rounded-full border-[3px] border-white object-cover shadow-lg translate-y-1/2"
+                            className="h-18 w-18 rounded-full border-[3px] border-white object-cover shadow-lg translate-y-1/2"
                           />
                         ) : (
-                          <div className="h-[72px] w-[72px] rounded-full border-[3px] border-white bg-linear-to-r from-primary to-primary/60 flex items-center justify-center shadow-lg translate-y-1/2">
+                          <div className="h-18 w-18 rounded-full border-[3px] border-white bg-linear-to-r from-primary to-primary/60 flex items-center justify-center shadow-lg translate-y-1/2">
                             <span className="font-serif text-2xl text-primary-foreground">
                               {user?.firstName?.[0]?.toUpperCase()}
                               {user?.lastName?.[0]?.toUpperCase()}
@@ -1239,7 +1239,7 @@ const page = () => {
                       {/* Timeline */}
                       <div className="flex flex-col items-center">
                         <div className="h-3 w-3 rounded-full bg-primary mt-2" />
-                        <div className="w-[2px] flex-1 bg-border" />
+                        <div className="w-0.5 flex-1 bg-border" />
                       </div>
 
                       {/* Content */}
@@ -1274,7 +1274,7 @@ const page = () => {
 
                         {user.workExperience &&
                           index !== user.workExperience.length - 1 && (
-                            <div className="w-[4px] flex-1 bg-border" />
+                            <div className="w-1 flex-1 bg-border" />
                           )}
                       </div>
 

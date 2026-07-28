@@ -318,7 +318,7 @@ export default function CreateMeetingPage() {
             <Button
               type="submit"
               disabled={loadingAction || swapPartners.length === 0}
-              className="min-w-[140px]"
+              className="min-w-35"
             >
               {loadingAction ? (
                 <>

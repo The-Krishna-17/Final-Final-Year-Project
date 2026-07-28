@@ -74,7 +74,7 @@ export function AppSideBar() {
                       </span>
                       {badge != null && (
                         <span
-                          className={`ml-auto inline-flex items-center justify-center min-w-[18px] h-[18px] text-[10px] font-bold rounded-full ${badgeColor} text-white px-1`}
+                          className={`ml-auto inline-flex items-center justify-center min-w-4.5 h-4.5 text-[10px] font-bold rounded-full ${badgeColor} text-white px-1`}
                         >
                           {badge}
                         </span>
