@@ -53,7 +53,7 @@ const Navbar = () => {
         <Image src={darkLogo} alt="logo" className="hidden dark:block" />
       </Link>
       <ul>
-        <li className="flex items-center gap-6 text-sm">
+        <li className="flex items-center gap-6 text-base">
           <Link className="cursor-pointer" href="#home">
             Home
           </Link>
@@ -83,29 +83,21 @@ const Navbar = () => {
               />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="center">
-              <DropdownMenuItem asChild>
-                <Link href="#problem" className="cursor-pointer">
-                  Problem
-                </Link>
+            <DropdownMenuContent align="center" className="p-2">
+              <DropdownMenuItem asChild className="cursor-pointer text-base">
+                <Link href="#problem">Problem</Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <Link href="#process" className="cursor-pointer">
-                  Process
-                </Link>
+              <DropdownMenuItem asChild className="cursor-pointer text-base">
+                <Link href="#process">Process</Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <Link href="#research" className="cursor-pointer">
-                  Research
-                </Link>
+              <DropdownMenuItem asChild className="cursor-pointer text-base">
+                <Link href="#research">Research</Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem asChild>
-                <Link href="#technology" className="cursor-pointer">
-                  Technology
-                </Link>
+              <DropdownMenuItem asChild className="cursor-pointer text-base">
+                <Link href="#technology">Technology</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
