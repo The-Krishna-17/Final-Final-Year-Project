@@ -15,13 +15,13 @@ export default function ContactSection() {
         id="contact"
         className="space-y-6 mb-16 bg-muted/40 p-4 border border-border/50"
       >
-        <div className="flex items-stretch gap-6">
-          <motion.div 
+        <div className="flex items-center gap-6">
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="space-y-4 w-[60%]"
+            className="space-y-4 w-[60%] flex-1"
           >
             <div className="space-y-3 max-w-2xl">
               <p className="text-sm uppercase tracking-widest text-muted-foreground">
@@ -48,7 +48,7 @@ export default function ContactSection() {
               ))}
             </div>
 
-            <div className="flex items-center gap-3 border px-4 py-3 rounded-xl w-full bg-background">
+            <div className="flex items-center gap-3 border px-4 py-3 rounded-xl w-fit bg-background">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
                 <FaEnvelope className="text-primary" />
               </div>
@@ -57,20 +57,20 @@ export default function ContactSection() {
                 <h4 className="font-semibold">Email Us</h4>
 
                 <p className="text-sm text-muted-foreground">
-                  hello@skillxchange.com
+                  thekrishnadhami17@gmail.com
                 </p>
               </div>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="rounded-xl border bg-card p-4 shadow-sm flex-1 w-[40%]"
           >
-            <div className="mb-5 text-center">
-              <h2 className="text-xl font-bold">Contact SkillXchange</h2>
+            <div className="mb-5">
+              <h2 className="text-2xl font-bold">Contact SkillXchange</h2>
 
               <p className="text-muted-foreground mt-2">
                 Have a question, suggestion, or partnership opportunity? We'd
@@ -79,20 +79,22 @@ export default function ContactSection() {
             </div>
 
             <form className="space-y-3">
-              <div>
-                <label className="text-sm font-medium mb-2 block">
-                  Full Name
-                </label>
+              <div className="flex items-center gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Full Name
+                  </label>
 
-                <Input placeholder="John Doe" />
-              </div>
+                  <Input placeholder="John Doe" />
+                </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">
-                  Email Address
-                </label>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">
+                    Email Address
+                  </label>
 
-                <Input type="email" placeholder="john@example.com" />
+                  <Input type="email" placeholder="john@example.com" />
+                </div>
               </div>
 
               <div>

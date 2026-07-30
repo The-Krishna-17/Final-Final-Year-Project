@@ -24,12 +24,9 @@ const FaqSection = () => {
             transition={{ duration: 0.5 }}
             className="text-center space-y-3"
           >
-            <div className="flex items-center justify-center gap-2 text-primary">
-              <FaQuestionCircle className="text-xl" />
-              <p className="text-sm uppercase tracking-widest text-muted-foreground">
-                FAQs
-              </p>
-            </div>
+            <p className="text-sm uppercase tracking-widest text-muted-foreground">
+              FAQs
+            </p>
 
             <h2 className="text-3xl font-bold">Frequently asked questions</h2>
 

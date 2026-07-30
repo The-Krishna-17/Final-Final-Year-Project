@@ -30,16 +30,9 @@ const ComingSoonSection = () => {
     <Layout>
       <section id="coming-soon" className="space-y-6">
         <div className="text-center space-y-3 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium"
-          >
-            <FaRocket className="text-xs" />
-            Coming Soon
-          </motion.div>
+          <p className="text-sm uppercase tracking-widest text-muted-foreground">
+            Comming soon
+          </p>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -74,7 +67,7 @@ const ComingSoonSection = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: 0.1 * idx }}
               >
-                <Card className="group h-full p-6 transition-all hover:-translate-y-1 hover:shadow-lg border-dashed">
+                <Card className="group h-full p-6 transition-all hover:shadow-lg border-dashed">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 mb-4">
                     <Icon className="text-xl" />
                   </div>
@@ -94,22 +87,6 @@ const ComingSoonSection = () => {
             );
           })}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-8"
-        >
-          <Button
-            size="lg"
-            className="rounded-full px-8 py-6"
-            onClick={() => router.push("/signup")}
-          >
-            Get Notified <FaArrowRightLong />
-          </Button>
-        </motion.div>
       </section>
     </Layout>
   );

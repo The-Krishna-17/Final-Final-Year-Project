@@ -10,7 +10,8 @@ import lightLogo from "@/public/light-logo.png";
 import darkLogo from "@/public/dark-logo.png";
 import { useEffect, useState } from "react";
 import { LANDING_PAGE_MARQUEE } from "@/constant/data";
-import dashboardImage from "@/public/dashboard.png";
+import dashboardImageLight from "@/public/dashboard-light.png";
+import dashboardImageDark from "@/public/dashboard-dark.png";
 
 const HeroSection = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-2xl font-semibold text-secondary-foreground opacity-60"
+          className="text-2xl font-semibold opacity-60 text-primary"
         >
           ENHANCE YOUR CAREER
         </motion.h2>
@@ -95,9 +96,14 @@ const HeroSection = () => {
           transition={{ duration: 0.7, delay: 0.5 }}
         >
           <Image
-            src={dashboardImage}
+            src={dashboardImageLight}
             alt="dashboard"
-            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8"
+            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8 dark:hidden"
+          />
+          <Image
+            src={dashboardImageDark}
+            alt="dashboard"
+            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8 hidden dark:block"
           />
         </motion.div>
       </section>
