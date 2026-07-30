@@ -63,7 +63,7 @@ const Navbar = () => {
           <Link className="cursor-pointer" href="#mission">
             Mission
           </Link>
-          <Link className="cursor-pointer" href="#blogs">
+          <Link className="cursor-pointer" href="#coming-soon">
             Blogs
           </Link>
           <Link className="cursor-pointer" href="#faqs">

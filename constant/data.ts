@@ -332,7 +332,8 @@ export const SOCIAL_LINKS = [
     key: "linkedin",
     label: "LinkedIn",
     icon: FaLinkedin,
-    hoverClass: "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
+    hoverClass:
+      "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "github",
@@ -345,7 +346,8 @@ export const SOCIAL_LINKS = [
     key: "twitter",
     label: "Twitter",
     icon: FaTwitter,
-    hoverClass: "hover:border-info/70 hover:bg-info-muted hover:text-info-muted-foreground",
+    hoverClass:
+      "hover:border-info/70 hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "instagram",
@@ -357,7 +359,8 @@ export const SOCIAL_LINKS = [
     key: "facebook",
     label: "Facebook",
     icon: FaFacebook,
-    hoverClass: "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
+    hoverClass:
+      "hover:border-info hover:bg-info-muted hover:text-info-muted-foreground",
   },
   {
     key: "website",

@@ -7,6 +7,7 @@ import FeaturesSection from "@/components/Landing/FeaturesSection";
 import ResearchSection from "@/components/Landing/ResearchSection";
 import TechnologySection from "@/components/Landing/TechnologySection";
 import MissionSection from "@/components/Landing/MissionSection";
+import ComingSoonSection from "@/components/Landing/ComingSoonSection";
 import FaqSection from "@/components/Landing/FaqSection";
 import ContactSection from "@/components/Landing/ContactSection";
 
@@ -33,6 +34,8 @@ const page = () => {
       </div>
       {/* Mission */}
       <MissionSection />
+      {/* Coming Soon */}
+      <ComingSoonSection />
       {/* FAQs */}
       <FaqSection />
       {/* Contact */}
