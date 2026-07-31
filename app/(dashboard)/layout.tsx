@@ -15,7 +15,7 @@ export default function DashboardLayout({
         <div className="border-r">
           <AppSideBar />
         </div>
-        <main className="w-full">
+        <main className="flex-1 min-w-0">
           <DashboardNav />
           <div className="p-4 pt-6 bg-background min-h-screen">{children}</div>
         </main>

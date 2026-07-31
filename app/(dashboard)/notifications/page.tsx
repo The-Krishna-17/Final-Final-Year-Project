@@ -156,21 +156,17 @@ export default function NotificationsPage() {
           <p className="text-sm text-muted-foreground">Loading notifications...</p>
         </Card>
       ) : notifications.length === 0 ? (
-        <Card className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-background border-dashed">
-          <div className="p-4 rounded-full bg-muted text-muted-foreground">
-            <BellOff className="w-8 h-8" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-foreground">
-              {filter === "unread" ? "No unread notifications" : "No notifications yet"}
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-              {filter === "unread"
-                ? "You have caught up with all your notifications!"
-                : "When you receive swap requests, meeting invites, or messages, they will appear here."}
-            </p>
-          </div>
-        </Card>
+        <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
+          <BellOff className="text-4xl w-10 h-10 text-muted-foreground mb-4 opacity-50" />
+          <h3 className="font-medium text-lg">
+            {filter === "unread" ? "No unread notifications" : "No notifications yet"}
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+            {filter === "unread"
+              ? "You're all caught up! Check back later for new activity."
+              : "When you receive swap requests, meeting invites, or messages, they will appear here."}
+          </p>
+        </div>
       ) : (
         <div className="space-y-3">
           {notifications.map((n) => (

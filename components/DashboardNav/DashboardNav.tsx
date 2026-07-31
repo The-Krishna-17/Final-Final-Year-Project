@@ -74,7 +74,7 @@ const DashboardNav = () => {
                 className="relative p-2 rounded-full hover:bg-muted transition-colors focus:outline-none"
                 aria-label="Notifications"
               >
-                <FaBell className="text-lg text-foreground/80 hover:text-foreground" />
+                <FaBell className="text-lg text-foreground/80 hover:text-foreground cursor-pointer" />
                 {unreadCount > 0 && (
                   <span className="absolute top-1 right-1 flex items-center justify-center min-w-4 h-4 text-[10px] font-bold text-white bg-destructive rounded-full px-1 animate-pulse">
                     {unreadCount > 99 ? "99+" : unreadCount}

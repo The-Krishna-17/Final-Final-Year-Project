@@ -8,9 +8,9 @@ import {
   cancelSwap,
 } from "@/store/features/swaps/swapSlice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
@@ -24,7 +24,17 @@ import {
   RiInboxLine,
   RiSendPlaneLine,
 } from "react-icons/ri";
-import { Loader2, Clock, CheckCircle2, XCircle, Ban } from "lucide-react";
+import {
+  Loader2,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Ban,
+  Quote,
+  Check,
+  ArrowLeftRight,
+  X,
+} from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
@@ -117,56 +127,90 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
   };
 
   return (
-    <Card className="gap-0 py-0">
-      <CardContent className="p-4 space-y-4">
+    <Card className="w-full max-w-md rounded-xl hover:shadow-sm bg-card text-card-foreground overflow-hidden p-0">
+      {/* Ticket header strip */}
+      <CardHeader className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted">
+        <span className="text-xs font-semibold text-muted-foreground tracking-[0.15em]">
+          Trade Ticket
+        </span>
+        <span
+          className={`shrink-0 -rotate-2 rounded-lg border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${
+            swap.status === "accepted"
+              ? "text-primary-foreground bg-primary border-primary"
+              : swap.status === "rejected"
+                ? "text-destructive-foreground bg-destructive border-destructive"
+                : swap.status === "cancelled"
+                  ? "text-muted-foreground bg-muted border-border"
+                  : "text-secondary-foreground bg-secondary border-secondary"
+          }`}
+        >
+          {swap.status === "accepted"
+            ? "Accepted"
+            : swap.status === "rejected"
+              ? "Declined"
+              : swap.status === "cancelled"
+                ? "Cancelled"
+                : "Pending"}
+        </span>
+      </CardHeader>
+
+      <CardContent className="py-4 space-y-4">
         {/* Header row */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <Avatar className="w-10 h-10 shrink-0">
-              <AvatarImage src={peer?.avatar} alt={fullName} />
-              <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 shrink-0 rounded-full border-2 border-primary flex items-center justify-center overflow-hidden bg-muted">
+            {peer?.avatar ? (
+              <img
+                src={peer.avatar}
+                alt={fullName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-base font-semibold text-primary">
                 {initials}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <p className="font-semibold text-sm truncate">{fullName}</p>
-              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                <RiTimeLine className="shrink-0" />
-                {timeAgo}
-              </p>
-            </div>
+              </span>
+            )}
           </div>
-          <StatusBadge status={swap.status} />
+          <div className="min-w-0">
+            <p className="font-semibold text-sm truncate">{fullName}</p>
+            <p className="text-xs flex items-center gap-1 mt-0.5 text-muted-foreground">
+              <Clock className="w-3 h-3 shrink-0" />
+              {timeAgo}
+            </p>
+          </div>
         </div>
 
-        {/* Skill exchange row */}
-        <div className="grid grid-cols-[1fr_auto_1fr] gap-2 items-center">
-          <div className="rounded-lg border bg-muted/30 p-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+        {/* Skill exchange row — ledger style with dashed connector */}
+        <div className="relative grid grid-cols-[1fr_auto_1fr] gap-2 items-stretch">
+          <div className="rounded-lg border border-border bg-background p-2.5">
+            <p className="text-xs font-semibold uppercase mb-1 text-primary">
               {type === "received" ? "They offer" : "You offer"}
             </p>
-            <p className="text-sm font-medium truncate">
+            <p className="text-sm font-semibold truncate">
               {swap.requesterOffersSkill || (
-                <span className="italic text-muted-foreground font-normal">
+                <span className="text-sm font-semibold truncate">
                   Not specified
                 </span>
               )}
             </p>
           </div>
 
-          <div className="flex items-center justify-center">
-            <div className="w-7 h-7 rounded-full border bg-background flex items-center justify-center shrink-0">
-              <RiArrowLeftRightLine className="text-xs text-muted-foreground" />
+          <div className="flex items-center justify-center relative">
+            <div
+              className="absolute w-full border-t border-dashed border-border"
+              style={{ top: "50%" }}
+            />
+            <div className="relative w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0">
+              <ArrowLeftRight className="w-3.5 h-3.5 text-primary-foreground" />
             </div>
           </div>
 
-          <div className="rounded-lg border bg-muted/30 p-2.5">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+          <div className="rounded-lg border border-border bg-background p-2.5">
+            <p className="text-xs font-bold uppercase mb-1 text-secondary-foreground font-mono">
               {type === "received" ? "They want" : "You want"}
             </p>
-            <p className="text-sm font-medium truncate">
+            <p className="text-sm font-semibold truncate">
               {swap.requesterWantsSkill || (
-                <span className="italic text-muted-foreground font-normal">
+                <span className="italic font-normal text-muted-foreground">
                   Not specified
                 </span>
               )}
@@ -176,56 +220,47 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
 
         {/* Message */}
         {swap.message && (
-          <>
-            <Separator />
-            <div className="flex gap-2">
-              <RiExchangeLine className="text-muted-foreground text-sm mt-0.5 shrink-0" />
-              <p className="text-sm text-muted-foreground italic leading-relaxed">
-                "{swap.message}"
-              </p>
-            </div>
-          </>
+          <div className="flex gap-2 pt-3 border-t border-dashed border-border">
+            <Quote className="w-3.5 h-3.5 mt-0.5 shrink-0 text-primary" />
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {swap.message}
+            </p>
+          </div>
         )}
 
         {/* Actions */}
         {swap.status === "pending" && (
-          <>
-            <Separator />
+          <div className="pt-3 flex gap-2 border-t border-dashed border-border">
             {type === "received" ? (
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  className="flex-1 h-9 gap-1.5"
+              <>
+                <button
+                  className="flex-1 h-9 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 bg-primary text-primary-foreground transition-opacity disabled:opacity-60 cursor-pointer"
                   onClick={handleAccept}
                   disabled={isActioning}
                 >
                   {isActioning ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <RiCheckLine className="text-base" />
+                    <Check className="w-4 h-4" />
                   )}
                   Accept
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="flex-1 h-9 gap-1.5 text-muted-foreground"
+                </button>
+                <button
+                  className="flex-1 h-9 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 border border-border text-muted-foreground transition-opacity disabled:opacity-60 cursor-pointer"
                   onClick={handleReject}
                   disabled={isActioning}
                 >
                   {isActioning ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                   ) : (
-                    <RiCloseLine className="text-base" />
+                    <X className="w-4 h-4" />
                   )}
                   Reject
-                </Button>
-              </div>
+                </button>
+              </>
             ) : (
-              <Button
-                size="sm"
-                variant="outline"
-                className="w-full h-9 gap-1.5 text-muted-foreground"
+              <button
+                className="w-full h-9 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 border border-border text-muted-foreground transition-opacity disabled:opacity-60 cursor-pointer"
                 onClick={handleCancel}
                 disabled={isActioning}
               >
@@ -235,15 +270,15 @@ const SwapCard = ({ swap, type }: SwapCardProps) => {
                   <Ban className="w-3.5 h-3.5" />
                 )}
                 Cancel Request
-              </Button>
+              </button>
             )}
-          </>
+          </div>
         )}
 
         {/* Responded at */}
         {swap.respondedAt && (
-          <p className="text-[11px] text-muted-foreground text-right">
-            {swap.status === "accepted" ? "Accepted" : "Responded"}{" "}
+          <p className="text-[11px] text-right pt-1 text-muted-foreground tracking-[0.15em]">
+            {swap.status === "accepted" ? "Accepted" : "Responded"} ·{" "}
             {format(new Date(swap.respondedAt), "MMM d, yyyy · h:mm a")}
           </p>
         )}
@@ -308,34 +343,60 @@ export default function RequestsPage() {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
             label: "Received",
             value: received.length,
             sub: `${pendingReceivedCount} pending`,
+            icon: RiInboxLine,
+            color: "text-primary-foreground",
+            bg: "bg-primary",
+            gradient: "bg-primary/5",
           },
           {
             label: "Sent",
             value: sent.length,
             sub: `${pendingSentCount} pending`,
+            icon: RiSendPlaneLine,
+            color: "text-primary-foreground",
+            bg: "bg-primary",
+            gradient: "bg-primary/5",
           },
           {
             label: "Accepted",
             value: swaps.filter((s) => s.status === "accepted").length,
             sub: "active swaps",
+            icon: RiCheckLine,
+            color: "text-primary-foreground",
+            bg: "bg-primary",
+            gradient: "bg-primary/5",
           },
           {
             label: "Rejected",
             value: swaps.filter((s) => s.status === "rejected").length,
             sub: "declined",
+            icon: RiCloseLine,
+            color: "text-destructive-foreground",
+            bg: "bg-destructive",
+            gradient: "bg-destructive/5",
           },
-        ].map(({ label, value, sub }) => (
-          <Card key={label} className="py-0 gap-0">
-            <CardContent className="p-4">
-              <p className="text-2xl font-bold">{value}</p>
-              <p className="text-sm font-medium mt-0.5">{label}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>
+        ].map((stat) => (
+          <Card
+            key={stat.label}
+            className={`border-0 hover:shadow-xs transition-shadow bg-linear-to-r ${stat.gradient}`}
+          >
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className={`p-3 rounded-xl shrink-0 ${stat.bg}`}>
+                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-2xl font-bold truncate">{stat.value}</p>
+                <p className="text-xs font-medium text-muted-foreground truncate">
+                  {stat.label}{" "}
+                  <span className="font-normal opacity-70">· {stat.sub}</span>
+                </p>
+              </div>
             </CardContent>
           </Card>
         ))}

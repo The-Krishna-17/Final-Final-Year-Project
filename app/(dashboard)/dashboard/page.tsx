@@ -16,6 +16,7 @@ import { fetchMeetings } from "@/store/features/meetings/meetingSlice";
 import { fetchNotifications } from "@/store/features/notifications/notificationSlice";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { LiaToolsSolid } from "react-icons/lia";
 import {
   Brain,
   Target,
@@ -47,6 +48,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { FaCheckCircle } from "react-icons/fa";
 
 const getGreeting = () => {
   const hour = new Date().getHours();
@@ -109,13 +111,13 @@ const MeetingCard = ({ meeting }: { meeting: any }) => {
   });
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/60 transition-colors">
+    <div className="flex items-center gap-4 p-3 rounded-xl bg-muted/30 hover:bg-muted/60 transition-colors">
       <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-info/10 shrink-0">
         <Video className="w-5 h-5 text-info" />
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{meeting.title}</p>
-        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+      <div className="flex-1">
+        <p className="text-base font-medium text-nowrap">{meeting.title}</p>
+        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5 text-nowrap">
           <Clock className="w-3 h-3" />
           {meetingTime}
         </p>
@@ -166,12 +168,12 @@ const MatchCard = ({ match }: { match: any }) => {
         </AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{name}</p>
+        <p className="text-base font-medium truncate">{name}</p>
         <div className="flex items-center gap-2 mt-0.5">
           <Badge variant="secondary" className="text-[10px]">
             {match.matchPercent}
           </Badge>
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[10px] text-muted-foreground text-nowrap">
             {match.matchDetails?.isMutual ? "Mutual match" : "Recommended"}
           </span>
         </div>
@@ -332,7 +334,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchAllData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const stats = useMemo(() => {
@@ -403,7 +405,7 @@ export default function DashboardPage() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-primary">
                 {getGreeting()}, {user?.firstName || "there"}!
               </h1>
               <p className="text-muted-foreground mt-1 text-sm sm:text-base">
@@ -429,7 +431,7 @@ export default function DashboardPage() {
           title="Wanted Skills"
           value={stats.wantedSkills}
           icon={Target}
-          accent="bg-info text-info-foreground"
+          accent="bg-primary text-primary-foreground"
           href="/my-skills"
           description="Skills you want to learn"
         />
@@ -437,7 +439,7 @@ export default function DashboardPage() {
           title="Connections"
           value={stats.connections}
           icon={UserCheck}
-          accent="bg-success text-success-foreground"
+          accent="bg-primary text-primary-foreground"
           href="/connections"
           description="Active swap partners"
         />
@@ -445,7 +447,7 @@ export default function DashboardPage() {
           title="Matches"
           value={stats.matches}
           icon={Users}
-          accent="bg-chart-2 text-white"
+          accent="bg-primary text-primary-foreground"
           href="/matches"
           description="Recommended & mutual"
         />
@@ -453,7 +455,7 @@ export default function DashboardPage() {
           title="Upcoming"
           value={stats.upcomingMeetings}
           icon={Video}
-          accent="bg-info text-info-foreground"
+          accent="bg-primary text-primary-foreground"
           href="/meetings"
           description="Scheduled sessions"
         />
@@ -507,7 +509,10 @@ export default function DashboardPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div
+                  className="flex items-center overflow-x-auto gap-4"
+                  style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+                >
                   {recentMeetings.map((meeting) => (
                     <MeetingCard key={meeting._id} meeting={meeting} />
                   ))}
@@ -521,7 +526,7 @@ export default function DashboardPage() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Sparkles className="w-5 h-5 text-chart-2" />
+                  <Sparkles className="w-5 h-5" />
                   Recommended For You
                 </CardTitle>
                 <Button
@@ -552,12 +557,161 @@ export default function DashboardPage() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div
+                  className="flex items-center overflow-x-auto gap-4"
+                  style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+                >
                   {topMatches.map((match) => (
                     <MatchCard key={match.profileId} match={match} />
                   ))}
                 </div>
               )}
+            </CardContent>
+          </Card>
+          {/* Setup Your Profile */}
+          <Card className="border-0 shadow-sm">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <LiaToolsSolid className="w-5 h-5" />
+                  Setup Your Profile
+                </CardTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <Link href="/profile" className="flex items-center gap-1">
+                    Go to profile <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {/* Progress bar */}
+              {(() => {
+                const steps = [
+                  !!user?.bio,
+                  !!user?.workExperience?.length,
+                  !!(
+                    user?.socialLinks &&
+                    Object.values(user.socialLinks).some(Boolean)
+                  ),
+                  !!user?.isEmailVerified,
+                  !!user?.avatar,
+                  !!skillProfile?.offerSkills?.length,
+                ];
+                const done = steps.filter(Boolean).length;
+                const pct = Math.round((done / steps.length) * 100);
+                return (
+                  <div className="mb-5">
+                    <div className="flex items-center justify-between text-xs mb-1.5">
+                      <span className="text-muted-foreground">
+                        {done} of {steps.length} completed
+                      </span>
+                      <span className="font-semibold text-foreground">
+                        {pct}%
+                      </span>
+                    </div>
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-linear-to-r from-chart-1 to-primary rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Checklist items */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {(
+                  [
+                    {
+                      label: "Professional Summary",
+                      description: "Add a short bio about yourself",
+                      done: !!user?.bio,
+                      icon: FileText,
+                      href: "/profile",
+                    },
+                    {
+                      label: "Work Experience",
+                      description: "Add your past or current roles",
+                      done: !!user?.workExperience?.length,
+                      icon: Briefcase,
+                      href: "/profile",
+                    },
+                    {
+                      label: "Social Profiles",
+                      description: "Link LinkedIn, GitHub & more",
+                      done: !!(
+                        user?.socialLinks &&
+                        Object.values(user.socialLinks).some(Boolean)
+                      ),
+                      icon: Link2,
+                      href: "/profile",
+                    },
+                    {
+                      label: "Verify Email",
+                      description: "Confirm your email address",
+                      done: !!user?.isEmailVerified,
+                      icon: MailCheck,
+                      href: "/profile",
+                    },
+                    {
+                      label: "Profile Photo",
+                      description: "Upload an avatar or photo",
+                      done: !!user?.avatar,
+                      icon: Image,
+                      href: "/profile",
+                    },
+                    {
+                      label: "Add Skills",
+                      description: "List skills you offer or want",
+                      done: !!skillProfile?.offerSkills?.length,
+                      icon: Brain,
+                      href: "/my-skills",
+                    },
+                  ] as {
+                    label: string;
+                    description: string;
+                    done: boolean;
+                    icon: React.ElementType;
+                    href: string;
+                  }[]
+                ).map(({ label, description, done, icon: Icon, href }) => (
+                  <Link href={href} key={label}>
+                    <div
+                      className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
+                        done
+                          ? "bg-success/5 border-success/20"
+                          : "bg-muted/30 border-border hover:bg-muted/60"
+                      }`}
+                    >
+                      <div className="mt-0.5 p-2 rounded-lg shrink-0 bg-primary text-primary-foreground">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3">
+                          <p className="text-base font-medium truncate">
+                            {label}
+                          </p>
+                          {done ? (
+                            <FaCheckCircle className="w-4 h-4 text-green-700 shrink-0" />
+                          ) : (
+                            <Circle className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {description}
+                        </p>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary transition-colors mt-1 shrink-0" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -568,7 +722,7 @@ export default function DashboardPage() {
           <Card className="border-0 shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <TrendingUp className="w-5 h-5 text-chart-3" />
+                <TrendingUp className="w-5 h-5" />
                 Quick Actions
               </CardTitle>
             </CardHeader>
@@ -689,7 +843,7 @@ export default function DashboardPage() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <Bell className="w-5 h-5 text-destructive" />
+                  <Bell className="w-5 h-5" />
                   Recent Alerts
                 </CardTitle>
                 <Button
@@ -733,155 +887,6 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-
-      {/* Setup Your Profile */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Zap className="w-5 h-5 text-chart-3" />
-              Setup Your Profile
-            </CardTitle>
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              <Link href="/profile" className="flex items-center gap-1">
-                Go to profile <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* Progress bar */}
-          {(() => {
-            const steps = [
-              !!user?.bio,
-              !!(user?.workExperience?.length),
-              !!(
-                user?.socialLinks &&
-                Object.values(user.socialLinks).some(Boolean)
-              ),
-              !!user?.isEmailVerified,
-              !!user?.avatar,
-              !!(skillProfile?.offerSkills?.length),
-            ];
-            const done = steps.filter(Boolean).length;
-            const pct = Math.round((done / steps.length) * 100);
-            return (
-              <div className="mb-5">
-                <div className="flex items-center justify-between text-xs mb-1.5">
-                  <span className="text-muted-foreground">
-                    {done} of {steps.length} completed
-                  </span>
-                  <span className="font-semibold text-foreground">{pct}%</span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-linear-to-r from-chart-1 to-primary rounded-full transition-all duration-500"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })()}
-
-          {/* Checklist items */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {([
-              {
-                label: "Professional Summary",
-                description: "Add a short bio about yourself",
-                done: !!user?.bio,
-                icon: FileText,
-                href: "/profile",
-              },
-              {
-                label: "Work Experience",
-                description: "Add your past or current roles",
-                done: !!(user?.workExperience?.length),
-                icon: Briefcase,
-                href: "/profile",
-              },
-              {
-                label: "Social Profiles",
-                description: "Link LinkedIn, GitHub & more",
-                done: !!(
-                  user?.socialLinks &&
-                  Object.values(user.socialLinks).some(Boolean)
-                ),
-                icon: Link2,
-                href: "/profile",
-              },
-              {
-                label: "Verify Email",
-                description: "Confirm your email address",
-                done: !!user?.isEmailVerified,
-                icon: MailCheck,
-                href: "/profile",
-              },
-              {
-                label: "Profile Photo",
-                description: "Upload an avatar or photo",
-                done: !!user?.avatar,
-                icon: Image,
-                href: "/profile",
-              },
-              {
-                label: "Add Skills",
-                description: "List skills you offer or want",
-                done: !!(skillProfile?.offerSkills?.length),
-                icon: Brain,
-                href: "/my-skills",
-              },
-            ] as {
-              label: string;
-              description: string;
-              done: boolean;
-              icon: React.ElementType;
-              href: string;
-            }[]).map(({ label, description, done, icon: Icon, href }) => (
-              <Link href={href} key={label}>
-                <div
-                  className={`flex items-start gap-3 p-3 rounded-xl border transition-all cursor-pointer group hover:-translate-y-0.5 hover:shadow-sm ${
-                    done
-                      ? "bg-success/5 border-success/20"
-                      : "bg-muted/30 border-border hover:bg-muted/60"
-                  }`}
-                >
-                  <div
-                    className={`mt-0.5 p-2 rounded-lg shrink-0 ${
-                      done ? "bg-success/10" : "bg-muted"
-                    }`}
-                  >
-                    <Icon
-                      className={`w-4 h-4 ${
-                        done ? "text-success" : "text-muted-foreground"
-                      }`}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-medium truncate">{label}</p>
-                      {done ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
-                      ) : (
-                        <Circle className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {description}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary transition-colors mt-1 shrink-0" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

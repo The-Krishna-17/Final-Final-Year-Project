@@ -33,7 +33,7 @@ const page = () => {
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-black/10">
       {/* Left - Form */}
-      <section className="border rounded-lg max-w-md p-4 flex flex-col gap-4 shadow-2xl bg-white">
+      <section className="border rounded-lg max-w-md p-4 flex flex-col gap-4 shadow-2xl bg-card text-card-foreground">
         <div>
           <h1 className="font-semibold text-2xl text-foreground">
             Welcome back

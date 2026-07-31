@@ -53,8 +53,12 @@ export default function ConnectionsPage() {
   } | null>(null);
 
   useEffect(() => {
-    dispatch(fetchSwapPartners());
-  }, [dispatch]);
+    const delayDebounceFn = setTimeout(() => {
+      dispatch(fetchSwapPartners(query));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [dispatch, query]);
 
   const confirmComplete = (swapId: string, user: SwapUser) => {
     setConfirmTarget({ swapId, user });
@@ -158,11 +162,25 @@ export default function ConnectionsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 max-w-100">
-          <TabsTrigger value="active">
-            Active Connections ({activeCount})
+        <TabsList variant="line" className="flex items-center gap-4">
+          <TabsTrigger value="active" className="cursor-pointer gap-2">
+            <RiUserHeartLine className="text-base" />
+            Active Connections
+            {activeCount > 0 && (
+              <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
+                {activeCount}
+              </span>
+            )}
           </TabsTrigger>
-          <TabsTrigger value="veterans">Veterans ({veteranCount})</TabsTrigger>
+          <TabsTrigger value="veterans" className="cursor-pointer gap-2">
+            <RiCheckDoubleLine className="text-base" />
+            Veterans
+            {veteranCount > 0 && (
+              <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
+                {veteranCount}
+              </span>
+            )}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="active" className="mt-6">
@@ -202,7 +220,7 @@ export default function ConnectionsPage() {
                     skill network.
                   </p>
                   <Link href="/matches">
-                    <Button size="sm" className="mt-4 gap-2">
+                    <Button size="sm" className="mt-4 gap-2 rounded-lg px-4">
                       <RiArrowLeftRightLine />
                       Explore Matches
                     </Button>
@@ -223,68 +241,75 @@ export default function ConnectionsPage() {
                   "U";
 
                 return (
-                  <Card
-                    key={partner.swapId}
-                    className="overflow-hidden gap-0 py-0 hover:shadow-md transition-shadow duration-200 group"
-                  >
-                    {/* Top banner */}
-                    <div className="h-16 bg-muted" />
+                  <div className="group overflow-hidden rounded-lg border border-border bg-card text-card-foreground transition-shadow duration-200 hover:shadow-md">
+                    {/* Ledger header strip */}
+                    <div className="flex items-center justify-between border-b border-dashed border-border bg-muted/50 px-4 py-2">
+                      <span className="text-xs font-semibold text-muted-foreground tracking-[0.15em]">
+                        Swap Partner
+                      </span>
+                      <span className="flex items-center gap-1.5 -rotate-2 rounded-lg border border-border bg-background px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                        <span className="h-1.5 w-1.5 rounded-full bg-green-600" />
+                        Connected
+                      </span>
+                    </div>
 
-                    <CardContent className="px-4 pb-4 pt-0 -mt-8 space-y-4">
-                      {/* Avatar */}
-                      <div className="flex justify-between items-end">
-                        <Avatar className="w-16 h-16 border-4 border-background shadow-md">
-                          <AvatarImage
-                            src={partner.user.avatar}
-                            alt={fullName}
-                          />
-                          <AvatarFallback className="bg-secondary text-secondary-foreground text-lg font-semibold">
-                            {initials}
-                          </AvatarFallback>
-                        </Avatar>
-                        {/* Active connection badge */}
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] gap-1 border-border text-muted-foreground bg-background mb-1"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-success" />
-                          Connected
-                        </Badge>
+                    <div className="space-y-4 px-4 pb-4 pt-4">
+                      {/* Avatar + name row */}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative h-14 w-14 shrink-0 rounded-full border-2 border-primary bg-secondary flex items-center justify-center overflow-hidden shadow-sm">
+                          {partner.user?.avatar ? (
+                            <img
+                              src={partner.user.avatar}
+                              alt={fullName}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-base font-semibold text-secondary-foreground">
+                              {initials}
+                            </span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="truncate text-base font-semibold leading-tight">
+                            {fullName}
+                          </h3>
+                          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                            {partner.user.email}
+                          </p>
+                        </div>
                       </div>
 
-                      {/* Name */}
-                      <div>
-                        <h3 className="font-semibold text-base leading-tight truncate">
-                          {fullName}
-                        </h3>
-                        <p className="text-xs text-muted-foreground truncate mt-0.5">
-                          {partner.user.email}
-                        </p>
-                      </div>
-
-                      {/* Skill exchange pills */}
-                      <div className="space-y-2">
+                      {/* Skill exchange rows */}
+                      <div className="space-y-1.5">
                         {partner.offeredSkill && (
-                          <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border">
-                            <RiPresentationLine className="text-muted-foreground shrink-0 text-sm" />
-                            <span className="text-foreground truncate">
-                              <span className="font-medium">Teaches:</span>{" "}
+                          <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                              <RiPresentationLine className="h-3 w-3 text-primary" />
+                            </span>
+                            <span className="truncate text-foreground">
+                              <span className="font-semibold uppercase tracking-wide text-primary">
+                                Teaches
+                              </span>{" "}
                               {partner.offeredSkill}
                             </span>
                           </div>
                         )}
                         {partner.wantedSkill && (
-                          <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border">
-                            <RiBookOpenLine className="text-muted-foreground shrink-0 text-sm" />
-                            <span className="text-foreground truncate">
-                              <span className="font-medium">Learning:</span>{" "}
+                          <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary">
+                              <RiBookOpenLine className="h-3 w-3 text-secondary-foreground" />
+                            </span>
+                            <span className="truncate text-foreground">
+                              <span className="font-semibold uppercase tracking-wide text-secondary-foreground">
+                                Learning
+                              </span>{" "}
                               {partner.wantedSkill}
                             </span>
                           </div>
                         )}
                         {!partner.offeredSkill && !partner.wantedSkill && (
-                          <div className="flex items-center gap-2 text-xs px-2.5 py-1.5 rounded-lg bg-muted/30 border border-dashed border-border">
-                            <RiArrowLeftRightLine className="text-muted-foreground shrink-0 text-sm" />
+                          <div className="flex items-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 px-2.5 py-1.5 text-xs">
+                            <RiArrowLeftRightLine className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                             <span className="text-muted-foreground">
                               Skill swap partner
                             </span>
@@ -292,13 +317,13 @@ export default function ConnectionsPage() {
                         )}
                       </div>
 
-                      {/* Action buttons */}
-                      <div className="flex flex-col gap-2 pt-1">
+                      {/* Actions */}
+                      <div className="flex flex-col gap-2 border-t border-dashed border-border pt-3">
                         <div className="grid grid-cols-2 gap-2">
                           <Link href="/messages">
                             <Button
                               size="sm"
-                              className="w-full h-8 text-xs gap-1.5"
+                              className="w-full h-8 text-xs gap-1.5 rounded-lg"
                             >
                               <RiMessage2Line className="text-sm" />
                               Message
@@ -307,18 +332,19 @@ export default function ConnectionsPage() {
                           <Link href="/meetings">
                             <Button
                               size="sm"
-                              className="w-full h-8 text-xs gap-1.5"
+                              className="w-full h-8 text-xs gap-1.5 rounded-lg"
                             >
                               <RiCalendarLine className="text-sm" />
                               Meet
                             </Button>
                           </Link>
                         </div>
+
                         {partner.status !== "completed" ? (
                           <Button
                             size="sm"
                             variant="default"
-                            className="w-full h-8 text-xs gap-1.5 bg-green-600 hover:bg-green-700 text-white"
+                            className="w-full h-8 text-xs gap-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg"
                             onClick={() =>
                               confirmComplete(partner.swapId, partner.user)
                             }
@@ -330,7 +356,7 @@ export default function ConnectionsPage() {
                           <Button
                             size="sm"
                             variant="secondary"
-                            className="w-full h-8 text-xs gap-1.5"
+                            className="w-full h-8 text-xs gap-1.5 rounded-lg"
                             onClick={() => {
                               setReviewPartner(partner.user);
                               setReviewSwapId(partner.swapId);
@@ -342,8 +368,8 @@ export default function ConnectionsPage() {
                           </Button>
                         )}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 );
               })}
             </div>

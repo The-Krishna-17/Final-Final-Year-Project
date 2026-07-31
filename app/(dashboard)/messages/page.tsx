@@ -10,6 +10,7 @@ import {
   Paperclip,
   Send,
   Video,
+  MessageCircle,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -177,8 +178,13 @@ export default function MessagesPage() {
     );
   if (!partners.length)
     return (
-      <div className="rounded-xl border border-dashed p-12 text-center text-muted-foreground">
-        Accept a skill-swap request to start messaging.
+      <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
+        <MessageCircle className="text-4xl w-10 h-10 text-muted-foreground mb-4 opacity-50" />
+        <h3 className="font-medium text-lg">No conversations yet</h3>
+        <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+          Accept a skill-swap request to start messaging with your exchange
+          partner.
+        </p>
       </div>
     );
   const initials = (p: SwapPartner) =>

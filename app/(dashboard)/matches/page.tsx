@@ -12,12 +12,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   fetchMutualMatches,
@@ -240,7 +242,7 @@ const MatchCard = ({ m }: { m: any }) => {
               </Avatar>
               <span
                 className={`absolute -bottom-0.5 -right-0.5 w-2.75 h-2.75 rounded-full border-2 border-background ${
-                  isMutual ? "bg-success" : "bg-warning"
+                  isMutual ? "bg-green-600" : "bg-yellow-600"
                 }`}
               />
             </div>
@@ -415,7 +417,9 @@ const MatchCard = ({ m }: { m: any }) => {
             {m.userProfile.reputationScore > 0 ? (
               <>
                 <RiShieldStarLine className="text-sm text-yellow-500" />
-                <span>{m.userProfile.reputationScore.toFixed(1)} / 5 Rating</span>
+                <span>
+                  {m.userProfile.reputationScore.toFixed(1)} / 5 Rating
+                </span>
               </>
             ) : (
               <>
@@ -426,14 +430,18 @@ const MatchCard = ({ m }: { m: any }) => {
           </div>
           <div className="flex items-center gap-2">
             <Link href={`/profile/${m.userProfile.user._id}`}>
-              <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 text-xs gap-1.5 rounded-xl"
+              >
                 <RiUserLine className="text-sm" />
                 Profile
               </Button>
             </Link>
             <Button
               size="sm"
-              className="h-8 text-xs gap-1.5"
+              className="h-8 text-xs gap-1.5 rounded-xl"
               onClick={() => setShowSwapModal(true)}
             >
               <RiExchangeLine className="text-sm" />
@@ -463,21 +471,23 @@ const page = () => {
 
   const [activeTab, setActiveTab] = useState("recommended");
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState({
-    mode: "",
-    availability: "",
-    domain: "",
+  const [filters, setFilters] = useState<{
+    difficulty: string;
+    sortByScore: "asc" | "desc";
+  }>({
     difficulty: "",
+    sortByScore: "desc",
   });
 
   const handleApplyFilters = () => {
-    dispatch(filterMatches(filters));
+    // Only send the difficulty level if it exists
+    const params = filters.difficulty ? { difficulty: filters.difficulty } : {};
+    dispatch(filterMatches(params));
     setActiveTab("filtered");
-    setShowFilters(false);
   };
 
   const handleClearFilters = () => {
-    setFilters({ mode: "", availability: "", domain: "", difficulty: "" });
+    setFilters({ difficulty: "", sortByScore: "desc" });
     dispatch(filterMatches({}));
     setActiveTab("recommended");
   };
@@ -539,7 +549,10 @@ const page = () => {
 
             {/* Search Results Dropdown */}
             {showDropdown && searchQuery.trim().length > 0 && (
-              <div className="absolute top-full right-0 mt-2 w-200 max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col">
+              <div
+                className="absolute top-full right-0 mt-2 w-200 max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col"
+                style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+              >
                 <div className="p-4 border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10 flex justify-between items-center">
                   <h3 className="font-medium">
                     Search Results for{" "}
@@ -578,117 +591,98 @@ const page = () => {
               </div>
             )}
           </div>
-          <Button
-            variant={showFilters ? "secondary" : "outline"}
-            onClick={() => setShowFilters(!showFilters)}
-            className="shrink-0"
-          >
-            <RiEqualizerLine className="mr-2 text-lg" />
-            Filter
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant={filters.difficulty ? "secondary" : "outline"}
+                className="shrink-0"
+              >
+                <RiEqualizerLine className="mr-2 text-lg" />
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Filter by Difficulty</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={filters.difficulty || "all"}
+                onValueChange={(val) => {
+                  const diff = val === "all" ? "" : val;
+                  const newFilters = { ...filters, difficulty: diff };
+                  setFilters(newFilters);
+                  const params: any = {};
+                  if (newFilters.difficulty)
+                    params.difficulty = newFilters.difficulty;
+                  if (newFilters.sortByScore)
+                    params.sortByScore = newFilters.sortByScore;
+                  dispatch(filterMatches(params));
+                  setActiveTab("filtered");
+                }}
+              >
+                <DropdownMenuRadioItem value="all" className="cursor-pointer">
+                  Any Difficulty
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem
+                  value="beginner"
+                  className="cursor-pointer"
+                >
+                  Beginner
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem
+                  value="intermediate"
+                  className="cursor-pointer"
+                >
+                  Intermediate
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem
+                  value="advanced"
+                  className="cursor-pointer"
+                >
+                  Advanced
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Sort by Match Score</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={filters.sortByScore || "desc"}
+                onValueChange={(val: string) => {
+                  const sortVal = val as "asc" | "desc";
+                  const newFilters = { ...filters, sortByScore: sortVal };
+                  setFilters(newFilters);
+                  const params: any = {};
+                  if (newFilters.difficulty)
+                    params.difficulty = newFilters.difficulty;
+                  if (newFilters.sortByScore)
+                    params.sortByScore = newFilters.sortByScore;
+                  dispatch(filterMatches(params));
+                  setActiveTab("filtered");
+                }}
+              >
+                <DropdownMenuRadioItem value="desc" className="cursor-pointer">
+                  High to Low
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="asc" className="cursor-pointer">
+                  Low to High
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
+              <div className="p-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full justify-start text-xs h-8 text-muted-foreground cursor-pointer"
+                  onClick={handleClearFilters}
+                >
+                  Clear Filters
+                </Button>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-
-      {/* FILTER UI */}
-      {showFilters && (
-        <Card className="p-5 bg-card border border-border shadow-sm rounded-xl mb-2">
-          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-border text-sm font-semibold">
-            <RiEqualizerLine className="text-lg text-foreground" />
-            <h3>Refine Recommendations</h3>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                Mode
-              </label>
-              <Select
-                value={filters.mode || "all"}
-                onValueChange={(val) =>
-                  setFilters({ ...filters, mode: val === "all" ? "" : val })
-                }
-              >
-                <SelectTrigger className="h-9 w-full bg-background">
-                  <SelectValue placeholder="Any Mode" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Mode</SelectItem>
-                  <SelectItem value="teach">Teach</SelectItem>
-                  <SelectItem value="learn">Learn</SelectItem>
-                  <SelectItem value="both">Both</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                Availability
-              </label>
-              <Select
-                value={filters.availability || "all"}
-                onValueChange={(val) =>
-                  setFilters({
-                    ...filters,
-                    availability: val === "all" ? "" : val,
-                  })
-                }
-              >
-                <SelectTrigger className="h-9 w-full bg-background">
-                  <SelectValue placeholder="Any Availability" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Availability</SelectItem>
-                  <SelectItem value="available">Available</SelectItem>
-                  <SelectItem value="busy">Busy</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                Difficulty
-              </label>
-              <Select
-                value={filters.difficulty || "all"}
-                onValueChange={(val) =>
-                  setFilters({
-                    ...filters,
-                    difficulty: val === "all" ? "" : val,
-                  })
-                }
-              >
-                <SelectTrigger className="h-9 w-full bg-background">
-                  <SelectValue placeholder="Any Difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Any Difficulty</SelectItem>
-                  <SelectItem value="beginner">Beginner</SelectItem>
-                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                  <SelectItem value="advanced">Advanced</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                Domain
-              </label>
-              <Input
-                placeholder="e.g. Frontend"
-                value={filters.domain}
-                onChange={(e) =>
-                  setFilters({ ...filters, domain: e.target.value })
-                }
-                className="h-9 bg-background"
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-dashed border-border">
-            <Button variant="ghost" size="sm" onClick={handleClearFilters}>
-              Reset
-            </Button>
-            <Button size="sm" className="px-6" onClick={handleApplyFilters}>
-              Apply Filters
-            </Button>
-          </div>
-        </Card>
-      )}
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -706,11 +700,21 @@ const page = () => {
           )}
         </TabsList>
         <TabsContent value="recommended" className="mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
-            {recommendedMatches.map((m) => (
-              <MatchCard key={m.profileId} m={m} />
-            ))}
-          </div>
+          {recommendedMatches.length > 0 ? (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
+              {recommendedMatches.map((m) => (
+                <MatchCard key={m.profileId} m={m} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
+              <RiExchangeLine className="text-4xl text-muted-foreground mb-4 opacity-50" />
+              <h3 className="font-medium text-lg">No recommended matches yet</h3>
+              <p className="text-sm text-muted-foreground mt-1 max-w-sm">
+                Recommendations appear here once you've added skills to your profile. Add skills you offer and skills you want to learn to get started.
+              </p>
+            </div>
+          )}
         </TabsContent>
         <TabsContent value="mutual" className="mt-6">
           {mutualMatches.length > 0 ? (

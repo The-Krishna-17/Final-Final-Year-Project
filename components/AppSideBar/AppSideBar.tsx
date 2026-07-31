@@ -18,10 +18,13 @@ import darkLogo from "@/public/dark-logo.png";
 import { Button } from "../ui/button";
 import { MdOutlineLogout } from "react-icons/md";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { logoutUser } from "@/store/features/auth/authSlice";
 import { NAV_ITEMS } from "@/constant/nav";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "@/utils/axiosInstance";
+import { io } from "socket.io-client";
 
 export function AppSideBar() {
   const dispatch = useAppDispatch();
@@ -30,6 +33,9 @@ export function AppSideBar() {
   const { user } = useAppSelector((s) => s.auth);
   const { meetings } = useAppSelector((s) => s.meetings);
   const { unreadCount } = useAppSelector((s) => s.notifications);
+  const path = usePathname();
+
+  const [unreadMessages, setUnreadMessages] = useState(0);
 
   const pendingReceived = swaps.filter(
     (s) => s.status === "pending" && (s.recipient as any)?._id === user?._id,
@@ -38,6 +44,42 @@ export function AppSideBar() {
   const upcomingMeetings = meetings.filter(
     (m) => m.status === "scheduled" || m.status === "ongoing",
   ).length;
+
+  // Fetch initial unread message count
+  useEffect(() => {
+    axiosInstance
+      .get("/messages/unread-count")
+      .then((res) => setUnreadMessages(res.data.data.unreadCount))
+      .catch(() => {}); // silently fail — sidebar badge is non-critical
+  }, []);
+
+  // Clear unread messages when user visits /messages
+  useEffect(() => {
+    if (path === "/messages") {
+      setUnreadMessages(0);
+    }
+  }, [path]);
+
+  // Real-time unread count updates via socket
+  useEffect(() => {
+    if (!user) return;
+
+    const socket = io(
+      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000",
+      { path: "/socket.io/", withCredentials: true },
+    );
+
+    socket.on("messages:unread-count", ({ unreadCount }: { unreadCount: number }) => {
+      // Only update if user is NOT currently on the messages page
+      if (path !== "/messages") {
+        setUnreadMessages(unreadCount);
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user, path]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -63,12 +105,13 @@ export function AppSideBar() {
                 swapPartnersCount: swapPartners.length,
                 upcomingMeetings,
                 unreadNotifications: unreadCount,
+                unreadMessages,
               }).map(({ href, icon: Icon, label, badge, badgeColor }) => (
                 <SidebarMenuItem key={href}>
                   <SidebarMenuButton asChild>
                     <Link
                       href={href}
-                      className="flex items-center justify-between w-full"
+                      className={`flex items-center justify-between w-full ${path === href ? "text-primary" : ""}`}
                     >
                       <span className="flex items-center gap-2">
                         <Icon />
@@ -94,7 +137,7 @@ export function AppSideBar() {
         <Button
           onClick={() => handleLogout()}
           variant="ghost"
-          className="w-full flex items-center justify-start text-base text-danger mb-4 hover:text-danger/80  cursor-pointer"
+          className="w-full flex items-center justify-start text-base text-red-500 mb-4 hover:text-red-600  cursor-pointer"
         >
           <MdOutlineLogout /> Logout
         </Button>{" "}

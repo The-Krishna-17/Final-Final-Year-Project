@@ -36,11 +36,12 @@ export const fetchMySwaps = createAsyncThunk<
 
 export const fetchSwapPartners = createAsyncThunk<
   SwapPartner[],
-  void,
+  string | void,
   { rejectValue: string }
->("swaps/fetchPartners", async (_, thunkAPI) => {
+>("swaps/fetchPartners", async (search, thunkAPI) => {
   try {
-    const res = await axiosInstance.get("/swaps/partners");
+    const params = search ? { search } : {};
+    const res = await axiosInstance.get("/swaps/partners", { params });
     return res.data.data.partners;
   } catch (error) {
     return thunkAPI.rejectWithValue(extractError(error, "Failed to fetch swap partners"));

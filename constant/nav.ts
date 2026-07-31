@@ -15,11 +15,13 @@ export const NAV_ITEMS = ({
   swapPartnersCount,
   upcomingMeetings,
   unreadNotifications = 0,
+  unreadMessages = 0,
 }: {
   pendingReceived: number;
   swapPartnersCount: number;
   upcomingMeetings: number;
   unreadNotifications?: number;
+  unreadMessages?: number;
 }) => [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/my-skills", icon: Brain, label: "My Skills" },
@@ -29,23 +31,23 @@ export const NAV_ITEMS = ({
     icon: ArrowLeftRight,
     label: "Requests",
     badge: pendingReceived > 0 ? pendingReceived : null,
-    badgeColor: "bg-warning",
+    badgeColor: "bg-yellow-700",
   },
   {
     href: "/connections",
     icon: UserCheck,
     label: "Connections",
     badge: swapPartnersCount > 0 ? swapPartnersCount : null,
-    badgeColor: "bg-success",
+    badgeColor: "bg-green-600",
   },
   {
     href: "/meetings",
     icon: Video,
     label: "Meetings",
     badge: upcomingMeetings > 0 ? upcomingMeetings : null,
-    badgeColor: "bg-info",
+    badgeColor: "bg-blue-600",
   },
-  { href: "/messages", icon: MessageSquare, label: "Messages" },
+  { href: "/messages", icon: MessageSquare, label: "Messages", badge: unreadMessages > 0 ? unreadMessages : null, badgeColor: "bg-purple-600" },
   {
     href: "/notifications",
     icon: Bell,

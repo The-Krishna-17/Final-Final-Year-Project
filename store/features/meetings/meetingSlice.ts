@@ -21,8 +21,14 @@ const initialState: MeetingState = {
 };
 
 const extractError = (error: unknown, defaultMessage: string): string => {
-  if (axios.isAxiosError(error) && error.response?.data?.message) {
-    return error.response.data.message;
+  if (axios.isAxiosError(error) && error.response?.data) {
+    const data = error.response.data;
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+      return data.errors.map((e: any) => e.message).join(", ");
+    }
+    if (data.message) {
+      return data.message;
+    }
   }
   return defaultMessage;
 };

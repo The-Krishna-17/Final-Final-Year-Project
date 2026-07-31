@@ -74,7 +74,7 @@ const ProcessSection = () => {
               className="w-full rounded-2xl object-cover shadow-xl"
             />
 
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-10 w-[92%] max-w-lg rounded-lg bg-primary text-primary-foreground backdrop-blur-sm shadow-2xl p-4">
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-5 w-[92%] max-w-lg rounded-lg bg-primary text-primary-foreground backdrop-blur-sm shadow-2xl p-4">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
@@ -85,7 +85,7 @@ const ProcessSection = () => {
                     <h3 className="text-3xl font-semibold">100+</h3>
                   </div>
 
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-primary-foreground">
                     Members Joined
                   </p>
                 </div>
@@ -101,7 +101,7 @@ const ProcessSection = () => {
                     <h3 className="text-3xl font-semibold">50+</h3>
                   </div>
 
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-primary-foreground">
                     Skill Exchanges
                   </p>
                 </div>

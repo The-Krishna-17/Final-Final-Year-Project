@@ -70,6 +70,7 @@ interface FilterParams {
   domain?: string;
   minReputation?: number;
   difficulty?: string;
+  sortByScore?: "asc" | "desc" | "";
   page?: number;
   limit?: number;
 }
