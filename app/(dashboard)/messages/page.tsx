@@ -68,7 +68,9 @@ export default function MessagesPage() {
   }, [messages]);
   useEffect(() => {
     const socket = io(
-      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000",
+      process.env.NEXT_PUBLIC_SOCKET_URL ||
+        "http://localhost:5000" ||
+        "https://skillsxchange.vercel.app/",
       { path: "/socket.io/", withCredentials: true },
     );
     socketRef.current = socket;
