@@ -34,6 +34,7 @@ export function NotificationListener() {
     const socket = io(SOCKET_URL, {
       path: "/socket.io/",
       withCredentials: true,
+      transports: ["websocket"],
     });
 
     socketRef.current = socket;

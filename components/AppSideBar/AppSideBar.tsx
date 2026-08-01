@@ -65,8 +65,11 @@ export function AppSideBar() {
   useEffect(() => {
     if (!user) return;
 
-    const socket = io(SOCKET_URL, { path: "/socket.io/", withCredentials: true },
-    );
+    const socket = io(SOCKET_URL, { 
+      path: "/socket.io/", 
+      withCredentials: true,
+      transports: ["websocket"]
+    });
 
     socket.on("messages:unread-count", ({ unreadCount }: { unreadCount: number }) => {
       // Only update if user is NOT currently on the messages page
