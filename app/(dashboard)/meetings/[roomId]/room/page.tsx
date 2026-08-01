@@ -82,7 +82,7 @@ export default function MeetingRoomPage() {
     if (roomId) {
       try {
         await dispatch(leaveMeetingAction(roomId)).unwrap();
-        router.push(`/meetings/${roomId}`);
+        router.push("/meetings");
       } catch (err) {
         console.error(err);
         router.push("/meetings");
