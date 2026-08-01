@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
+import { SOCKET_URL } from "@/utils/socketUrl";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -30,9 +31,7 @@ export function NotificationListener() {
     // Fetch initial unread count on mount
     dispatch(fetchUnreadCount());
 
-    const socketUrl =
-      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000";
-    const socket = io(socketUrl, {
+    const socket = io(SOCKET_URL, {
       path: "/socket.io/",
       withCredentials: true,
     });

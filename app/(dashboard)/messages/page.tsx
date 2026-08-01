@@ -2,6 +2,7 @@
 
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { SOCKET_URL } from "@/utils/socketUrl";
 import { toast } from "sonner";
 import {
   FileText,
@@ -67,12 +68,10 @@ export default function MessagesPage() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   useEffect(() => {
-    const socket = io(
-      process.env.NEXT_PUBLIC_SOCKET_URL ||
-        "http://localhost:5000" ||
-        "https://skillsxchange.vercel.app/",
-      { path: "/socket.io/", withCredentials: true },
-    );
+    const socket = io(SOCKET_URL, {
+      path: "/socket.io/",
+      withCredentials: true,
+    });
     socketRef.current = socket;
     socket.on("connect_error", () =>
       toast.error("Real-time chat is unavailable"),

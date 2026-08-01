@@ -25,6 +25,7 @@ import { NAV_ITEMS } from "@/constant/nav";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { io } from "socket.io-client";
+import { SOCKET_URL } from "@/utils/socketUrl";
 
 export function AppSideBar() {
   const dispatch = useAppDispatch();
@@ -64,9 +65,7 @@ export function AppSideBar() {
   useEffect(() => {
     if (!user) return;
 
-    const socket = io(
-      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000",
-      { path: "/socket.io/", withCredentials: true },
+    const socket = io(SOCKET_URL, { path: "/socket.io/", withCredentials: true },
     );
 
     socket.on("messages:unread-count", ({ unreadCount }: { unreadCount: number }) => {
