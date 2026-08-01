@@ -48,9 +48,9 @@ const FeaturesSection = () => {
               Built around what users actually need{" "}
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Every feature was prioritised from real survey data and user
-              interviews not assumptions. High scores validate every design
-              decision.
+              Every feature is designed to eliminate friction in peer-to-peer learning. 
+              From AI matching to in-browser video, we provide everything you need 
+              in one seamless ecosystem.
             </p>
           </motion.div>
           <motion.div

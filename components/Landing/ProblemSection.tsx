@@ -43,12 +43,12 @@ const ProblemSection = () => {
 
               <div className="border-l-4 border-primary pl-4 italic text-foreground/80 space-y-1">
                 <p>
-                  “35.1% of survey respondents had previously used a paid
-                  platform but discontinued due to cost. Another 16.2% said they
-                  never used one because of financial barriers alone.”
+                  “We realized that true learning doesn't have to cost anything. 
+                  If you have a skill to teach, you already have the currency 
+                  to learn whatever you want.”
                 </p>
                 <span className="text-xs text-muted-foreground not-italic">
-                  — SkillXchange User Research, 2025
+                  — The SkillXchange Philosophy
                 </span>
               </div>
             </motion.div>

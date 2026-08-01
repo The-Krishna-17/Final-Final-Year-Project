@@ -19,17 +19,17 @@ const ResearchSection = () => {
           >
             <div className="space-y-3">
               <p className="text-sm uppercase tracking-widest text-muted-foreground">
-                Research Backed
+                Architecture
               </p>
 
               <h2 className="text-3xl font-bold leading-tight">
-                Evidence based design, not assumptions
+                Built for real-time collaboration
               </h2>
 
               <p className="text-muted-foreground leading-relaxed">
-                SkillXchange was designed through structured primary research
-                with 37 survey respondents and 3 in-depth interviews across
-                students, freelancers, and career changers.
+                SkillXchange is powered by a modern, high-performance tech stack. 
+                From the instant you send a message to the moment you join a video call, 
+                everything is optimized for speed and reliability.
               </p>
             </div>
 
@@ -37,36 +37,36 @@ const ResearchSection = () => {
               <div className="p-4 rounded-xl border bg-background hover:shadow-md transition">
                 <p className="text-sm">
                   <span className="font-semibold text-primary">
-                    Intelligent matching is #1 priority:
+                    AI-Driven Matching:
                   </span>{" "}
-                  4.51/5 rating with 54.1% marking it very important.
+                  Groq SDK evaluates your skills to find the perfect learning partner instantly.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-background hover:shadow-md transition">
                 <p className="text-sm">
                   <span className="font-semibold text-primary">
-                    Programming & AI dominate demand:
+                    Zero-Install Video:
                   </span>{" "}
-                  37.8% Software Dev, 21.6% AI/Data Science.
+                  Jitsi WebRTC integration means no Zoom links or app downloads required.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-background hover:shadow-md transition">
                 <p className="text-sm">
                   <span className="font-semibold text-primary">
-                    Mobile-first behavior:
+                    Persistent Messaging:
                   </span>{" "}
-                  51.4% primarily use smartphones for learning.
+                  Socket.IO ensures messages are delivered instantly, even if the other person is offline.
                 </p>
               </div>
 
               <div className="p-4 rounded-xl border bg-background hover:shadow-md transition">
                 <p className="text-sm">
                   <span className="font-semibold text-primary">
-                    Trust depends on verification:
+                    Enterprise Security:
                   </span>{" "}
-                  40.5% prioritize verified profiles over ratings.
+                  JWT refresh token rotation and httpOnly cookies keep your account safe.
                 </p>
               </div>
             </div>
