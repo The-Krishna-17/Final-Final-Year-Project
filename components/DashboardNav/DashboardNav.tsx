@@ -110,7 +110,10 @@ const DashboardNav = () => {
               </div>
 
               {/* Notification Items List */}
-              <div className="max-h-80 overflow-y-auto divide-y divide-border">
+              <div
+                className="max-h-80 overflow-y-auto divide-y divide-border gap-2 flex flex-col p-2"
+                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+              >
                 {notifications.length === 0 ? (
                   <div className="p-8 text-center text-muted-foreground flex flex-col items-center gap-2">
                     <BellOff className="w-8 h-8 opacity-40" />
@@ -121,7 +124,7 @@ const DashboardNav = () => {
                     <DropdownMenuItem
                       key={n._id}
                       asChild
-                      className="p-3.5 flex items-start gap-3 cursor-pointer hover:bg-muted/60 transition-colors focus:bg-muted/60 focus:outline-none"
+                      className="p-3.5 flex items-start gap-4 cursor-pointer hover:bg-muted/60 transition-colors focus:bg-muted/60 focus:outline-none"
                     >
                       <div
                         onClick={() => {

@@ -323,7 +323,8 @@ export default function MeetingsPage() {
                             <Calendar className="h-3 w-3 text-primary" />
                           </span>
                           <span className="truncate text-foreground">
-                            {format(scheduledDate, "MMM d, yyyy")} at {format(scheduledDate, "h:mm a")}
+                            {format(scheduledDate, "MMM d, yyyy")} at{" "}
+                            {format(scheduledDate, "h:mm a")}
                           </span>
                         </div>
                         <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs">
@@ -331,7 +332,8 @@ export default function MeetingsPage() {
                             <Users className="h-3 w-3 text-secondary-foreground" />
                           </span>
                           <span className="truncate text-foreground">
-                            {meeting.participants?.length || 0} participant{meeting.participants?.length !== 1 && "s"}
+                            {meeting.participants?.length || 0} participant
+                            {meeting.participants?.length !== 1 && "s"}
                           </span>
                         </div>
                       </div>
@@ -350,7 +352,10 @@ export default function MeetingsPage() {
                             href={`/meetings/${meeting.roomId}/room`}
                             className="flex-1"
                           >
-                            <Button size="sm" className="w-full h-8 text-xs rounded-lg gap-1.5">
+                            <Button
+                              size="sm"
+                              className="w-full h-8 text-xs rounded-lg gap-1.5"
+                            >
                               <Play className="w-3 h-3 fill-current" />
                               Join
                             </Button>
@@ -588,157 +593,188 @@ export default function MeetingsPage() {
         open={!!selectedMeeting}
         onOpenChange={(open) => !open && setSelectedMeeting(null)}
       >
-        {selectedMeeting && (
-          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader className="mb-2">
-              <div className="flex items-center gap-2">
-                <DialogTitle className="text-xl">
-                  {selectedMeeting.title}
-                </DialogTitle>
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-muted-foreground border border-border rounded-full px-2 py-0.5">
-                  <span
-                    className={`w-1.5 h-1.5 rounded-full ${
-                      selectedMeeting.status === "ongoing"
-                        ? "bg-success"
-                        : selectedMeeting.status === "cancelled"
-                          ? "bg-danger"
-                          : "bg-muted-foreground"
-                    }`}
-                  />
-                  {STATUS_LABEL[selectedMeeting.status] ??
-                    selectedMeeting.status}
-                </span>
-              </div>
-              <DialogDescription>
-                Room ID: {selectedMeeting.roomId}
-              </DialogDescription>
-            </DialogHeader>
+        {selectedMeeting &&
+          (() => {
+            const scheduledDate = new Date(selectedMeeting.scheduledAt);
+            const isLive = selectedMeeting.status === "ongoing";
+            const hostObj = isHostObject(selectedMeeting)
+              ? (selectedMeeting.host as any)
+              : null;
+            const hostInitials = hostObj
+              ? `${hostObj.firstName?.[0] ?? ""}${hostObj.lastName?.[0] ?? ""}`.toUpperCase()
+              : "?";
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-              <div className="md:col-span-2 space-y-6">
-                <div>
-                  <h3 className="text-xs font-medium text-foreground uppercase tracking-wider mb-2">
-                    Description
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                    {selectedMeeting.description || "No description provided."}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xs font-medium text-foreground uppercase tracking-wider mb-2">
-                    Host
-                  </h3>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-xs font-medium">
-                      {isHostObject(selectedMeeting)
-                        ? ((selectedMeeting.host as any).firstName?.[0] ?? "?")
-                        : "?"}
+            const statusColors: Record<string, string> = {
+              scheduled: "bg-blue-100 text-blue-700 border-blue-200",
+              ongoing: "bg-green-100 text-green-700 border-green-200",
+              completed: "bg-secondary text-secondary-foreground border-border",
+              cancelled: "bg-red-100 text-red-700 border-red-200",
+            };
+
+            return (
+              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-2xl overflow-hidden flex">
+                {/* on-air strip */}
+                <div
+                  className="w-1.5 shrink-0 bg-primary"
+                />
+
+                <div className="flex-1 overflow-y-auto max-h-[90vh]">
+                  {/* Header */}
+                  <DialogHeader className="px-6 pt-5 pb-4 sticky top-0 z-10 space-y-0 bg-card border-b border-border">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <DialogTitle className="text-lg font-semibold truncate">
+                        {selectedMeeting.title}
+                      </DialogTitle>
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${statusColors[selectedMeeting.status] ?? "bg-secondary text-secondary-foreground border-border"}`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${isLive ? "bg-green-600" : selectedMeeting.status === "cancelled" ? "bg-red-600" : "bg-current opacity-60"}`}
+                        />
+                        {STATUS_LABEL[selectedMeeting.status] ??
+                          selectedMeeting.status}
+                      </span>
                     </div>
-                    <div>
-                      {isHostObject(selectedMeeting) ? (
-                        <>
-                          <p className="text-sm font-medium text-foreground">
-                            {(selectedMeeting.host as any).firstName}{" "}
-                            {(selectedMeeting.host as any).lastName}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {(selectedMeeting.host as any).email}
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-sm text-muted-foreground italic">
-                          Host info not available
+                    <DialogDescription className="flex items-center gap-2 mt-1.5 font-mono text-[11px] tracking-widest text-muted-foreground">
+                      ROOM · {selectedMeeting.roomId}
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  {/* Body */}
+                  <div className="px-6 py-5 flex gap-6">
+                    <div className="flex-1 space-y-6">
+                      <div>
+                        <h3 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+                          Description
+                        </h3>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                          {selectedMeeting.description ||
+                            "No description provided."}
                         </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+                          Host
+                        </h3>
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 bg-secondary border border-border text-secondary-foreground">
+                            {hostInitials}
+                          </div>
+                          <div className="min-w-0">
+                            {hostObj ? (
+                              <>
+                                <p className="text-sm font-medium truncate text-foreground">
+                                  {hostObj.firstName} {hostObj.lastName}
+                                </p>
+                                <p className="text-xs truncate text-muted-foreground">
+                                  {hostObj.email}
+                                </p>
+                              </>
+                            ) : (
+                              <p className="text-sm italic text-muted-foreground">
+                                Host info not available
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl p-4 h-fit space-y-3 bg-secondary/50 border border-border flex-1">
+                      <h3 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                        Details
+                      </h3>
+                      <div className="flex items-center gap-2 text-xs text-foreground">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                          <Calendar className="h-3 w-3 text-primary" />
+                        </span>
+                        {format(scheduledDate, "MMMM d, yyyy")}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-foreground">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                          <Clock className="h-3 w-3 text-primary" />
+                        </span>
+                        {format(scheduledDate, "h:mm a")}
+                      </div>
+                      <div className="flex items-center gap-2 text-xs text-foreground">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary">
+                          <Users className="h-3 w-3 text-secondary-foreground" />
+                        </span>
+                        {selectedMeeting.participants?.length || 0} participant
+                        {selectedMeeting.participants?.length !== 1 && "s"}
+                      </div>
+                      <div className="flex items-start gap-2 text-xs text-foreground">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-secondary mt-0.5">
+                          <Video className="h-3 w-3 text-secondary-foreground" />
+                        </span>
+                        <span className="font-mono break-all">
+                          {selectedMeeting.roomId}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="px-6 py-4 flex justify-between items-center sticky bottom-0 bg-card border-t border-border">
+                    <div className="flex gap-2">
+                      {isHost(selectedMeeting) &&
+                        selectedMeeting.status === "scheduled" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-lg"
+                            onClick={() =>
+                              handleCancelClick(selectedMeeting.roomId)
+                            }
+                          >
+                            Cancel meeting
+                          </Button>
+                        )}
+                      {isHost(selectedMeeting) && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          className="rounded-lg flex items-center gap-1.5"
+                          onClick={() =>
+                            handleDeleteClick(selectedMeeting.roomId)
+                          }
+                        >
+                          <Trash2 className="w-3.5 h-3.5" /> Delete
+                        </Button>
                       )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="rounded-lg"
+                        onClick={() => setSelectedMeeting(null)}
+                      >
+                        Close
+                      </Button>
+                      {(selectedMeeting.status === "scheduled" ||
+                        selectedMeeting.status === "ongoing") &&
+                        new Date(selectedMeeting.scheduledAt).getTime() +
+                          24 * 60 * 60 * 1000 >
+                          Date.now() && (
+                          <Link
+                            href={`/meetings/${selectedMeeting.roomId}/room`}
+                          >
+                            <Button
+                              size="sm"
+                              className="rounded-lg flex items-center gap-2"
+                            >
+                              <Play className="w-3.5 h-3.5" /> Join room
+                            </Button>
+                          </Link>
+                        )}
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="bg-secondary/50 border border-border rounded-xl p-4 h-fit space-y-4">
-                <h3 className="text-xs font-medium text-foreground uppercase tracking-wider">
-                  Details
-                </h3>
-                <div className="flex items-start gap-3">
-                  <Calendar className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Date</p>
-                    <p className="text-xs text-muted-foreground">
-                      {format(
-                        new Date(selectedMeeting.scheduledAt),
-                        "MMMM d, yyyy",
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Time</p>
-                    <p className="text-xs text-muted-foreground">
-                      {format(new Date(selectedMeeting.scheduledAt), "h:mm a")}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Users className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
-                      Participants
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {selectedMeeting.participants?.length || 0} joined
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center mt-6 pt-4 border-t border-border">
-              <div className="flex gap-2">
-                {isHost(selectedMeeting) &&
-                  selectedMeeting.status === "scheduled" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleCancelClick(selectedMeeting.roomId)}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                {isHost(selectedMeeting) && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDeleteClick(selectedMeeting.roomId)}
-                    className="flex items-center gap-1.5 cursor-pointer text-destructive"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" /> Delete
-                  </Button>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="secondary"
-                  onClick={() => setSelectedMeeting(null)}
-                >
-                  Close
-                </Button>
-                {(selectedMeeting.status === "scheduled" ||
-                  selectedMeeting.status === "ongoing") &&
-                  new Date(selectedMeeting.scheduledAt).getTime() +
-                    24 * 60 * 60 * 1000 >
-                    Date.now() && (
-                    <Link href={`/meetings/${selectedMeeting.roomId}/room`}>
-                      <Button className="flex items-center gap-2">
-                        <Play className="w-4 h-4" /> Join room
-                      </Button>
-                    </Link>
-                  )}
-              </div>
-            </div>
-          </DialogContent>
-        )}
+              </DialogContent>
+            );
+          })()}
       </Dialog>
 
       {/* Confirmation Dialog */}

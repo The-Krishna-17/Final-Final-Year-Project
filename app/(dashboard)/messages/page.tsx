@@ -190,10 +190,12 @@ export default function MessagesPage() {
   const initials = (p: SwapPartner) =>
     `${p.user.firstName[0] || ""}${p.user.lastName[0] || ""}`.toUpperCase();
   return (
-    <div className="grid h-[calc(100vh-10rem)] min-h-130 grid-cols-1 overflow-hidden rounded-xl border bg-background md:grid-cols-[280px_1fr]">
-      <aside className="border-b md:border-b-0 md:border-r">
-        <div className="p-4 font-semibold">Messages</div>
-        <div className="max-h-40 overflow-y-auto md:max-h-none">
+    <div className="-mx-4 -mt-6 grid h-[calc(100vh-5rem)] grid-cols-1 overflow-hidden border-t bg-background md:grid-cols-[280px_1fr]">
+      <aside className="flex flex-col border-b md:border-b-0 md:border-r overflow-hidden">
+        <div className="p-4 font-semibold border-b border-border shrink-0">
+          Messages
+        </div>
+        <div className="flex-1 overflow-y-auto">
           {partners.map((partner) => (
             <button
               key={partner.swapId}

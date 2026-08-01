@@ -21,11 +21,8 @@ import {
   MessageSquare,
   Sparkles,
   ExternalLink,
-  Loader2,
-  Filter,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -33,7 +30,7 @@ export default function NotificationsPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { notifications, unreadCount, loading } = useAppSelector(
-    (state) => state.notifications
+    (state) => state.notifications,
   );
   const [filter, setFilter] = useState<"all" | "unread">("all");
 
@@ -85,23 +82,22 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="container mx-auto px-6 py-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-background p-6 rounded-2xl border border-border shadow-xs">
+      <div className="flex justify-between items-center mb-8">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
+          <h1 className="text-3xl font-semibold text-foreground tracking-tight flex items-center gap-3">
+            Notifications
             {unreadCount > 0 && (
-              <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/20">
-                {unreadCount} unread
+              <span className="inline-flex items-center justify-center w-6 h-6 text-[11px] font-bold rounded-full bg-primary text-primary-foreground">
+                {unreadCount > 99 ? "99+" : unreadCount}
               </span>
             )}
-          </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Stay updated with your skill swaps, meeting invites, messages, and platform activity.
+          </h1>
+          <p className="text-muted-foreground mt-1.5">
+            Stay updated with your skill swaps, meetings, and messages.
           </p>
         </div>
-
         <div className="flex items-center gap-2 shrink-0">
           {unreadCount > 0 && (
             <Button
@@ -110,7 +106,7 @@ export default function NotificationsPage() {
               onClick={() => dispatch(markAllAsRead())}
               className="gap-2 text-xs"
             >
-              <CheckCheck className="w-4 h-4 text-success" />
+              <CheckCheck className="w-4 h-4" />
               Mark all read
             </Button>
           )}
@@ -129,56 +125,52 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center justify-between">
-        <Tabs
-          value={filter}
-          onValueChange={(val) => setFilter(val as "all" | "unread")}
-          className="w-full sm:w-auto"
-        >
-          <TabsList className="grid grid-cols-2 w-full sm:w-64">
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="unread" className="relative">
-              Unread
-              {unreadCount > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.2 text-[10px] bg-primary text-primary-foreground rounded-full">
-                  {unreadCount}
-                </span>
-              )}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      <Tabs
+        value={filter}
+        onValueChange={(val) => setFilter(val as "all" | "unread")}
+      >
+        <TabsList variant="line" className="flex items-center gap-4 mb-8">
+          <TabsTrigger value="all" className="cursor-pointer">
+            All
+          </TabsTrigger>
+          <TabsTrigger value="unread" className="cursor-pointer gap-2">
+            Unread
+            {unreadCount > 0 && (
+              <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
+                {unreadCount}
+              </span>
+            )}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Notifications Content */}
-      {loading ? (
-        <Card className="p-12 flex flex-col items-center justify-center gap-3">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading notifications...</p>
-        </Card>
-      ) : notifications.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 text-center border border-border rounded-lg bg-muted/20 border-dashed mt-4">
-          <BellOff className="text-4xl w-10 h-10 text-muted-foreground mb-4 opacity-50" />
-          <h3 className="font-medium text-lg">
-            {filter === "unread" ? "No unread notifications" : "No notifications yet"}
-          </h3>
-          <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-            {filter === "unread"
-              ? "You're all caught up! Check back later for new activity."
-              : "When you receive swap requests, meeting invites, or messages, they will appear here."}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {notifications.map((n) => (
-            <Card
-              key={n._id}
-              className={`transition-all duration-200 hover:border-primary/40 ${
-                !n.isRead
-                  ? "bg-background border-primary/20 shadow-xs"
-                  : "bg-background/60 opacity-90"
-              }`}
-            >
-              <CardContent className="p-4 flex items-start gap-4">
+        {/* Notifications Content */}
+        {loading ? (
+          <div className="flex justify-center py-16">
+            <div className="h-8 w-8 rounded-full border-2 border-muted border-t-foreground animate-spin" />
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="text-center py-20 bg-secondary/40 rounded-2xl border border-dashed border-border">
+            <BellOff className="w-10 h-10 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-base font-medium text-foreground">
+              {filter === "unread"
+                ? "No unread notifications"
+                : "No notifications yet"}
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              {filter === "unread"
+                ? "You're all caught up! Check back later for new activity."
+                : "When you receive swap requests, meeting invites, or messages, they'll appear here."}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {notifications.map((n) => (
+              <div
+                key={n._id}
+                className={`flex items-start gap-4 rounded-lg border p-4 transition-all duration-200 hover:border-primary/40 bg-card ${
+                  !n.isRead ? "border-primary/20" : "border-border opacity-90"
+                }`}
+              >
                 {/* Sender Avatar / Icon */}
                 <div className="relative shrink-0 mt-0.5">
                   {n.sender?.avatar ? (
@@ -194,8 +186,7 @@ export default function NotificationsPage() {
                       {getNotificationIcon(n.type)}
                     </div>
                   )}
-
-                  <span className="absolute -bottom-1 -right-1 p-1 rounded-full bg-background border border-border shadow-2xs">
+                  <span className="absolute -bottom-1 -right-1 p-1 rounded-full bg-background border border-border">
                     {getNotificationIcon(n.type)}
                   </span>
                 </div>
@@ -237,7 +228,7 @@ export default function NotificationsPage() {
                       size="icon"
                       title="Mark as read"
                       onClick={() => dispatch(markAsRead(n._id))}
-                      className="h-8 w-8 text-muted-foreground hover:text-success"
+                      className="h-8 w-8 text-muted-foreground hover:text-primary"
                     >
                       <CheckCheck className="w-4 h-4" />
                     </Button>
@@ -252,11 +243,11 @@ export default function NotificationsPage() {
                     <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Tabs>
     </div>
   );
 }

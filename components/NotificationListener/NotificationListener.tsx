@@ -10,7 +10,13 @@ import {
   fetchUnreadCount,
 } from "@/store/features/notifications/notificationSlice";
 import { AppNotification } from "@/store/features/notifications/type";
-import { Bell, MessageSquare, ArrowLeftRight, Video, CheckCircle2 } from "lucide-react";
+import {
+  Bell,
+  MessageSquare,
+  ArrowLeftRight,
+  Video,
+  CheckCircle2,
+} from "lucide-react";
 
 export function NotificationListener() {
   const dispatch = useAppDispatch();
@@ -24,7 +30,8 @@ export function NotificationListener() {
     // Fetch initial unread count on mount
     dispatch(fetchUnreadCount());
 
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000";
+    const socketUrl =
+      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000";
     const socket = io(socketUrl, {
       path: "/socket.io/",
       withCredentials: true,
@@ -65,7 +72,7 @@ export function NotificationListener() {
             </div>
           </div>
         ),
-        { duration: 5000 }
+        { duration: 5000 },
       );
     });
 

@@ -128,13 +128,13 @@ const page = () => {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        <Button
+        {/* <Button
           variant="outline"
           className="w-full flex items-center justify-center gap-2 h-10 text-sm font-medium border-border hover:bg-muted transition-colors"
         >
           <FaGoogle className="text-base shrink-0" />
           Continue with Google
-        </Button>
+        </Button> */}
 
         <p className="text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
