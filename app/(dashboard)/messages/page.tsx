@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { SwapPartner } from "@/store/features/swaps/type";
+import { useSidebar } from "@/components/ui/sidebar";
 
 type Attachment = {
   _id: string;
@@ -51,6 +52,8 @@ export default function MessagesPage() {
   const endRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activePartnerIdRef = useRef<string | null>(null);
+  const { open } = useSidebar();
+
   useEffect(() => {
     axiosInstance
       .get("/swaps/partners")
@@ -192,9 +195,19 @@ export default function MessagesPage() {
   const initials = (p: SwapPartner) =>
     `${p.user.firstName[0] || ""}${p.user.lastName[0] || ""}`.toUpperCase();
   return (
-    <div className="-mx-4 -mt-6 grid h-[calc(100vh-5rem)] grid-cols-1 overflow-hidden border-t bg-background md:grid-cols-[280px_1fr]">
-      <aside className="flex flex-col border-b md:border-b-0 md:border-r overflow-hidden">
-        <div className="p-4 font-semibold border-b border-border shrink-0">
+    /*
+     * Escape the parent's p-4 pt-6 padding so the chat panel can
+     * reach the full edges of the content area, then fill exactly
+     * the remaining viewport height below the top nav (≈ 64px / 4rem).
+     */
+    <div
+      className={`-m-4 -mt-6 flex h-[calc(100vh-4rem)] overflow-hidden bg-background fixed
+    transition-[width] duration-200 ease-linear
+    ${open ? "w-[calc(100%-16rem)]" : "w-full"}`}
+    >
+      {/* ── Sidebar ─────────────────────────────────────────────────── */}
+      <aside className="flex w-72 shrink-0 flex-col border-r">
+        <div className="shrink-0 border-b border-border p-4 font-semibold">
           Messages
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -202,7 +215,9 @@ export default function MessagesPage() {
             <button
               key={partner.swapId}
               onClick={() => setActive(partner)}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted/60 ${active?.user._id === partner.user._id ? "bg-muted" : ""}`}
+              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/60 ${
+                active?.user._id === partner.user._id ? "bg-muted" : ""
+              }`}
             >
               <Avatar>
                 <AvatarImage src={partner.user.avatar} />
@@ -220,9 +235,12 @@ export default function MessagesPage() {
           ))}
         </div>
       </aside>
-      {active && (
-        <section className="flex min-h-0 flex-col">
-          <header className="flex items-center gap-3 border-b p-4">
+
+      {/* ── Chat panel ──────────────────────────────────────────────── */}
+      {active ? (
+        <section className="flex min-w-0 flex-1 flex-col">
+          {/* Header */}
+          <header className="flex shrink-0 items-center gap-3 border-b p-4">
             <Avatar>
               <AvatarImage src={active.user.avatar} />
               <AvatarFallback>{initials(active)}</AvatarFallback>
@@ -236,68 +254,88 @@ export default function MessagesPage() {
               </p>
             </div>
           </header>
-          <main className="flex-1 space-y-3 overflow-y-auto p-4">
-            {messages.map((message) => {
-              const mine = message.sender._id !== active.user._id;
-              const a = message.attachment;
-              return (
-                <div
-                  key={message._id}
-                  className={`flex ${mine ? "justify-end" : "justify-start"}`}
-                >
+
+          {/* Messages list — scrolls independently */}
+          <main
+            className="flex-1 overflow-y-auto p-4"
+            style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+          >
+            <div className="flex flex-col gap-3">
+              {messages.map((message) => {
+                const mine = message.sender._id !== active.user._id;
+                const a = message.attachment;
+                return (
                   <div
-                    className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                    key={message._id}
+                    className={`flex ${mine ? "justify-end" : "justify-start"}`}
                   >
-                    {message.text && (
-                      <p className="whitespace-pre-wrap">{message.text}</p>
-                    )}
-                    {a && (
-                      <a
-                        href={a.url}
-                        target="_blank"
-                        className="mt-2 flex items-center gap-2 rounded-lg border border-current/20 bg-background/10 p-2 hover:bg-background/20"
-                      >
-                        {a.mimeType.startsWith("image/") ? (
-                          <ImageIcon size={18} />
-                        ) : a.mimeType.startsWith("video/") ? (
-                          <Video size={18} />
-                        ) : (
-                          <FileText size={18} />
-                        )}
-                        <span className="min-w-0">
-                          <span className="block truncate">
-                            {a.originalName}
+                    <div
+                      className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
+                        mine ? "bg-primary text-primary-foreground" : "bg-muted"
+                      }`}
+                    >
+                      {message.text && (
+                        <p className="whitespace-pre-wrap">{message.text}</p>
+                      )}
+                      {a && (
+                        <a
+                          href={a.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 flex items-center gap-2 rounded-lg border border-current/20 bg-background/10 p-2 hover:bg-background/20"
+                        >
+                          {a.mimeType.startsWith("image/") ? (
+                            <ImageIcon size={18} />
+                          ) : a.mimeType.startsWith("video/") ? (
+                            <Video size={18} />
+                          ) : (
+                            <FileText size={18} />
+                          )}
+                          <span className="min-w-0">
+                            <span className="block truncate">
+                              {a.originalName}
+                            </span>
+                            <span className="text-xs opacity-70">
+                              {formatSize(a.size)}
+                            </span>
                           </span>
-                          <span className="text-xs opacity-70">
-                            {formatSize(a.size)}
-                          </span>
-                        </span>
-                      </a>
-                    )}
-                    <p className="mt-1 text-[10px] opacity-60">
-                      {new Date(message.createdAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
+                        </a>
+                      )}
+                      <p className="mt-1 text-[10px] opacity-60">
+                        {new Date(message.createdAt).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-            <div ref={endRef} />
-            {partnerTyping && (
-              <p className="text-xs italic text-muted-foreground">
-                {active.user.firstName} is typing…
-              </p>
-            )}
+                );
+              })}
+
+              {partnerTyping && (
+                <p className="text-xs italic text-muted-foreground">
+                  {active.user.firstName} is typing…
+                </p>
+              )}
+
+              {/* Scroll anchor */}
+              <div ref={endRef} />
+            </div>
           </main>
-          <footer className="border-t p-3">
+
+          {/* Footer — always pinned to the bottom */}
+          <footer className="shrink-0 border-t p-3">
             {file && (
               <div className="mb-2 flex items-center justify-between rounded bg-muted px-3 py-2 text-xs">
                 <span className="truncate">
                   {file.name} · {formatSize(file.size)}
                 </span>
-                <button onClick={() => setFile(null)}>Remove</button>
+                <button
+                  onClick={() => setFile(null)}
+                  className="ml-3 shrink-0 text-muted-foreground hover:text-foreground"
+                >
+                  Remove
+                </button>
               </div>
             )}
             <div className="flex gap-2">
@@ -343,6 +381,12 @@ export default function MessagesPage() {
             </div>
           </footer>
         </section>
+      ) : (
+        /* No active conversation selected */
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center text-muted-foreground">
+          <MessageCircle className="h-10 w-10 opacity-30" />
+          <p className="text-sm">Select a conversation to start chatting</p>
+        </div>
       )}
     </div>
   );
