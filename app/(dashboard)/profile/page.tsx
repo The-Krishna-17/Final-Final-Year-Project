@@ -659,14 +659,14 @@ const page = () => {
                       </div>
 
                       {/* Title */}
-                      <div className="relative z-10 mb-2">
-                        <h2 className="text-2xl font-semibold text-primary-foreground">
+                      <DialogHeader className="relative z-10 mb-2">
+                        <DialogTitle className="text-2xl font-semibold text-primary-foreground font-sans">
                           Edit Profile
-                        </h2>
-                        <p className="text-base text-primary-foreground">
+                        </DialogTitle>
+                        <DialogDescription className="text-base text-primary-foreground">
                           Update your information
-                        </p>
-                      </div>
+                        </DialogDescription>
+                      </DialogHeader>
 
                       {/* Avatar + Change Photo — sits at bottom of hero, overlaps body via negative margin */}
                       <div className="relative z-10 flex items-end justify-between">
