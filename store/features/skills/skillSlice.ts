@@ -3,17 +3,27 @@ import { axiosInstance } from "@/utils/axiosInstance";
 import {
   SkillState,
   SkillResponse,
+  PreviewResponse,
   AddSkillPayload,
   UpdateSkillPayload,
   RemoveSkillPayload,
 } from "./type";
 import axios from "axios";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// INITIAL STATE
+// ─────────────────────────────────────────────────────────────────────────────
+
 const initialState: SkillState = {
   profile: null,
 
   loadingProfile: false,
   errorProfile: null,
+
+  // Step-1 preview state
+  preview: null,
+  loadingPreview: false,
+  errorPreview: null,
 
   loadingAddOffer: false,
   errorAddOffer: null,
@@ -28,7 +38,10 @@ const initialState: SkillState = {
   errorRemove: null,
 };
 
-// Error extractor helper
+// ─────────────────────────────────────────────────────────────────────────────
+// ERROR HELPER
+// ─────────────────────────────────────────────────────────────────────────────
+
 const extractError = (error: unknown, defaultMessage: string): string => {
   if (axios.isAxiosError(error) && error.response?.data?.message) {
     return error.response.data.message;
@@ -36,23 +49,45 @@ const extractError = (error: unknown, defaultMessage: string): string => {
   return defaultMessage;
 };
 
-// ─── THUNKS ───────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// THUNKS
+// ─────────────────────────────────────────────────────────────────────────────
 
+/** Fetch a user's full skill profile */
 export const getUserSkills = createAsyncThunk<
   SkillResponse,
-  string, // userId
+  string,
   { rejectValue: string }
 >("skills/getUserSkills", async (userId, thunkAPI) => {
   try {
     const response = await axiosInstance.get(`/skills/user/${userId}`);
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to fetch skills"),
-    );
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to fetch skills"));
   }
 });
 
+/**
+ * Step 1 — Submit description + user fields to get an AI-processed preview.
+ * Nothing is saved to the database at this point.
+ */
+export const previewSkill = createAsyncThunk<
+  PreviewResponse,
+  AddSkillPayload,
+  { rejectValue: string }
+>("skills/previewSkill", async (payload, thunkAPI) => {
+  try {
+    const response = await axiosInstance.post("/skills/preview", payload);
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to generate skill preview"));
+  }
+});
+
+/**
+ * Step 2 — Confirm and save an offered skill (teach).
+ * Called after the user reviews and optionally edits the preview.
+ */
 export const addOfferSkill = createAsyncThunk<
   SkillResponse,
   AddSkillPayload,
@@ -62,12 +97,14 @@ export const addOfferSkill = createAsyncThunk<
     const response = await axiosInstance.post("/skills/add-offer", payload);
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to add offered skill"),
-    );
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to add offered skill"));
   }
 });
 
+/**
+ * Step 2 — Confirm and save a wanted skill (learn).
+ * Called after the user reviews and optionally edits the preview.
+ */
 export const addWantSkill = createAsyncThunk<
   SkillResponse,
   AddSkillPayload,
@@ -77,12 +114,11 @@ export const addWantSkill = createAsyncThunk<
     const response = await axiosInstance.post("/skills/add-want", payload);
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to add wanted skill"),
-    );
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to add wanted skill"));
   }
 });
 
+/** Update user-provided fields on an existing skill */
 export const updateSkill = createAsyncThunk<
   SkillResponse,
   UpdateSkillPayload,
@@ -92,31 +128,29 @@ export const updateSkill = createAsyncThunk<
     const response = await axiosInstance.put("/skills/update", payload);
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to update skill"),
-    );
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to update skill"));
   }
 });
 
+/** Remove a skill from offer or want list */
 export const removeSkill = createAsyncThunk<
   SkillResponse,
   RemoveSkillPayload,
   { rejectValue: string }
 >("skills/removeSkill", async (payload, thunkAPI) => {
   try {
-    // Axios requires data inside a 'data' property for DELETE requests
     const response = await axiosInstance.delete("/skills/remove-skill", {
       data: payload,
     });
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to remove skill"),
-    );
+    return thunkAPI.rejectWithValue(extractError(error, "Failed to remove skill"));
   }
 });
 
-// ─── SLICE ────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SLICE
+// ─────────────────────────────────────────────────────────────────────────────
 
 const skillSlice = createSlice({
   name: "skills",
@@ -124,14 +158,19 @@ const skillSlice = createSlice({
   reducers: {
     clearSkillErrors: (state) => {
       state.errorProfile = null;
+      state.errorPreview = null;
       state.errorAddOffer = null;
       state.errorAddWant = null;
       state.errorUpdate = null;
       state.errorRemove = null;
     },
+    clearPreview: (state) => {
+      state.preview = null;
+      state.errorPreview = null;
+    },
   },
   extraReducers: (builder) => {
-    // Get Profile
+    // ── Get Profile ──────────────────────────────────────────────────────────
     builder
       .addCase(getUserSkills.pending, (state) => {
         state.loadingProfile = true;
@@ -146,7 +185,23 @@ const skillSlice = createSlice({
         state.errorProfile = action.payload as string;
       });
 
-    // Add Offer
+    // ── Preview (Step 1) ─────────────────────────────────────────────────────
+    builder
+      .addCase(previewSkill.pending, (state) => {
+        state.loadingPreview = true;
+        state.errorPreview = null;
+        state.preview = null;
+      })
+      .addCase(previewSkill.fulfilled, (state, action) => {
+        state.loadingPreview = false;
+        state.preview = action.payload.data.preview;
+      })
+      .addCase(previewSkill.rejected, (state, action) => {
+        state.loadingPreview = false;
+        state.errorPreview = action.payload as string;
+      });
+
+    // ── Add Offer ────────────────────────────────────────────────────────────
     builder
       .addCase(addOfferSkill.pending, (state) => {
         state.loadingAddOffer = true;
@@ -155,13 +210,14 @@ const skillSlice = createSlice({
       .addCase(addOfferSkill.fulfilled, (state, action) => {
         state.loadingAddOffer = false;
         state.profile = action.payload.data.profile;
+        state.preview = null; // reset preview after successful save
       })
       .addCase(addOfferSkill.rejected, (state, action) => {
         state.loadingAddOffer = false;
         state.errorAddOffer = action.payload as string;
       });
 
-    // Add Want
+    // ── Add Want ─────────────────────────────────────────────────────────────
     builder
       .addCase(addWantSkill.pending, (state) => {
         state.loadingAddWant = true;
@@ -170,13 +226,14 @@ const skillSlice = createSlice({
       .addCase(addWantSkill.fulfilled, (state, action) => {
         state.loadingAddWant = false;
         state.profile = action.payload.data.profile;
+        state.preview = null;
       })
       .addCase(addWantSkill.rejected, (state, action) => {
         state.loadingAddWant = false;
         state.errorAddWant = action.payload as string;
       });
 
-    // Update Skill
+    // ── Update Skill ─────────────────────────────────────────────────────────
     builder
       .addCase(updateSkill.pending, (state) => {
         state.loadingUpdate = true;
@@ -191,7 +248,7 @@ const skillSlice = createSlice({
         state.errorUpdate = action.payload as string;
       });
 
-    // Remove Skill
+    // ── Remove Skill ─────────────────────────────────────────────────────────
     builder
       .addCase(removeSkill.pending, (state) => {
         state.loadingRemove = true;
@@ -208,6 +265,6 @@ const skillSlice = createSlice({
   },
 });
 
-export const { clearSkillErrors } = skillSlice.actions;
+export const { clearSkillErrors, clearPreview } = skillSlice.actions;
 
 export default skillSlice.reducer;

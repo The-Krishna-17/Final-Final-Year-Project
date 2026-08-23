@@ -128,8 +128,8 @@ export default function PublicProfilePage() {
         ).toFixed(1)
       : "No ratings";
 
-  const getDifficultyColor = (diff: string) => {
-    switch (diff?.toLowerCase()) {
+  const getLevelColor = (level: string) => {
+    switch (level?.toLowerCase()) {
       case "advanced":
         return "bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800";
       case "intermediate":
@@ -489,12 +489,14 @@ export default function PublicProfilePage() {
                       {skillProfile.offerSkills.map((skill: any) => (
                         <div
                           key={skill._id}
-                          className={`px-3 py-1.5 rounded-full border text-xs font-medium flex items-center gap-1.5 ${getDifficultyColor(skill.difficulty)}`}
+                          className={`px-3 py-1.5 rounded-full border text-xs font-medium flex items-center gap-1.5 ${getLevelColor(skill.currentLevel)}`}
                         >
-                          {skill.primarySkill.name}
-                          <span className="opacity-60 text-[10px] uppercase tracking-wider">
-                            {skill.difficulty}
-                          </span>
+                          {skill.ai?.primarySkill || skill.rawInput}
+                          {skill.currentLevel && (
+                            <span className="opacity-60 text-[10px] uppercase tracking-wider">
+                              {skill.currentLevel}
+                            </span>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -521,7 +523,7 @@ export default function PublicProfilePage() {
                           key={skill._id}
                           className="px-3 py-1.5 rounded-full border border-border/60 bg-muted/50 text-foreground text-xs font-medium"
                         >
-                          {skill.primarySkill.name}
+                          {skill.ai?.primarySkill || skill.rawInput}
                         </div>
                       ))}
                     </div>
