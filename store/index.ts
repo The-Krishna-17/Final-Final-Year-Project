@@ -6,6 +6,7 @@ import matchReducer from "./features/matches/matchSlice";
 import meetingReducer from "./features/meetings/meetingSlice";
 import swapReducer from "./features/swaps/swapSlice";
 import notificationReducer from "./features/notifications/notificationSlice";
+import adminReducer from "./features/admin/adminSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     meetings: meetingReducer,
     swaps: swapReducer,
     notifications: notificationReducer,
+    admin: adminReducer,
   },
 });
 

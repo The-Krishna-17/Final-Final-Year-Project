@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "@/utils/axiosInstance";
 import { io } from "socket.io-client";
 import { SOCKET_URL } from "@/utils/socketUrl";
+import { TbLayoutDashboard } from "react-icons/tb";
 
 export function AppSideBar() {
   const dispatch = useAppDispatch();
@@ -65,18 +66,21 @@ export function AppSideBar() {
   useEffect(() => {
     if (!user) return;
 
-    const socket = io(SOCKET_URL, { 
-      path: "/socket.io/", 
+    const socket = io(SOCKET_URL, {
+      path: "/socket.io/",
       withCredentials: true,
-      transports: ["websocket"]
+      transports: ["websocket"],
     });
 
-    socket.on("messages:unread-count", ({ unreadCount }: { unreadCount: number }) => {
-      // Only update if user is NOT currently on the messages page
-      if (path !== "/messages") {
-        setUnreadMessages(unreadCount);
-      }
-    });
+    socket.on(
+      "messages:unread-count",
+      ({ unreadCount }: { unreadCount: number }) => {
+        // Only update if user is NOT currently on the messages page
+        if (path !== "/messages") {
+          setUnreadMessages(unreadCount);
+        }
+      },
+    );
 
     return () => {
       socket.disconnect();
@@ -130,6 +134,22 @@ export function AppSideBar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+
+              {(user?.role === "admin" || user?.role === "moderator") && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      href="/admin"
+                      className={`flex items-center justify-between w-full ${path.startsWith("/admin") ? "text-primary" : ""}`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <TbLayoutDashboard />
+                        <span className="text-base">Admin Console</span>
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

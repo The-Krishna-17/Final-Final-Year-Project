@@ -26,7 +26,12 @@ const page = () => {
     e.preventDefault();
     const result = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(result)) {
-      router.push("/dashboard");
+      const role = result.payload.data?.user?.role;
+      if (role === "admin" || role === "moderator") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
     }
   };
 

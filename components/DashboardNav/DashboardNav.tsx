@@ -229,6 +229,17 @@ const DashboardNav = () => {
                 className="w-fit mr-4 space-y-1 p-2"
                 align="start"
               >
+                {(user?.role === "admin" || user?.role === "moderator") && (
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href="/admin"
+                      className="flex items-center gap-2 cursor-pointer text-amber-500 font-semibold"
+                    >
+                      <TbLayoutDashboard />
+                      Admin Console
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem asChild>
                   <Link
                     href="/dashboard"

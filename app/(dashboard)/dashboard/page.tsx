@@ -41,6 +41,7 @@ import {
   MailCheck,
   Image,
   Zap,
+  ShieldAlert,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -380,8 +381,15 @@ export default function DashboardPage() {
   }, [meetings]);
 
   const topMatches = useMemo(() => {
-    return [...recommendedMatches, ...mutualMatches]
-      .sort((a, b) => b.totalScore - a.totalScore)
+    const combined = [...recommendedMatches, ...mutualMatches];
+    const uniqueMap = new Map();
+    combined.forEach((m) => {
+      if (m.profileId && !uniqueMap.has(m.profileId)) {
+        uniqueMap.set(m.profileId, m);
+      }
+    });
+    return Array.from(uniqueMap.values())
+      .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0))
       .slice(0, 5);
   }, [recommendedMatches, mutualMatches]);
 
@@ -561,8 +569,8 @@ export default function DashboardPage() {
                   className="flex items-center overflow-x-auto gap-4"
                   style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
                 >
-                  {topMatches.map((match) => (
-                    <MatchCard key={match.profileId} match={match} />
+                  {topMatches.map((match, idx) => (
+                    <MatchCard key={match.profileId || idx} match={match} />
                   ))}
                 </div>
               )}
