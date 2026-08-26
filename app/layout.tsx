@@ -13,9 +13,12 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://skillsxchange.vercel.app"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://skillsxchange.vercel.app",
+  ),
   title: {
-    default: "SkillsXchange (Skill Exchange) - Peer-to-Peer Skill Swap & Career Platform",
+    default:
+      "SkillsXchange (Skill Exchange) - Peer-to-Peer Skill Swap & Career Platform",
     template: "%s | SkillsXchange",
   },
   description:
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "nQFyYMiJ3L0r68BX55J0q9nRX3_NmlIOYvReJQgGjQE",
+    google: "xec_820PTw_pWoSRVR9whLuFNJsIhn-NLhgtasY5Nl0",
   },
   openGraph: {
     type: "website",
@@ -94,7 +97,10 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${poppins.variable} ${poppins.className} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${poppins.className} h-full antialiased`}
+    >
       <head>
         <script
           type="application/ld+json"
