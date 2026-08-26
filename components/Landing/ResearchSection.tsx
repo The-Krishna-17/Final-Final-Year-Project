@@ -39,7 +39,7 @@ const ResearchSection = () => {
                   <span className="font-semibold text-primary">
                     AI-Driven Matching:
                   </span>{" "}
-                  Groq SDK evaluates your skills to find the perfect learning partner instantly.
+                  OpenRouter AI extracts structured skill metadata, then a scoring engine finds the best learning partners instantly.
                 </p>
               </div>
 

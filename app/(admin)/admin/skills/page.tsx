@@ -96,7 +96,7 @@ export default function AdminSkillsPage() {
       </div>
 
       {/* Domain Distribution Cards */}
-      <Card className="border-border">
+      <Card className="border-border overflow-hidden">
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <RiFolder3Line className="text-primary" />
@@ -123,7 +123,7 @@ export default function AdminSkillsPage() {
       </Card>
 
       {/* Low-Confidence AI Skill Queue */}
-      <Card className="border-border">
+      <Card className="border-border overflow-hidden">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div>
@@ -139,7 +139,7 @@ export default function AdminSkillsPage() {
         </CardHeader>
         <CardContent className="p-0">
           {lowConfidenceQueue.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground space-y-1">
+            <div className="py-16 text-center text-muted-foreground space-y-1">
               <RiCheckDoubleLine className="text-4xl text-green-500 mx-auto mb-2 opacity-80" />
               <p className="font-semibold text-sm">All skills classified with high confidence!</p>
               <p className="text-xs">No pending items in the AI review queue.</p>
@@ -191,7 +191,7 @@ export default function AdminSkillsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-7 text-xs gap-1"
+                          className="h-7 text-xs gap-1 cursor-pointer"
                           onClick={() => openOverrideModal(item)}
                         >
                           <RiEditBoxLine /> Override
@@ -230,7 +230,7 @@ export default function AdminSkillsPage() {
                 value={primarySkillInput}
                 onChange={(e) => setPrimarySkillInput(e.target.value)}
                 placeholder="e.g. React.js"
-                className="h-9 text-xs"
+                className="h-9 text-xs bg-background"
               />
             </div>
 
@@ -240,7 +240,7 @@ export default function AdminSkillsPage() {
                 value={domainInput}
                 onChange={(e) => setDomainInput(e.target.value)}
                 placeholder="e.g. Technology & Engineering"
-                className="h-9 text-xs"
+                className="h-9 text-xs bg-background"
               />
             </div>
 
@@ -250,16 +250,16 @@ export default function AdminSkillsPage() {
                 value={categoryInput}
                 onChange={(e) => setCategoryInput(e.target.value)}
                 placeholder="e.g. Frontend Development"
-                className="h-9 text-xs"
+                className="h-9 text-xs bg-background"
               />
             </div>
           </div>
 
           <DialogFooter className="gap-2 sm:justify-end">
-            <Button variant="outline" size="sm" className="rounded-lg" onClick={() => setIsEditOpen(false)}>
+            <Button variant="outline" size="sm" className="cursor-pointer" onClick={() => setIsEditOpen(false)}>
               Cancel
             </Button>
-            <Button size="sm" className="rounded-lg" onClick={handleSaveOverride}>
+            <Button size="sm" className="cursor-pointer" onClick={handleSaveOverride}>
               Save & Verify
             </Button>
           </DialogFooter>

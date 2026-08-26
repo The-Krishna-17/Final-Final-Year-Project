@@ -112,11 +112,11 @@ export const toggleAdminUserVerification = createAsyncThunk<
 
 export const deleteAdminUser = createAsyncThunk<
   string,
-  string,
+  { userId: string; reason: string },
   { rejectValue: string }
->("admin/deleteUser", async (userId, thunkAPI) => {
+>("admin/deleteUser", async ({ userId, reason }, thunkAPI) => {
   try {
-    await axiosInstance.delete(`/admin/users/${userId}`);
+    await axiosInstance.delete(`/admin/users/${userId}`, { data: { reason } });
     return userId;
   } catch (err) {
     return thunkAPI.rejectWithValue(extractError(err, "Failed to delete user"));
@@ -190,11 +190,11 @@ export const fetchAdminReviews = createAsyncThunk<
 
 export const deleteAdminReview = createAsyncThunk<
   string,
-  string,
+  { reviewId: string; reason: string },
   { rejectValue: string }
->("admin/deleteReview", async (reviewId, thunkAPI) => {
+>("admin/deleteReview", async ({ reviewId, reason }, thunkAPI) => {
   try {
-    await axiosInstance.delete(`/admin/reviews/${reviewId}`);
+    await axiosInstance.delete(`/admin/reviews/${reviewId}`, { data: { reason } });
     return reviewId;
   } catch (err) {
     return thunkAPI.rejectWithValue(extractError(err, "Failed to delete review"));

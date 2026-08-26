@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchOverviewStats } from "@/store/features/admin/adminSlice";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import {
   RiUser3Line,
@@ -28,9 +29,9 @@ export default function AdminOverviewPage() {
 
   if (loadingOverview) {
     return (
-      <div className="flex flex-col items-center justify-center py-32 text-muted-foreground gap-3">
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm font-medium">Loading platform analytics...</p>
+        <p className="text-xs font-medium">Loading platform analytics...</p>
       </div>
     );
   }
@@ -39,12 +40,13 @@ export default function AdminOverviewPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-muted-foreground gap-3 text-center">
         <p className="text-sm font-medium text-destructive">Unable to retrieve platform overview analytics.</p>
-        <button
+        <Button
           onClick={() => dispatch(fetchOverviewStats())}
-          className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90"
+          size="sm"
+          className="cursor-pointer"
         >
           Retry Fetching Data
-        </button>
+        </Button>
       </div>
     );
   }
@@ -58,7 +60,7 @@ export default function AdminOverviewPage() {
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             <RiLineChartLine className="text-primary" />
@@ -151,7 +153,7 @@ export default function AdminOverviewPage() {
       {/* Top Skills Supply vs Demand Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Top Offered Skills */}
-        <Card className="border-border">
+        <Card className="border-border overflow-hidden">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <RiPresentationLine className="text-primary" />
@@ -186,7 +188,7 @@ export default function AdminOverviewPage() {
         </Card>
 
         {/* Top Wanted Skills */}
-        <Card className="border-border">
+        <Card className="border-border overflow-hidden">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
               <RiBookOpenLine className="text-amber-500" />
@@ -224,7 +226,7 @@ export default function AdminOverviewPage() {
       {/* Lifecycle Distributions Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Swap Lifecycle Breakdown */}
-        <Card className="border-border">
+        <Card className="border-border overflow-hidden">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold">Skill Swap Status Breakdown</CardTitle>
             <CardDescription className="text-xs">
@@ -254,7 +256,7 @@ export default function AdminOverviewPage() {
         </Card>
 
         {/* Video Call Meetings Distribution */}
-        <Card className="border-border">
+        <Card className="border-border overflow-hidden">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold">Video Meetings Distribution</CardTitle>
             <CardDescription className="text-xs">

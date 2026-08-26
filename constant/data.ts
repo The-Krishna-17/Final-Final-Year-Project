@@ -19,6 +19,9 @@ import {
   FaStar,
   FaChartLine,
   FaQuestionCircle,
+  FaBlog,
+  FaBriefcase,
+  FaPaperclip,
 } from "react-icons/fa";
 import {
   SiNextdotjs,
@@ -85,13 +88,13 @@ export const PROCESS_STEPS = [
   {
     title: "Get Matched by AI",
     description:
-      "Our hybrid recommendation engine uses content based and collaborative filtering to suggest the most compatible skill exchange partners with a plain language explanation of why.",
+      "AI extracts structured skill metadata using OpenRouter models. A scoring engine then ranks partners by skill similarity, domain overlap, level compatibility, and mutual interest.",
     icon: FaRobot,
   },
   {
     title: "Chat & Schedule",
     description:
-      "Connect in real time via built in Socket.io messaging. Propose, accept, and schedule exchange sessions directly within the platform.",
+      "Connect in real time via built-in Socket.io messaging with file sharing. Propose, accept, and schedule exchange sessions directly within the platform.",
     icon: FaComments,
   },
   {
@@ -109,9 +112,9 @@ export const FEATURES = [
     icon: FaBrain,
     title: "AI-Powered Matching",
     description:
-      "Our backend leverages Groq AI and intelligent algorithms to parse your offered and wanted skills, suggesting highly compatible learning partners.",
-    rating: "98%",
-    metricLabel: "Match Accuracy",
+      "OpenRouter AI extracts structured skill metadata, then a scoring engine ranks partners by skill similarity, domain overlap, level compatibility, and mutual interest.",
+    rating: "AI",
+    metricLabel: "Skill Extraction",
   },
   {
     id: "Video",
@@ -120,8 +123,8 @@ export const FEATURES = [
     title: "In-Browser Video Meetings",
     description:
       "Start face-to-face learning sessions directly in your browser without downloading apps. Powered by Jitsi React SDK and JaaS tokens.",
-    rating: "100%",
-    metricLabel: "Seamless Experience",
+    rating: "JaaS",
+    metricLabel: "WebRTC Video",
   },
   {
     id: "Chat",
@@ -129,9 +132,9 @@ export const FEATURES = [
     icon: FaComments,
     title: "Real-Time Messaging",
     description:
-      "Bidirectional Socket.io-powered chat between matched users. Share text and attachments instantly inside the platform.",
-    rating: "<50ms",
-    metricLabel: "Message Latency",
+      "Bidirectional Socket.io-powered chat between matched users. Share text and file attachments (up to 15 MB) instantly inside the platform.",
+    rating: "Live",
+    metricLabel: "Socket.IO",
   },
   {
     id: "Schedule",
@@ -142,6 +145,36 @@ export const FEATURES = [
       "Set your availability, propose time slots, and confirm video sessions in-platform. All your upcoming meetings in one dashboard.",
     rating: "24/7",
     metricLabel: "Availability",
+  },
+  {
+    id: "Blogs",
+    priority: "Community",
+    icon: FaBlog,
+    title: "Blogs & Insights",
+    description:
+      "Read and write articles on peer learning, skill exchange strategies, and career growth. Share your expertise with the community.",
+    rating: "Live",
+    metricLabel: "Community Driven",
+  },
+  {
+    id: "Jobs",
+    priority: "Career",
+    icon: FaBriefcase,
+    title: "Jobs & Placements",
+    description:
+      "Explore internships, full-time roles, and placements matched to your skill set. Find opportunities that align with your career goals.",
+    rating: "Live",
+    metricLabel: "Opportunities",
+  },
+  {
+    id: "Files",
+    priority: "Productivity",
+    icon: FaPaperclip,
+    title: "File Sharing",
+    description:
+      "Share images, documents, presentations, and more in your chat conversations. Securely stored on Cloudinary and always accessible.",
+    rating: "15MB",
+    metricLabel: "Max File Size",
   },
   {
     id: "Profile",
@@ -166,11 +199,11 @@ export const FEATURES = [
 ];
 
 export const RESEARCH_STATS = [
-  { value: "AI Match", label: "Groq-powered compatibility engine" },
-  { value: "WebRTC", label: "High-quality video meetings via Jitsi" },
-  { value: "Socket.IO", label: "Real-time bidirectional messaging" },
-  { value: "Next.js", label: "App Router & SSR performance" },
-  { value: "JWT", label: "Secure token-based authentication" },
+  { value: "AI Extract", label: "OpenRouter-powered skill metadata extraction" },
+  { value: "WebRTC", label: "High-quality video meetings via Jitsi & JaaS" },
+  { value: "Socket.IO", label: "Real-time bidirectional messaging & alerts" },
+  { value: "Next.js 16", label: "App Router with TypeScript & Tailwind v4" },
+  { value: "JWT", label: "Secure token-based auth with refresh rotation" },
 ];
 
 export const TECH_STACK = [
@@ -243,11 +276,11 @@ export const ARCHITECTURE = [
     title: "AI & Integrations",
     icon: FaBrain,
     points: [
-      "Groq AI SDK for smart matching",
-      "JaaS 8x8 integration for video",
+      "OpenRouter AI for skill extraction",
+      "Custom scoring engine for partner matching",
+      "JaaS 8x8 for video meetings",
+      "Cloudinary for file storage",
       "Resend SMTP for transactional email",
-      "Zod for request validation",
-      "Helmet & rate limiting security",
     ],
   },
 ];
@@ -266,7 +299,7 @@ export const FAQS = [
   {
     question: "How does matching work?",
     answer:
-      "We use a hybrid recommendation system combining content-based filtering (for new users) and collaborative filtering (for active users) to suggest the best skill partners.",
+      "When you add a skill, AI extracts structured metadata (domain, category, topics, technologies). The matching engine then scores potential partners by skill similarity, domain overlap, level compatibility, and mutual interest — no collaborative filtering needed.",
   },
   {
     question: "Can I trust other users?",
@@ -277,6 +310,21 @@ export const FAQS = [
     question: "Do I need to be an expert to teach?",
     answer:
       "No. You only need to be one step ahead of someone else. Teaching reinforces your own understanding while helping others grow.",
+  },
+  {
+    question: "What are Blogs on SkillXchange?",
+    answer:
+      "Blogs let you read and write articles on peer learning, skill exchange strategies, and career growth. Share your knowledge with the community and learn from others' experiences.",
+  },
+  {
+    question: "How do Jobs & Placements work?",
+    answer:
+      "SkillXchange curates internship, full-time, and placement opportunities matched to your skill set. Browse openings and apply directly through the platform.",
+  },
+  {
+    question: "Can I share files in chat?",
+    answer:
+      "Yes. You can share images, documents, presentations, and other files (up to 15 MB) directly in your conversations with skill exchange partners.",
   },
 ];
 

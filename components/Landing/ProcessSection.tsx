@@ -82,11 +82,11 @@ const ProcessSection = () => {
                       <FaUsers className="text-lg text-primary" />
                     </div>
 
-                    <h3 className="text-3xl font-semibold">100+</h3>
+                    <h3 className="text-3xl font-semibold">Free</h3>
                   </div>
 
                   <p className="mt-1 text-sm text-primary-foreground">
-                    Members Joined
+                    Always & Forever
                   </p>
                 </div>
 
@@ -98,11 +98,11 @@ const ProcessSection = () => {
                       <FaExchangeAlt className="text-lg text-primary" />
                     </div>
 
-                    <h3 className="text-3xl font-semibold">50+</h3>
+                    <h3 className="text-3xl font-semibold">P2P</h3>
                   </div>
 
                   <p className="mt-1 text-sm text-primary-foreground">
-                    Skill Exchanges
+                    Skill Exchange Model
                   </p>
                 </div>
               </div>

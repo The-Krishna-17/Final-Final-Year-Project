@@ -7,6 +7,8 @@ import meetingReducer from "./features/meetings/meetingSlice";
 import swapReducer from "./features/swaps/swapSlice";
 import notificationReducer from "./features/notifications/notificationSlice";
 import adminReducer from "./features/admin/adminSlice";
+import blogReducer from "./features/blogs/blogSlice";
+import jobReducer from "./features/jobs/jobSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,8 @@ export const store = configureStore({
     swaps: swapReducer,
     notifications: notificationReducer,
     admin: adminReducer,
+    blogs: blogReducer,
+    jobs: jobReducer,
   },
 });
 

@@ -8,6 +8,8 @@ import {
   ArrowLeftRight,
   UserCheck,
   Bell,
+  BookOpen,
+  Briefcase,
 } from "lucide-react";
 
 export const NAV_ITEMS = ({
@@ -55,5 +57,7 @@ export const NAV_ITEMS = ({
     badge: unreadNotifications > 0 ? unreadNotifications : null,
     badgeColor: "bg-destructive",
   },
+  { href: "/blogs", icon: BookOpen, label: "Blogs" },
+  { href: "/jobs", icon: Briefcase, label: "Jobs / Placements" },
   { href: "/profile", icon: User, label: "Profile" },
 ];

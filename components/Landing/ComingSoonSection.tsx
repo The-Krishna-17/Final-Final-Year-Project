@@ -3,35 +3,55 @@
 import Layout from "../Layout/Layout";
 import { motion } from "framer-motion";
 import { Card } from "../ui/card";
-import { Button } from "../ui/button";
-import { FaRocket, FaClock, FaBlog, FaBriefcase } from "react-icons/fa";
+import { FaBlog, FaBriefcase, FaBell, FaPaperclip } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 import { FaArrowRightLong } from "react-icons/fa6";
 
-const comingFeatures = [
+const platformFeatures = [
   {
     title: "Blogs & Insights",
     description:
-      "Articles on peer-to-peer learning, AI-powered matching, and skill exchange tips from the SkillXchange team.",
+      "Read and write articles on peer-to-peer learning, AI-powered matching, and skill exchange tips. Share your knowledge with the community.",
     icon: FaBlog,
+    link: "/blogs",
+    tag: "Live Now",
   },
   {
     title: "Internships & Jobs",
     description:
-      "Explore internship opportunities and job openings. Find roles that match your skills and career goals.",
+      "Explore internship opportunities and job openings. Find roles that match your skills and career goals, all in one place.",
     icon: FaBriefcase,
+    link: "/jobs",
+    tag: "Live Now",
+  },
+  {
+    title: "Live Notifications",
+    description:
+      "Stay updated with instant notifications for swap requests, meeting invitations, messages, and platform updates — all in real time.",
+    icon: FaBell,
+    link: "/notifications",
+    tag: "Live Now",
+  },
+  {
+    title: "File Sharing in Chat",
+    description:
+      "Share images, documents, presentations, and more directly in your conversations. Securely stored and accessible anytime.",
+    icon: FaPaperclip,
+    link: "/messages",
+    tag: "Live Now",
   },
 ];
 
-const ComingSoonSection = () => {
+const PlatformFeaturesSection = () => {
   const router = useRouter();
 
   return (
     <Layout>
-      <section id="coming-soon" className="space-y-6">
+      <section id="platform" className="space-y-6">
         <div className="text-center space-y-3 mb-8">
           <p className="text-sm uppercase tracking-widest text-muted-foreground">
-            Comming soon
+            Platform Features
           </p>
 
           <motion.h2
@@ -41,7 +61,7 @@ const ComingSoonSection = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-3xl font-bold leading-tight"
           >
-            Exciting new features are on the way
+            Everything you need to learn and grow
           </motion.h2>
 
           <motion.p
@@ -51,13 +71,14 @@ const ComingSoonSection = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-muted-foreground max-w-2xl mx-auto"
           >
-            We are building features to help you learn, grow, and advance your
-            career. Here is a preview of what is coming next.
+            Beyond skill matching and video sessions, SkillXchange gives you a
+            complete ecosystem to share knowledge, find opportunities, and stay
+            connected.
           </motion.p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {comingFeatures.map((feature, idx) => {
+          {platformFeatures.map((feature, idx) => {
             const Icon = feature.icon;
             return (
               <motion.div
@@ -67,21 +88,31 @@ const ComingSoonSection = () => {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5, delay: 0.1 * idx }}
               >
-                <Card className="group h-full p-6 transition-all hover:shadow-lg border-dashed">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 mb-4">
-                    <Icon className="text-xl" />
+                <Card className="group h-full p-6 transition-all hover:shadow-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                      <Icon className="text-xl" />
+                    </div>
+                    <span className="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950 px-2 py-1 rounded-full">
+                      {feature.tag}
+                    </span>
                   </div>
 
-                  <h3 className="text-xl font-semibold">{feature.title}</h3>
+                  <h3 className="text-xl font-semibold mt-4">{feature.title}</h3>
 
                   <p className="text-sm text-muted-foreground mt-2">
                     {feature.description}
                   </p>
 
-                  <div className="mt-4 flex items-center gap-1 text-xs text-primary font-medium">
-                    <FaClock />
-                    <span>Launching Soon</span>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-4 gap-1 group/btn"
+                    onClick={() => router.push(feature.link)}
+                  >
+                    Explore
+                    <FaArrowRightLong className="transition-transform group-hover/btn:translate-x-1" />
+                  </Button>
                 </Card>
               </motion.div>
             );
@@ -92,4 +123,4 @@ const ComingSoonSection = () => {
   );
 };
 
-export default ComingSoonSection;
+export default PlatformFeaturesSection;

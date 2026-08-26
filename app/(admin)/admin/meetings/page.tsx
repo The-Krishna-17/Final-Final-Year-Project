@@ -26,7 +26,7 @@ export default function AdminMeetingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <RiVideoChatLine className="text-purple-500" />
+          <RiVideoChatLine className="text-primary" />
           Video Meetings & Call Logs
         </h1>
         <p className="text-sm text-muted-foreground mt-1.5">

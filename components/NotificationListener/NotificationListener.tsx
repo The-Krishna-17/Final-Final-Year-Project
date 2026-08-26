@@ -17,6 +17,7 @@ import {
   ArrowLeftRight,
   Video,
   CheckCircle2,
+  ShieldAlert,
 } from "lucide-react";
 
 export function NotificationListener() {
@@ -47,6 +48,7 @@ export function NotificationListener() {
       if (notification.type === "NEW_MESSAGE") Icon = MessageSquare;
       if (notification.type.startsWith("SWAP")) Icon = ArrowLeftRight;
       if (notification.type.startsWith("MEETING")) Icon = Video;
+      if (notification.type.startsWith("ADMIN_")) Icon = ShieldAlert;
 
       toast.custom(
         (t) => (

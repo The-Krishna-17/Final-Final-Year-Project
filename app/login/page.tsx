@@ -6,14 +6,17 @@ import { Button } from "@/components/ui/button";
 import loginImg from "@/public/login.webp";
 import Image from "next/image";
 import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { loginUser } from "@/store/features/auth/authSlice";
 
 const page = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const { loadingLogin, errorLogin } = useAppSelector((state) => state.auth);
+
+  const redirectTo = searchParams.get("from") || "/dashboard";
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +33,7 @@ const page = () => {
       if (role === "admin" || role === "moderator") {
         router.push("/admin");
       } else {
-        router.push("/dashboard");
+        router.push(redirectTo);
       }
     }
   };

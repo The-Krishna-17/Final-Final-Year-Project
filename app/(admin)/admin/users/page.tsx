@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -58,6 +59,7 @@ export default function AdminUsersPage() {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(null);
   const [modalLoading, setModalLoading] = useState(false);
+  const [deleteReason, setDeleteReason] = useState("");
 
   const loadData = () => {
     dispatch(
@@ -87,6 +89,7 @@ export default function AdminUsersPage() {
     setModalType(null);
     setConfirmTarget(null);
     setModalLoading(false);
+    setDeleteReason("");
   };
 
   const handleRoleChange = async (userId: string, newRole: "user" | "admin" | "moderator") => {
@@ -100,10 +103,14 @@ export default function AdminUsersPage() {
 
   const handleConfirm = async () => {
     if (!confirmTarget || !modalType) return;
+    if (modalType === "delete" && !deleteReason.trim()) {
+      toast.error("Please provide a valid reason for deletion.");
+      return;
+    }
     setModalLoading(true);
     try {
       if (modalType === "delete") {
-        await dispatch(deleteAdminUser(confirmTarget.userId)).unwrap();
+        await dispatch(deleteAdminUser({ userId: confirmTarget.userId, reason: deleteReason.trim() })).unwrap();
         toast.success("User account deleted");
       } else if (modalType === "lock") {
         await dispatch(toggleAdminUserLock({ userId: confirmTarget.userId, lock: true })).unwrap();
@@ -212,7 +219,7 @@ export default function AdminUsersPage() {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-medium focus:outline-hidden"
+            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-semibold focus:outline-hidden cursor-pointer"
           >
             <option value="">All Roles</option>
             <option value="user">User</option>
@@ -223,7 +230,7 @@ export default function AdminUsersPage() {
           <select
             value={verifiedFilter}
             onChange={(e) => setVerifiedFilter(e.target.value)}
-            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-medium focus:outline-hidden"
+            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-semibold focus:outline-hidden cursor-pointer"
           >
             <option value="">All Verifications</option>
             <option value="true">Verified Only</option>
@@ -327,7 +334,7 @@ export default function AdminUsersPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
                               title={u.isEmailVerified ? "Revoke Verification" : "Mark Verified"}
                               onClick={() =>
                                 openModal(
@@ -335,7 +342,7 @@ export default function AdminUsersPage() {
                                   u._id,
                                   fullName,
                                   u.email,
-                                  u.avatar
+                                  u.avatar ?? undefined
                                 )
                               }
                             >
@@ -346,7 +353,7 @@ export default function AdminUsersPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
                               title={isLocked ? "Unlock Account" : "Lock Account"}
                               onClick={() =>
                                 openModal(
@@ -354,7 +361,7 @@ export default function AdminUsersPage() {
                                   u._id,
                                   fullName,
                                   u.email,
-                                  u.avatar
+                                  u.avatar ?? undefined
                                 )
                               }
                             >
@@ -369,9 +376,9 @@ export default function AdminUsersPage() {
                             <Button
                               size="icon"
                               variant="ghost"
-                              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                              className="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer"
                               title="Delete Account"
-                              onClick={() => openModal("delete", u._id, fullName, u.email, u.avatar)}
+                              onClick={() => openModal("delete", u._id, fullName, u.email, u.avatar ?? undefined)}
                             >
                               <RiDeleteBinLine />
                             </Button>
@@ -419,7 +426,7 @@ export default function AdminUsersPage() {
 
       {/* Unified Confirm Action Modal */}
       <Dialog open={!!modalType} onOpenChange={(open) => !open && closeModal()}>
-        <DialogContent className="sm:max-w-md rounded-2xl">
+        <DialogContent className="sm:max-w-md">
           {modalConfig && (
             <>
               <DialogHeader>
@@ -454,14 +461,29 @@ export default function AdminUsersPage() {
                 </div>
               )}
 
+              {/* Reason textarea (only for delete) */}
+              {modalType === "delete" && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Reason for Deletion *
+                  </label>
+                  <Textarea
+                    placeholder="Provide a valid reason for deleting this user account..."
+                    value={deleteReason}
+                    onChange={(e) => setDeleteReason(e.target.value)}
+                    className="min-h-[80px] text-sm"
+                  />
+                </div>
+              )}
+
               <DialogFooter className="gap-2 sm:justify-end">
-                <Button variant="outline" size="sm" className="rounded-lg" onClick={closeModal} disabled={modalLoading}>
+                <Button variant="outline" size="sm" className="cursor-pointer" onClick={closeModal} disabled={modalLoading}>
                   Cancel
                 </Button>
                 <Button
                   size="sm"
                   variant={modalConfig.confirmVariant}
-                  className="rounded-lg"
+                  className="cursor-pointer"
                   onClick={handleConfirm}
                   disabled={modalLoading}
                 >

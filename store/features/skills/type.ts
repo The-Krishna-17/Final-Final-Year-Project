@@ -165,6 +165,7 @@ export interface AddSkillPayload {
   preferredSessionMode?: string;
   availability?: string;
   preferredLanguage?: string;
+  ai?: AISkillData;
 }
 
 export interface UpdateSkillPayload {

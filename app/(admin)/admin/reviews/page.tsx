@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchAdminReviews, deleteAdminReview } from "@/store/features/admin/adminSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -14,22 +23,42 @@ import {
   RiDeleteBinLine,
   RiShieldCheckLine,
 } from "react-icons/ri";
+import { AdminReview } from "@/store/features/admin/adminType";
 
 export default function AdminReviewsPage() {
   const dispatch = useAppDispatch();
   const { reviews = [], loadingReviews } = useAppSelector((s) => s.admin);
 
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<AdminReview | null>(null);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
   useEffect(() => {
     dispatch(fetchAdminReviews());
   }, [dispatch]);
 
-  const handleDelete = async (reviewId: string) => {
-    if (!confirm("Are you sure you want to delete this review?")) return;
+  const handleDeleteClick = (review: AdminReview) => {
+    setSelectedReview(review);
+    setDeleteReason("");
+    setIsDeleteOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedReview) return;
+    if (!deleteReason.trim()) {
+      toast.error("Please provide a valid reason for deletion.");
+      return;
+    }
+    setDeleteLoading(true);
     try {
-      await dispatch(deleteAdminReview(reviewId)).unwrap();
+      await dispatch(deleteAdminReview({ reviewId: selectedReview._id, reason: deleteReason.trim() })).unwrap();
       toast.success("Review deleted successfully");
+      setIsDeleteOpen(false);
     } catch (err: any) {
       toast.error(err || "Failed to delete review");
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -124,7 +153,7 @@ export default function AdminReviewsPage() {
 
                         {/* Feedback text */}
                         <td className="px-4 py-3 max-w-sm">
-                          <p className="text-foreground leading-relaxed italic">"{r.feedback}"</p>
+                          <p className="text-foreground leading-relaxed italic">&quot;{r.feedback}&quot;</p>
                         </td>
 
                         {/* Date */}
@@ -137,9 +166,9 @@ export default function AdminReviewsPage() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                            className="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer"
                             title="Delete Review"
-                            onClick={() => handleDelete(r._id)}
+                            onClick={() => handleDeleteClick(r)}
                           >
                             <RiDeleteBinLine />
                           </Button>
@@ -153,6 +182,60 @@ export default function AdminReviewsPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RiDeleteBinLine className="w-5 h-5 text-red-500" /> Delete Review
+            </DialogTitle>
+            <DialogDescription className="text-sm">
+              Are you sure you want to delete this review? This action is permanent and cannot be undone. Both the reviewer and reviewee will be notified.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Review preview */}
+          {selectedReview && (
+            <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1.5">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">
+                  {selectedReview.reviewer?.firstName} {selectedReview.reviewer?.lastName}
+                </span>
+                <RiStarFill className="w-3 h-3 text-yellow-500" />
+                <span>{selectedReview.rating}/5</span>
+                <span>&rarr;</span>
+                <span className="font-semibold text-foreground">
+                  {selectedReview.reviewee?.firstName} {selectedReview.reviewee?.lastName}
+                </span>
+              </div>
+              <p className="text-xs italic text-muted-foreground">&quot;{selectedReview.feedback}&quot;</p>
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Reason for Deletion *
+            </label>
+            <Textarea
+              placeholder="Provide a valid reason for deleting this review..."
+              value={deleteReason}
+              onChange={(e) => setDeleteReason(e.target.value)}
+              className="min-h-[80px] text-sm"
+            />
+          </div>
+
+          <DialogFooter className="flex gap-2 sm:justify-end mt-2">
+            <Button variant="outline" size="sm" onClick={() => setIsDeleteOpen(false)} className="cursor-pointer" disabled={deleteLoading}>
+              Cancel
+            </Button>
+            <Button variant="destructive" size="sm" onClick={handleDeleteConfirm} className="cursor-pointer" disabled={deleteLoading}>
+              {deleteLoading ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
+              Delete Review
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

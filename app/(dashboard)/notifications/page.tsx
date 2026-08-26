@@ -21,6 +21,7 @@ import {
   MessageSquare,
   Sparkles,
   ExternalLink,
+  ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -61,6 +62,11 @@ export default function NotificationsPage() {
         return <Video className="w-4 h-4 text-info" />;
       case "NEW_MESSAGE":
         return <MessageSquare className="w-4 h-4 text-success" />;
+      case "ADMIN_USER_DELETED":
+      case "ADMIN_REVIEW_DELETED":
+      case "ADMIN_JOB_DELETED":
+      case "ADMIN_BLOG_DELETED":
+        return <ShieldAlert className="w-4 h-4 text-destructive" />;
       default:
         return <Sparkles className="w-4 h-4 text-primary" />;
     }

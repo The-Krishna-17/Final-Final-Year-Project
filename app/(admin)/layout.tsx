@@ -67,8 +67,8 @@ export default function AdminLayout({
           .
         </p>
         <div className="flex gap-3 mt-6">
-          <Button variant="outline" onClick={() => router.push("/dashboard")}>
-            Return to Dashboard
+          <Button variant="outline" onClick={() => router.push("/login")}>
+            Return to Login
           </Button>
         </div>
       </div>

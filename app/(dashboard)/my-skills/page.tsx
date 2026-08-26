@@ -363,6 +363,12 @@ const MySkillsPage = () => {
     }
   }, [dispatch, user]);
 
+  /** Re-fetch skills from server after a skill is saved — ensures UI is in sync */
+  const handleSkillSaved = () => {
+    const userId = user?._id || user?.id;
+    if (userId) dispatch(getUserSkills(userId.toString()));
+  };
+
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleRemoveSkill = async (
@@ -536,11 +542,13 @@ const MySkillsPage = () => {
         open={openWantDialog}
         onOpenChange={setOpenWantDialog}
         listType="want"
+        onSkillSaved={handleSkillSaved}
       />
       <AddSkillDialog
         open={openOfferDialog}
         onOpenChange={setOpenOfferDialog}
         listType="offer"
+        onSkillSaved={handleSkillSaved}
       />
 
       {/* ── Update Level Dialog ────────────────────────────────────────── */}

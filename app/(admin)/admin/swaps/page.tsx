@@ -75,7 +75,7 @@ export default function AdminSwapsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-medium focus:outline-hidden"
+            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-semibold focus:outline-hidden cursor-pointer"
           >
             <option value="">All Swap Statuses</option>
             <option value="pending">Pending</option>
@@ -194,7 +194,7 @@ export default function AdminSwapsPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-7 text-[11px] gap-1 text-green-600 border-green-500/30 hover:bg-green-500/10"
+                                className="h-7 text-[11px] gap-1 text-green-600 border-green-500/30 hover:bg-green-500/10 cursor-pointer"
                                 onClick={() => handleUpdateStatus(s._id, "completed")}
                               >
                                 <RiCheckDoubleLine /> Complete
@@ -204,7 +204,7 @@ export default function AdminSwapsPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="h-7 text-[11px] gap-1 text-red-600 border-red-500/30 hover:bg-red-500/10"
+                                className="h-7 text-[11px] gap-1 text-red-600 border-red-500/30 hover:bg-red-500/10 cursor-pointer"
                                 onClick={() => handleUpdateStatus(s._id, "cancelled")}
                               >
                                 <RiCloseCircleLine /> Cancel

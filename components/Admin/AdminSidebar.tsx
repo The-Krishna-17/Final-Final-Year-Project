@@ -10,7 +10,8 @@ import {
   RiStarLine,
   RiVideoChatLine,
   RiShieldFlashLine,
-  RiArrowLeftLine,
+  RiBriefcaseLine,
+  RiBookOpenLine,
 } from "react-icons/ri";
 
 const navItems = [
@@ -43,6 +44,16 @@ const navItems = [
     name: "Video Meetings Logs",
     href: "/admin/meetings",
     icon: RiVideoChatLine,
+  },
+  {
+    name: "Job Listings",
+    href: "/admin/jobs",
+    icon: RiBriefcaseLine,
+  },
+  {
+    name: "Blog Management",
+    href: "/admin/blogs",
+    icon: RiBookOpenLine,
   },
 ];
 
@@ -93,17 +104,6 @@ export function AdminSidebar() {
             );
           })}
         </nav>
-      </div>
-
-      {/* Footer Return Link */}
-      <div className="p-4 mt-auto">
-        <Link
-          href="/dashboard"
-          className="flex items-center justify-center gap-2 px-3 py-2 rounded-md border border-border bg-sidebar hover:bg-sidebar-accent hover:text-sidebar-accent-foreground text-sm font-medium transition-colors w-full"
-        >
-          <RiArrowLeftLine className="text-sm" />
-          App Dashboard
-        </Link>
       </div>
     </aside>
   );

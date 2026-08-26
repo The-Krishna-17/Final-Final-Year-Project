@@ -17,7 +17,11 @@ export interface AppNotification {
     | "MEETING_UPDATED"
     | "MEETING_CANCELLED"
     | "NEW_MESSAGE"
-    | "SYSTEM_ALERT";
+    | "SYSTEM_ALERT"
+    | "ADMIN_USER_DELETED"
+    | "ADMIN_REVIEW_DELETED"
+    | "ADMIN_JOB_DELETED"
+    | "ADMIN_BLOG_DELETED";
   title: string;
   message: string;
   link?: string;
