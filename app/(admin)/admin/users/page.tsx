@@ -48,7 +48,11 @@ interface ConfirmTarget {
 
 export default function AdminUsersPage() {
   const dispatch = useAppDispatch();
-  const { users = [], pagination, loadingUsers } = useAppSelector((s) => s.admin);
+  const {
+    users = [],
+    pagination,
+    loadingUsers,
+  } = useAppSelector((s) => s.admin);
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
@@ -57,7 +61,9 @@ export default function AdminUsersPage() {
 
   // Modal state
   const [modalType, setModalType] = useState<ModalType>(null);
-  const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<ConfirmTarget | null>(
+    null,
+  );
   const [modalLoading, setModalLoading] = useState(false);
   const [deleteReason, setDeleteReason] = useState("");
 
@@ -69,7 +75,7 @@ export default function AdminUsersPage() {
         search,
         role: roleFilter,
         isVerified: verifiedFilter,
-      })
+      }),
     );
   };
 
@@ -80,7 +86,13 @@ export default function AdminUsersPage() {
     return () => clearTimeout(timeout);
   }, [dispatch, search, roleFilter, verifiedFilter, page]);
 
-  const openModal = (type: ModalType, userId: string, name: string, email?: string, avatar?: string) => {
+  const openModal = (
+    type: ModalType,
+    userId: string,
+    name: string,
+    email?: string,
+    avatar?: string,
+  ) => {
     setModalType(type);
     setConfirmTarget({ userId, name, email, avatar });
   };
@@ -92,7 +104,10 @@ export default function AdminUsersPage() {
     setDeleteReason("");
   };
 
-  const handleRoleChange = async (userId: string, newRole: "user" | "admin" | "moderator") => {
+  const handleRoleChange = async (
+    userId: string,
+    newRole: "user" | "admin" | "moderator",
+  ) => {
     try {
       await dispatch(updateAdminUserRole({ userId, role: newRole })).unwrap();
       toast.success(`User role updated to ${newRole}`);
@@ -110,19 +125,38 @@ export default function AdminUsersPage() {
     setModalLoading(true);
     try {
       if (modalType === "delete") {
-        await dispatch(deleteAdminUser({ userId: confirmTarget.userId, reason: deleteReason.trim() })).unwrap();
+        await dispatch(
+          deleteAdminUser({
+            userId: confirmTarget.userId,
+            reason: deleteReason.trim(),
+          }),
+        ).unwrap();
         toast.success("User account deleted");
       } else if (modalType === "lock") {
-        await dispatch(toggleAdminUserLock({ userId: confirmTarget.userId, lock: true })).unwrap();
+        await dispatch(
+          toggleAdminUserLock({ userId: confirmTarget.userId, lock: true }),
+        ).unwrap();
         toast.success("Account locked");
       } else if (modalType === "unlock") {
-        await dispatch(toggleAdminUserLock({ userId: confirmTarget.userId, lock: false })).unwrap();
+        await dispatch(
+          toggleAdminUserLock({ userId: confirmTarget.userId, lock: false }),
+        ).unwrap();
         toast.success("Account unlocked");
       } else if (modalType === "verify") {
-        await dispatch(toggleAdminUserVerification({ userId: confirmTarget.userId, isVerified: true })).unwrap();
+        await dispatch(
+          toggleAdminUserVerification({
+            userId: confirmTarget.userId,
+            isVerified: true,
+          }),
+        ).unwrap();
         toast.success("Email marked as verified");
       } else if (modalType === "unverify") {
-        await dispatch(toggleAdminUserVerification({ userId: confirmTarget.userId, isVerified: false })).unwrap();
+        await dispatch(
+          toggleAdminUserVerification({
+            userId: confirmTarget.userId,
+            isVerified: false,
+          }),
+        ).unwrap();
         toast.success("Email marked as unverified");
       }
       closeModal();
@@ -196,7 +230,8 @@ export default function AdminUsersPage() {
             User Management & Moderation
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5">
-            Manage registered accounts, assign administrative roles, toggle account security locks, and verify user emails.
+            Manage registered accounts, assign administrative roles, toggle
+            account security locks, and verify user emails.
           </p>
         </div>
       </div>
@@ -250,7 +285,9 @@ export default function AdminUsersPage() {
           ) : !users || users.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-1">
               <p className="font-semibold text-sm">No users found</p>
-              <p className="text-xs">Try adjusting your search query or role filters.</p>
+              <p className="text-xs">
+                Try adjusting your search query or role filters.
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -267,11 +304,17 @@ export default function AdminUsersPage() {
                 <tbody className="divide-y divide-border">
                   {users.map((u) => {
                     const fullName = `${u.firstName} ${u.lastName}`.trim();
-                    const initials = `${u.firstName?.[0] || ""}${u.lastName?.[0] || ""}`.toUpperCase();
-                    const isLocked = !!(u.lockUntil && new Date(u.lockUntil) > new Date());
+                    const initials =
+                      `${u.firstName?.[0] || ""}${u.lastName?.[0] || ""}`.toUpperCase();
+                    const isLocked = !!(
+                      u.lockUntil && new Date(u.lockUntil) > new Date()
+                    );
 
                     return (
-                      <tr key={u._id} className="hover:bg-muted/20 transition-colors">
+                      <tr
+                        key={u._id}
+                        className="hover:bg-muted/20 transition-colors"
+                      >
                         {/* User identity */}
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
@@ -282,8 +325,12 @@ export default function AdminUsersPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-semibold text-sm text-foreground leading-tight">{fullName}</p>
-                              <p className="text-muted-foreground text-[11px]">{u.email}</p>
+                              <p className="font-semibold text-sm text-foreground leading-tight">
+                                {fullName}
+                              </p>
+                              <p className="text-muted-foreground text-[11px]">
+                                {u.email}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -292,7 +339,9 @@ export default function AdminUsersPage() {
                         <td className="px-4 py-3">
                           <select
                             value={u.role}
-                            onChange={(e) => handleRoleChange(u._id, e.target.value as any)}
+                            onChange={(e) =>
+                              handleRoleChange(u._id, e.target.value as any)
+                            }
                             className="h-7 px-2 text-xs font-semibold rounded-md border border-border bg-background capitalize"
                           >
                             <option value="user">User</option>
@@ -305,17 +354,26 @@ export default function AdminUsersPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             {u.isEmailVerified ? (
-                              <Badge variant="outline" className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20">
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20"
+                              >
                                 <RiCheckDoubleLine className="mr-1" /> Verified
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-[10px] bg-muted text-muted-foreground">
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] bg-muted text-muted-foreground"
+                              >
                                 Unverified
                               </Badge>
                             )}
 
                             {isLocked && (
-                              <Badge variant="outline" className="text-[10px] bg-red-500/10 text-red-600 border-red-500/20">
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] bg-red-500/10 text-red-600 border-red-500/20"
+                              >
                                 <RiLock2Line className="mr-1" /> Locked
                               </Badge>
                             )}
@@ -335,18 +393,26 @@ export default function AdminUsersPage() {
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
-                              title={u.isEmailVerified ? "Revoke Verification" : "Mark Verified"}
+                              title={
+                                u.isEmailVerified
+                                  ? "Revoke Verification"
+                                  : "Mark Verified"
+                              }
                               onClick={() =>
                                 openModal(
                                   u.isEmailVerified ? "unverify" : "verify",
                                   u._id,
                                   fullName,
                                   u.email,
-                                  u.avatar ?? undefined
+                                  u.avatar ?? undefined,
                                 )
                               }
                             >
-                              <RiShieldCheckLine className={u.isEmailVerified ? "text-green-500" : ""} />
+                              <RiShieldCheckLine
+                                className={
+                                  u.isEmailVerified ? "text-green-500" : ""
+                                }
+                              />
                             </Button>
 
                             {/* Toggle Lock */}
@@ -354,14 +420,16 @@ export default function AdminUsersPage() {
                               size="icon"
                               variant="ghost"
                               className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
-                              title={isLocked ? "Unlock Account" : "Lock Account"}
+                              title={
+                                isLocked ? "Unlock Account" : "Lock Account"
+                              }
                               onClick={() =>
                                 openModal(
                                   isLocked ? "unlock" : "lock",
                                   u._id,
                                   fullName,
                                   u.email,
-                                  u.avatar ?? undefined
+                                  u.avatar ?? undefined,
                                 )
                               }
                             >
@@ -378,7 +446,15 @@ export default function AdminUsersPage() {
                               variant="ghost"
                               className="h-8 w-8 text-muted-foreground hover:text-destructive cursor-pointer"
                               title="Delete Account"
-                              onClick={() => openModal("delete", u._id, fullName, u.email, u.avatar ?? undefined)}
+                              onClick={() =>
+                                openModal(
+                                  "delete",
+                                  u._id,
+                                  fullName,
+                                  u.email,
+                                  u.avatar ?? undefined,
+                                )
+                              }
                             >
                               <RiDeleteBinLine />
                             </Button>
@@ -396,8 +472,11 @@ export default function AdminUsersPage() {
           {pagination && pagination.pages > 1 && (
             <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30">
               <span className="text-xs text-muted-foreground">
-                Showing page <strong className="text-foreground">{pagination.page}</strong> of{" "}
-                <strong className="text-foreground">{pagination.pages}</strong> ({pagination.total} total users)
+                Showing page{" "}
+                <strong className="text-foreground">{pagination.page}</strong>{" "}
+                of{" "}
+                <strong className="text-foreground">{pagination.pages}</strong>{" "}
+                ({pagination.total} total users)
               </span>
               <div className="flex gap-2">
                 <Button
@@ -431,11 +510,15 @@ export default function AdminUsersPage() {
             <>
               <DialogHeader>
                 <div className="flex items-center gap-4 mb-1">
-                  <div className={`h-12 w-12 rounded-2xl ${modalConfig.iconBg} flex items-center justify-center shrink-0`}>
+                  <div
+                    className={`h-12 w-12 rounded-2xl ${modalConfig.iconBg} flex items-center justify-center shrink-0`}
+                  >
                     {modalConfig.icon}
                   </div>
                   <div>
-                    <DialogTitle className="text-base">{modalConfig.title}</DialogTitle>
+                    <DialogTitle className="text-base">
+                      {modalConfig.title}
+                    </DialogTitle>
                   </div>
                 </div>
                 <DialogDescription className="text-sm leading-relaxed">
@@ -449,13 +532,22 @@ export default function AdminUsersPage() {
                   <Avatar className="h-9 w-9 border border-border">
                     <AvatarImage src={confirmTarget.avatar || undefined} />
                     <AvatarFallback className="text-xs font-semibold">
-                      {confirmTarget.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
+                      {confirmTarget.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{confirmTarget.name}</p>
+                    <p className="text-sm font-semibold text-foreground">
+                      {confirmTarget.name}
+                    </p>
                     {confirmTarget.email && (
-                      <p className="text-xs text-muted-foreground">{confirmTarget.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {confirmTarget.email}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -471,13 +563,19 @@ export default function AdminUsersPage() {
                     placeholder="Provide a valid reason for deleting this user account..."
                     value={deleteReason}
                     onChange={(e) => setDeleteReason(e.target.value)}
-                    className="min-h-[80px] text-sm"
+                    className="min-h-20 text-sm"
                   />
                 </div>
               )}
 
               <DialogFooter className="gap-2 sm:justify-end">
-                <Button variant="outline" size="sm" className="cursor-pointer" onClick={closeModal} disabled={modalLoading}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="cursor-pointer"
+                  onClick={closeModal}
+                  disabled={modalLoading}
+                >
                   Cancel
                 </Button>
                 <Button
@@ -488,7 +586,10 @@ export default function AdminUsersPage() {
                   disabled={modalLoading}
                 >
                   {modalLoading ? (
-                    <><Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> Processing...</>
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />{" "}
+                      Processing...
+                    </>
                   ) : (
                     modalConfig.confirmLabel
                   )}
