@@ -19,6 +19,10 @@ const isPublicRoute = (pathname: string): boolean => {
   if (pathname.startsWith("/api/")) return true;
   if (pathname.startsWith("/_next")) return true;
   if (pathname.startsWith("/favicon")) return true;
+  // SEO & static files — always public
+  if (pathname === "/sitemap.xml") return true;
+  if (pathname === "/robots.txt") return true;
+  if (pathname.match(/\.(xml|txt|ico|png|jpg|jpeg|svg|webp|json)$/)) return true;
   return false;
 };
 

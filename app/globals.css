@@ -186,6 +186,10 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* Offset sticky navbar height so hash-link sections aren't hidden behind it */
+    scroll-padding-top: 120px;
+  }
   body {
     @apply bg-background text-foreground font-sans;
     letter-spacing: var(--tracking-normal);

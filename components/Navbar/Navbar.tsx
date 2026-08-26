@@ -54,13 +54,13 @@ const Navbar = () => {
       </Link>
       <ul>
         <li className="flex items-center gap-6 text-base">
-          <Link className="cursor-pointer" href="#home">
+          <Link className="cursor-pointer" href="/#home">
             Home
           </Link>
-          <Link className="cursor-pointer" href="#features">
+          <Link className="cursor-pointer" href="/#features">
             Features
           </Link>
-          <Link className="cursor-pointer" href="#mission">
+          <Link className="cursor-pointer" href="/#mission">
             Mission
           </Link>
           <Link className="cursor-pointer hover:text-primary transition-colors" href="/public-blogs">
@@ -69,12 +69,13 @@ const Navbar = () => {
           <Link className="cursor-pointer hover:text-primary transition-colors" href="/public-jobs">
             Jobs
           </Link>
-          <Link className="cursor-pointer" href="#faqs">
+          <Link className="cursor-pointer" href="/#faqs">
             FAQs
           </Link>
-          <Link className="cursor-pointer" href="#contact">
+          <Link className="cursor-pointer" href="/#contact">
             Contact
           </Link>
+
 
           <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger className="flex items-center gap-1 outline-none cursor-pointer">
@@ -86,24 +87,29 @@ const Navbar = () => {
               />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="center" className="p-2">
+            <DropdownMenuContent
+              align="center"
+              className="p-2"
+              onCloseAutoFocus={(e) => e.preventDefault()}
+            >
               <DropdownMenuItem asChild className="cursor-pointer text-base">
-                <Link href="#problem">Problem</Link>
+                <Link href="/#problem">Problem</Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer text-base">
-                <Link href="#process">Process</Link>
+                <Link href="/#process">Process</Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer text-base">
-                <Link href="#research">Research</Link>
+                <Link href="/#research">Research</Link>
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild className="cursor-pointer text-base">
-                <Link href="#technology">Technology</Link>
+                <Link href="/#technology">Technology</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
 
           <ThemeToggle />
 
