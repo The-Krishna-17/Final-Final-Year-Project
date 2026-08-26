@@ -63,8 +63,11 @@ const Navbar = () => {
           <Link className="cursor-pointer" href="#mission">
             Mission
           </Link>
-          <Link className="cursor-pointer" href="#coming-soon">
+          <Link className="cursor-pointer hover:text-primary transition-colors" href="/public-blogs">
             Blogs
+          </Link>
+          <Link className="cursor-pointer hover:text-primary transition-colors" href="/public-jobs">
+            Jobs
           </Link>
           <Link className="cursor-pointer" href="#faqs">
             FAQs

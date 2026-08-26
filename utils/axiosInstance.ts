@@ -37,10 +37,15 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (err) {
         // If the refresh token request fails (e.g., refresh token expired)
-        if (
-          window.location.pathname !== "/login" &&
-          window.location.pathname !== "/"
-        ) {
+        const PUBLIC_PATHS = ["/", "/login", "/signup", "/forgot-password"];
+        const isPublicPath =
+          PUBLIC_PATHS.includes(window.location.pathname) ||
+          window.location.pathname.startsWith("/public-blogs") ||
+          window.location.pathname.startsWith("/public-jobs") ||
+          window.location.pathname.startsWith("/reset-password") ||
+          window.location.pathname.startsWith("/verify-email");
+
+        if (!isPublicPath) {
           toast.error("Session expired. Please login again.", {
             richColors: true,
           });

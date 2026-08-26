@@ -6,6 +6,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Only user-facing platform pages, no API routes or admin routes
   const publicPages = [
     "",
+    "/public-blogs",
+    "/public-jobs",
     "/blogs",
     "/jobs",
     "/login",
@@ -21,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return publicPages.map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
-    changeFrequency: route === "" || route === "/blogs" || route === "/jobs" ? "daily" : "weekly",
-    priority: route === "" ? 1.0 : route === "/blogs" || route === "/jobs" ? 0.9 : 0.8,
+    changeFrequency: route === "" || route.includes("blogs") || route.includes("jobs") ? "daily" : "weekly",
+    priority: route === "" ? 1.0 : route.includes("blogs") || route.includes("jobs") ? 0.9 : 0.8,
   }));
 }

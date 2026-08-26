@@ -14,7 +14,7 @@ const platformFeatures = [
     description:
       "Read and write articles on peer-to-peer learning, AI-powered matching, and skill exchange tips. Share your knowledge with the community.",
     icon: FaBlog,
-    link: "/blogs",
+    link: "/public-blogs",
     tag: "Live Now",
   },
   {
@@ -22,7 +22,7 @@ const platformFeatures = [
     description:
       "Explore internship opportunities and job openings. Find roles that match your skills and career goals, all in one place.",
     icon: FaBriefcase,
-    link: "/jobs",
+    link: "/public-jobs",
     tag: "Live Now",
   },
   {

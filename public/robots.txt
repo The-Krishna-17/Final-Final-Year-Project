@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: GPTBot
+Allow: /
+Allow: /blogs
+Allow: /jobs
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /blogs
+Allow: /jobs
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://skillsxchange.vercel.app/sitemap.xml

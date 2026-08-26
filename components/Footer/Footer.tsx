@@ -58,6 +58,12 @@ export default function Footer() {
                 <Link href="/register">Get Started</Link>
               </li>
               <li>
+                <Link href="/public-blogs">Explore Blogs</Link>
+              </li>
+              <li>
+                <Link href="/public-jobs">Explore Jobs & Placements</Link>
+              </li>
+              <li>
                 <Link href="#research">Research</Link>
               </li>
               <li>

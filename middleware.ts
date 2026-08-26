@@ -6,12 +6,16 @@ const PUBLIC_ROUTES = new Set([
   "/signup",
   "/forgot-password",
   "/verify-email",
+  "/public-blogs",
+  "/public-jobs",
 ]);
 
 const isPublicRoute = (pathname: string): boolean => {
   if (PUBLIC_ROUTES.has(pathname)) return true;
   if (pathname.startsWith("/reset-password")) return true;
   if (pathname.startsWith("/verify-email/")) return true;
+  if (pathname.startsWith("/public-blogs")) return true;
+  if (pathname.startsWith("/public-jobs")) return true;
   if (pathname.startsWith("/api/")) return true;
   if (pathname.startsWith("/_next")) return true;
   if (pathname.startsWith("/favicon")) return true;
