@@ -1,16 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import loginImg from "@/public/login.webp";
-import Image from "next/image";
-import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { loginUser } from "@/store/features/auth/authSlice";
 
-const page = () => {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -136,14 +134,6 @@ const page = () => {
           <div className="flex-1 h-px bg-border" />
         </div>
 
-        {/* <Button
-          variant="outline"
-          className="w-full flex items-center justify-center gap-2 h-10 text-sm font-medium border-border hover:bg-muted transition-colors"
-        >
-          <FaGoogle className="text-base shrink-0" />
-          Continue with Google
-        </Button> */}
-
         <p className="text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Button
@@ -157,6 +147,20 @@ const page = () => {
       </section>
     </main>
   );
-};
+}
 
-export default page;
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen w-full flex items-center justify-center bg-black/10">
+          <div className="border rounded-lg max-w-md w-full p-8 flex flex-col items-center justify-center gap-4 bg-card text-card-foreground">
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
+  );
+}
