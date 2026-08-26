@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchAdminReviews, deleteAdminReview } from "@/store/features/admin/adminSlice";
+import {
+  fetchAdminReviews,
+  deleteAdminReview,
+} from "@/store/features/admin/adminSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -30,7 +33,9 @@ export default function AdminReviewsPage() {
   const { reviews = [], loadingReviews } = useAppSelector((s) => s.admin);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedReview, setSelectedReview] = useState<AdminReview | null>(null);
+  const [selectedReview, setSelectedReview] = useState<AdminReview | null>(
+    null,
+  );
   const [deleteReason, setDeleteReason] = useState("");
   const [deleteLoading, setDeleteLoading] = useState(false);
 
@@ -52,7 +57,12 @@ export default function AdminReviewsPage() {
     }
     setDeleteLoading(true);
     try {
-      await dispatch(deleteAdminReview({ reviewId: selectedReview._id, reason: deleteReason.trim() })).unwrap();
+      await dispatch(
+        deleteAdminReview({
+          reviewId: selectedReview._id,
+          reason: deleteReason.trim(),
+        }),
+      ).unwrap();
       toast.success("Review deleted successfully");
       setIsDeleteOpen(false);
     } catch (err: any) {
@@ -71,7 +81,8 @@ export default function AdminReviewsPage() {
           Review & Content Moderation
         </h1>
         <p className="text-sm text-muted-foreground mt-1.5">
-          Audit user feedback, 1–5 star ratings, and remove inappropriate or abusive review entries.
+          Audit user feedback, 1–5 star ratings, and remove inappropriate or
+          abusive review entries.
         </p>
       </div>
 
@@ -86,7 +97,9 @@ export default function AdminReviewsPage() {
           ) : !reviews || reviews.length === 0 ? (
             <div className="py-16 text-center text-muted-foreground space-y-1">
               <p className="font-semibold text-sm">No reviews found</p>
-              <p className="text-xs">No feedback has been submitted on the platform yet.</p>
+              <p className="text-xs">
+                No feedback has been submitted on the platform yet.
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -103,11 +116,16 @@ export default function AdminReviewsPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {reviews.map((r) => {
-                    const reviewerName = `${r.reviewer?.firstName} ${r.reviewer?.lastName}`.trim();
-                    const revieweeName = `${r.reviewee?.firstName} ${r.reviewee?.lastName}`.trim();
+                    const reviewerName =
+                      `${r.reviewer?.firstName} ${r.reviewer?.lastName}`.trim();
+                    const revieweeName =
+                      `${r.reviewee?.firstName} ${r.reviewee?.lastName}`.trim();
 
                     return (
-                      <tr key={r._id} className="hover:bg-muted/20 transition-colors">
+                      <tr
+                        key={r._id}
+                        className="hover:bg-muted/20 transition-colors"
+                      >
                         {/* Reviewer */}
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2.5">
@@ -118,8 +136,12 @@ export default function AdminReviewsPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-semibold text-foreground leading-tight">{reviewerName}</p>
-                              <p className="text-[10px] text-muted-foreground">{r.reviewer?.email}</p>
+                              <p className="font-semibold text-foreground leading-tight">
+                                {reviewerName}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {r.reviewer?.email}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -134,8 +156,12 @@ export default function AdminReviewsPage() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <p className="font-semibold text-foreground leading-tight">{revieweeName}</p>
-                              <p className="text-[10px] text-muted-foreground">{r.reviewee?.email}</p>
+                              <p className="font-semibold text-foreground leading-tight">
+                                {revieweeName}
+                              </p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {r.reviewee?.email}
+                              </p>
                             </div>
                           </div>
                         </td>
@@ -145,7 +171,11 @@ export default function AdminReviewsPage() {
                           <div className="flex items-center gap-0.5 text-yellow-500 text-sm">
                             {[1, 2, 3, 4, 5].map((star) => (
                               <span key={star}>
-                                {star <= r.rating ? <RiStarFill /> : <RiStarLine className="text-muted-foreground/40" />}
+                                {star <= r.rating ? (
+                                  <RiStarFill />
+                                ) : (
+                                  <RiStarLine className="text-muted-foreground/40" />
+                                )}
                               </span>
                             ))}
                           </div>
@@ -153,7 +183,9 @@ export default function AdminReviewsPage() {
 
                         {/* Feedback text */}
                         <td className="px-4 py-3 max-w-sm">
-                          <p className="text-foreground leading-relaxed italic">&quot;{r.feedback}&quot;</p>
+                          <p className="text-foreground leading-relaxed italic">
+                            &quot;{r.feedback}&quot;
+                          </p>
                         </td>
 
                         {/* Date */}
@@ -191,7 +223,9 @@ export default function AdminReviewsPage() {
               <RiDeleteBinLine className="w-5 h-5 text-red-500" /> Delete Review
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Are you sure you want to delete this review? This action is permanent and cannot be undone. Both the reviewer and reviewee will be notified.
+              Are you sure you want to delete this review? This action is
+              permanent and cannot be undone. Both the reviewer and reviewee
+              will be notified.
             </DialogDescription>
           </DialogHeader>
 
@@ -200,16 +234,20 @@ export default function AdminReviewsPage() {
             <div className="p-3 rounded-xl bg-muted/40 border border-border space-y-1.5">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <span className="font-semibold text-foreground">
-                  {selectedReview.reviewer?.firstName} {selectedReview.reviewer?.lastName}
+                  {selectedReview.reviewer?.firstName}{" "}
+                  {selectedReview.reviewer?.lastName}
                 </span>
                 <RiStarFill className="w-3 h-3 text-yellow-500" />
                 <span>{selectedReview.rating}/5</span>
                 <span>&rarr;</span>
                 <span className="font-semibold text-foreground">
-                  {selectedReview.reviewee?.firstName} {selectedReview.reviewee?.lastName}
+                  {selectedReview.reviewee?.firstName}{" "}
+                  {selectedReview.reviewee?.lastName}
                 </span>
               </div>
-              <p className="text-xs italic text-muted-foreground">&quot;{selectedReview.feedback}&quot;</p>
+              <p className="text-xs italic text-muted-foreground">
+                &quot;{selectedReview.feedback}&quot;
+              </p>
             </div>
           )}
 
@@ -221,16 +259,30 @@ export default function AdminReviewsPage() {
               placeholder="Provide a valid reason for deleting this review..."
               value={deleteReason}
               onChange={(e) => setDeleteReason(e.target.value)}
-              className="min-h-[80px] text-sm"
+              className="min-h-20 text-sm"
             />
           </div>
 
           <DialogFooter className="flex gap-2 sm:justify-end mt-2">
-            <Button variant="outline" size="sm" onClick={() => setIsDeleteOpen(false)} className="cursor-pointer" disabled={deleteLoading}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsDeleteOpen(false)}
+              className="cursor-pointer"
+              disabled={deleteLoading}
+            >
               Cancel
             </Button>
-            <Button variant="destructive" size="sm" onClick={handleDeleteConfirm} className="cursor-pointer" disabled={deleteLoading}>
-              {deleteLoading ? <Loader2 className="w-4 h-4 animate-spin mr-1.5" /> : null}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteConfirm}
+              className="cursor-pointer"
+              disabled={deleteLoading}
+            >
+              {deleteLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+              ) : null}
               Delete Review
             </Button>
           </DialogFooter>
