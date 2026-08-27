@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchJobs } from "@/store/features/jobs/jobSlice";
+import { getMe } from "@/store/features/auth/authSlice";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,12 +102,22 @@ export default function PublicJobsPage() {
     setIsDetailsOpen(true);
   };
 
-  const handleApplyClick = (applyLink: string) => {
-    if (!user) {
-      toast.error("Please log in to apply for jobs.");
-      router.push("/login");
-      return;
+  const handleApplyClick = async (applyLink: string) => {
+    let authenticated = Boolean(user);
+
+    // The Navbar restores the session asynchronously. Verify it here too so
+    // a valid logged-in user is not redirected to login before that finishes.
+    if (!authenticated) {
+      try {
+        await dispatch(getMe()).unwrap();
+        authenticated = true;
+      } catch {
+        toast.error("Please log in to apply for jobs.");
+        router.push("/login");
+        return;
+      }
     }
+
     let url = applyLink;
     if (url.includes("@") && !url.startsWith("mailto:")) {
       url = `mailto:${url}`;
@@ -118,6 +129,20 @@ export default function PublicJobsPage() {
       url = `https://${url}`;
     }
     window.open(url, "_blank");
+  };
+
+  const handleUserJobsNavigation = async () => {
+    if (user) {
+      router.push("/jobs");
+      return;
+    }
+
+    try {
+      await dispatch(getMe()).unwrap();
+      router.push("/jobs");
+    } catch {
+      router.push("/login");
+    }
   };
 
   return (
@@ -263,23 +288,16 @@ export default function PublicJobsPage() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 border-t border-dashed border-border pt-4 mt-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openDetails(job)}
-                      className="text-xs h-8 cursor-pointer rounded-lg"
-                    >
-                      Details
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleApplyClick(job.applyLink)}
-                      className="text-xs h-8 cursor-pointer gap-1 rounded-lg"
-                    >
-                      Apply <ExternalLink className="w-3 h-3" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      user ? router.push(`/jobs`) : router.push("/login")
+                    }
+                    className="text-xs h-8 cursor-pointer rounded-lg w-full mt-4 flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                  >
+                    Details <ExternalLink className="w-3 h-3" />
+                  </Button>
                 </div>
               );
             })}
@@ -304,7 +322,7 @@ export default function PublicJobsPage() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => router.push("/login")}
+              onClick={handleUserJobsNavigation}
               className="rounded-full px-6 cursor-pointer gap-2"
             >
               <LogIn className="w-4 h-4" /> Sign In
@@ -312,112 +330,6 @@ export default function PublicJobsPage() {
           </div>
         </div>
       </main>
-
-      {/* Details Modal */}
-      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        {selectedJob && (
-          <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-            <DialogHeader className="border-b border-border pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center font-bold text-lg text-foreground border border-border shrink-0">
-                  {selectedJob.company?.[0]?.toUpperCase()}
-                </div>
-                <div>
-                  <DialogTitle className="text-lg font-bold">
-                    {selectedJob.title}
-                  </DialogTitle>
-                  <DialogDescription className="text-sm font-medium flex items-center gap-1.5 mt-0.5 text-muted-foreground">
-                    <Building className="w-3.5 h-3.5" />
-                    {selectedJob.company} &middot; {selectedJob.location}
-                  </DialogDescription>
-                </div>
-              </div>
-            </DialogHeader>
-
-            <div className="space-y-5 py-4">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-muted/40 p-3 rounded-lg border border-border text-xs">
-                <div>
-                  <span className="text-muted-foreground block uppercase font-bold text-[9px] tracking-wider">
-                    Job Type
-                  </span>
-                  <span className="font-semibold text-foreground text-sm">
-                    {selectedJob.type}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block uppercase font-bold text-[9px] tracking-wider">
-                    Work Mode
-                  </span>
-                  <span className="font-semibold text-foreground text-sm">
-                    {selectedJob.workLocation || "On-site"}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block uppercase font-bold text-[9px] tracking-wider">
-                    Compensation
-                  </span>
-                  <span className="font-semibold text-foreground text-sm">
-                    {selectedJob.salaryRange || "Not Specified"}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground block uppercase font-bold text-[9px] tracking-wider">
-                    Posted
-                  </span>
-                  <span className="font-semibold text-foreground text-sm">
-                    {new Date(selectedJob.createdAt).toLocaleDateString(
-                      undefined,
-                      {
-                        dateStyle: "medium",
-                      },
-                    )}
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <h4 className="font-semibold text-sm text-foreground flex items-center gap-1.5">
-                  <ClipboardList className="w-4 h-4 text-primary" />
-                  Description
-                </h4>
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                  {selectedJob.description}
-                </p>
-              </div>
-
-              {selectedJob.requirements?.length > 0 && (
-                <div className="space-y-1.5">
-                  <h4 className="font-semibold text-sm text-foreground">
-                    Requirements
-                  </h4>
-                  <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1 leading-relaxed">
-                    {selectedJob.requirements.map((req, idx) => (
-                      <li key={idx}>{req}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-
-            <DialogFooter className="border-t border-border pt-4 flex gap-2 sm:justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setIsDetailsOpen(false)}
-                className="cursor-pointer"
-              >
-                Close
-              </Button>
-              <Button
-                onClick={() => handleApplyClick(selectedJob.applyLink)}
-                className="cursor-pointer gap-1.5"
-              >
-                Apply <ExternalLink className="w-4 h-4" />
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
-
       <Footer />
     </div>
   );

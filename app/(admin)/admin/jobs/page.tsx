@@ -35,6 +35,7 @@ import {
   CheckCircle,
   XCircle,
   FileText,
+  List,
 } from "lucide-react";
 import { toast } from "sonner";
 import { JobItem } from "@/store/features/jobs/type";
@@ -69,7 +70,7 @@ export default function AdminJobsPage() {
   const [type, setType] = useState<any>("Full-time");
   const [workLocation, setWorkLocation] = useState<any>("On-site");
   const [description, setDescription] = useState("");
-  const [requirementsText, setRequirementsText] = useState("");
+  const [requirements, setRequirements] = useState<string[]>([]);
   const [salaryRange, setSalaryRange] = useState("");
   const [applyLink, setApplyLink] = useState("");
   const [status, setStatus] = useState<"open" | "closed">("open");
@@ -87,7 +88,7 @@ export default function AdminJobsPage() {
     setType("Full-time");
     setWorkLocation("On-site");
     setDescription("");
-    setRequirementsText("");
+    setRequirements([]);
     setSalaryRange("");
     setApplyLink("");
     setStatus("open");
@@ -102,7 +103,11 @@ export default function AdminJobsPage() {
     setType(job.type);
     setWorkLocation(job.workLocation || "On-site");
     setDescription(job.description);
-    setRequirementsText(job.requirements?.join("\n") || "");
+    setRequirements(
+      (job.requirements || []).map((requirement) =>
+        requirement.replace(/^\s*[-*•]\s*/, "").trim(),
+      ),
+    );
     setSalaryRange(job.salaryRange || "");
     setApplyLink(job.applyLink);
     setStatus(job.status);
@@ -129,10 +134,9 @@ export default function AdminJobsPage() {
       return;
     }
 
-    const requirements = requirementsText
-      .split("\n")
-      .map((r) => r.trim())
-      .filter((r) => r.length > 0);
+    const cleanedRequirements = requirements
+      .map((requirement) => requirement.replace(/^\s*[-*•]\s*/, "").trim())
+      .filter((requirement) => requirement.length > 0);
 
     const payload = {
       title,
@@ -141,7 +145,7 @@ export default function AdminJobsPage() {
       type,
       workLocation,
       description,
-      requirements,
+      requirements: cleanedRequirements,
       salaryRange: salaryRange.trim() || null,
       applyLink,
       status,
@@ -467,19 +471,54 @@ export default function AdminJobsPage() {
               />
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-                <span>Requirements (one item per line)</span>
+                <span>Requirements</span>
                 <span className="text-[10px] text-muted-foreground font-normal lowercase italic">
-                  press enter to separate
+                  add each requirement as a bullet point
                 </span>
               </label>
-              <Textarea
-                placeholder="3+ years of experience with Node.js&#10;Familiarity with React and Redux&#10;Excellent communication skills"
-                value={requirementsText}
-                onChange={(e) => setRequirementsText(e.target.value)}
-                className="min-h-22.5"
-              />
+              <div className="space-y-2">
+                {requirements.map((requirement, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <List className="w-4 h-4 text-primary shrink-0" />
+                    <Input
+                      value={requirement}
+                      onChange={(e) => {
+                        const updated = [...requirements];
+                        updated[index] = e.target.value;
+                        setRequirements(updated);
+                      }}
+                      placeholder="e.g. 3+ years of experience with Node.js"
+                      aria-label={`Requirement ${index + 1}`}
+                    />
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() =>
+                        setRequirements(
+                          requirements.filter((_, i) => i !== index),
+                        )
+                      }
+                      className="shrink-0 text-muted-foreground hover:text-destructive cursor-pointer"
+                      title="Remove requirement"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setRequirements([...requirements, ""])}
+                  className="gap-1.5 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add bullet point
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

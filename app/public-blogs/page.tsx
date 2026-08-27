@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { fetchPublishedBlogs, toggleLikeBlogAction } from "@/store/features/blogs/blogSlice";
+import {
+  fetchPublishedBlogs,
+  toggleLikeBlogAction,
+} from "@/store/features/blogs/blogSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -43,14 +46,15 @@ import {
 } from "@/components/Blog/BlogRenderer";
 import { BlogItem } from "@/store/features/blogs/type";
 
-const plainBlogText = (content: string) => content
-  .replace(/```[\s\S]*?```/g, " ")
-  .replace(/!\[[^]]*\]\([^)]*\)/g, " ")
-  .replace(/^#{1,6}\s+/gm, "")
-  .replace(/^>\s?/gm, "")
-  .replace(/^[-*]\s+/gm, "")
-  .replace(/\s+/g, " ")
-  .trim();
+const plainBlogText = (content: string) =>
+  content
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^]]*\]\([^)]*\)/g, " ")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^>\s?/gm, "")
+    .replace(/^[-*]\s+/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 export default function PublicBlogsPage() {
   const dispatch = useAppDispatch();
@@ -70,7 +74,11 @@ export default function PublicBlogsPage() {
 
   const handleSearch = () => {
     dispatch(
-      fetchPublishedBlogs({ search: searchQuery, tag: selectedTag, category: selectedCategory })
+      fetchPublishedBlogs({
+        search: searchQuery,
+        tag: selectedTag,
+        category: selectedCategory,
+      }),
     );
   };
 
@@ -82,13 +90,7 @@ export default function PublicBlogsPage() {
   };
 
   const openBlogDetail = (blog: BlogItem) => {
-    if (!user) {
-      toast.error("Please log in to read the full blog post.");
-      router.push("/login");
-      return;
-    }
-    setSelectedBlog(blog);
-    setIsDetailOpen(true);
+    router.push(`/public-blogs/${blog._id}`);
   };
 
   const handleLike = async (blogId: string) => {
@@ -118,7 +120,8 @@ export default function PublicBlogsPage() {
             Explore <span className="text-primary">Blogs & Tech Stories</span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Discover articles, tutorials, and career insights shared by our active skill-swapping community.
+            Discover articles, tutorials, and career insights shared by our
+            active skill-swapping community.
           </p>
         </div>
 
@@ -129,7 +132,9 @@ export default function PublicBlogsPage() {
             size="sm"
             onClick={() => {
               setSelectedCategory("");
-              dispatch(fetchPublishedBlogs({ search: searchQuery, tag: selectedTag }));
+              dispatch(
+                fetchPublishedBlogs({ search: searchQuery, tag: selectedTag }),
+              );
             }}
             className="rounded-full text-xs cursor-pointer"
           >
@@ -142,7 +147,13 @@ export default function PublicBlogsPage() {
               size="sm"
               onClick={() => {
                 setSelectedCategory(cat);
-                dispatch(fetchPublishedBlogs({ search: searchQuery, tag: selectedTag, category: cat }));
+                dispatch(
+                  fetchPublishedBlogs({
+                    search: searchQuery,
+                    tag: selectedTag,
+                    category: cat,
+                  }),
+                );
               }}
               className="rounded-full text-xs cursor-pointer"
             >
@@ -207,7 +218,8 @@ export default function PublicBlogsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogs.map((blog) => {
               const initials =
-                `${blog.author?.firstName?.[0] || ""}${blog.author?.lastName?.[0] || ""}`.toUpperCase() || "U";
+                `${blog.author?.firstName?.[0] || ""}${blog.author?.lastName?.[0] || ""}`.toUpperCase() ||
+                "U";
               const isLiked = user && blog.likes?.includes(user._id);
 
               return (
@@ -222,7 +234,10 @@ export default function PublicBlogsPage() {
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="w-8 h-8 border-2 border-white/40">
-                        <AvatarImage src={blog.author?.avatar || ""} alt={blog.author?.fullName} />
+                        <AvatarImage
+                          src={blog.author?.avatar || ""}
+                          alt={blog.author?.fullName}
+                        />
                         <AvatarFallback className="text-[10px] bg-white/20 text-white font-bold">
                           {initials}
                         </AvatarFallback>
@@ -237,14 +252,20 @@ export default function PublicBlogsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex flex-wrap gap-1">
                         {blog.tags?.slice(0, 2).map((t) => (
-                          <Badge key={t} variant="secondary" className="text-[10px] font-medium">
+                          <Badge
+                            key={t}
+                            variant="secondary"
+                            className="text-[10px] font-medium"
+                          >
                             #{t}
                           </Badge>
                         ))}
                       </div>
                       <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Clock className="w-3 h-3" />
-                        {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
+                        {formatDistanceToNow(new Date(blog.createdAt), {
+                          addSuffix: true,
+                        })}
                       </span>
                     </div>
 
@@ -279,7 +300,11 @@ export default function PublicBlogsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => openBlogDetail(blog)}
+                        onClick={() =>
+                          user
+                            ? router.push(`/blogs/${blog._id}`)
+                            : router.push("/login")
+                        }
                         className="text-xs text-primary p-0 h-auto font-semibold hover:bg-transparent cursor-pointer flex items-center gap-1"
                       >
                         Read More <ArrowRight className="w-3 h-3" />
@@ -294,12 +319,18 @@ export default function PublicBlogsPage() {
 
         {/* CTA */}
         <div className="rounded-2xl bg-linear-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8 text-center space-y-4">
-          <h2 className="text-2xl font-bold">Want to publish your own experience?</h2>
+          <h2 className="text-2xl font-bold">
+            Want to publish your own experience?
+          </h2>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            Join thousands of active learners and professionals sharing skills and tutorials every day.
+            Join thousands of active learners and professionals sharing skills
+            and tutorials every day.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Button onClick={() => router.push("/signup")} className="rounded-full px-6 cursor-pointer">
+            <Button
+              onClick={() => router.push("/signup")}
+              className="rounded-full px-6 cursor-pointer"
+            >
               Get Started Free
             </Button>
             <Button
@@ -312,95 +343,6 @@ export default function PublicBlogsPage() {
           </div>
         </div>
       </main>
-
-      {/* Blog Details Modal */}
-      <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-        {selectedBlog && (
-          <DialogContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto p-0">
-            {/* Modal Cover */}
-            <BlogCoverBanner
-              coverImage={selectedBlog.coverImage}
-              category={selectedBlog.category || "General"}
-              heightClass="h-44"
-              className="rounded-t-lg"
-            >
-              <div className="w-full flex items-end justify-between">
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedBlog.tags?.map((tag: string) => (
-                    <Badge
-                      key={tag}
-                      className="bg-white/15 text-white border border-white/20 text-[10px] backdrop-blur-xs"
-                    >
-                      #{tag}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1.5 text-white/80 text-[11px]">
-                  <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(selectedBlog.createdAt), { addSuffix: true })}
-                </div>
-              </div>
-            </BlogCoverBanner>
-
-            <div className="p-6 space-y-4">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold leading-snug">
-                  {selectedBlog.title}
-                </DialogTitle>
-                {selectedBlog.subtitle && (
-                  <p className="text-sm text-muted-foreground italic leading-relaxed pt-1">
-                    {selectedBlog.subtitle}
-                  </p>
-                )}
-                <DialogDescription className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
-                  <User className="w-3.5 h-3.5 text-primary" />
-                  <span>
-                    Written by{" "}
-                    <strong className="text-foreground">{selectedBlog.author?.fullName}</strong>
-                  </span>
-                  <span className="text-border">·</span>
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {new Date(selectedBlog.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </DialogDescription>
-              </DialogHeader>
-
-              {/* Rendered Blog Content */}
-              <div className="pt-2 border-t border-border">
-                <BlogContentRenderer content={selectedBlog.content} />
-              </div>
-            </div>
-
-            <DialogFooter className="border-t border-border px-6 py-4 flex items-center justify-between sm:justify-between bg-muted/30">
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <button
-                  onClick={() => handleLike(selectedBlog._id)}
-                  className="flex items-center gap-1.5 hover:text-rose-500 transition-colors cursor-pointer font-medium"
-                >
-                  <Heart className="w-4 h-4 text-rose-500" />
-                  {selectedBlog.likes?.length || 0} Likes
-                </button>
-                <span className="flex items-center gap-1.5 font-medium">
-                  <Eye className="w-4 h-4" />
-                  {selectedBlog.views || 0} Views
-                </span>
-              </div>
-              <Button
-                variant="outline"
-                onClick={() => setIsDetailOpen(false)}
-                className="cursor-pointer gap-2"
-              >
-                <X className="w-3.5 h-3.5" /> Close
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
 
       <Footer />
     </div>

@@ -257,23 +257,14 @@ export default function JobsPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="grid grid-cols-2 gap-2 border-t border-dashed border-border pt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openDetails(job)}
-                      className="text-xs h-8 cursor-pointer"
-                    >
-                      Details
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleApplyClick(job.applyLink)}
-                      className="text-xs h-8 cursor-pointer gap-1"
-                    >
-                      Apply <ExternalLink className="w-3 h-3" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openDetails(job)}
+                    className="text-xs h-8 cursor-pointer mt-4"
+                  >
+                    Details <ExternalLink className="w-3 h-3" />
+                  </Button>
                 </div>
               </div>
             );
@@ -284,7 +275,10 @@ export default function JobsPage() {
       {/* Job Details Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
         {selectedJob && (
-          <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogContent
+            className="sm:max-w-2xl max-h-[85vh] overflow-y-auto"
+            style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
+          >
             <DialogHeader className="border-b border-border pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-lg bg-muted flex items-center justify-center font-bold text-lg text-foreground border border-border shrink-0">
@@ -375,12 +369,6 @@ export default function JobsPage() {
                 className="cursor-pointer"
               >
                 Close
-              </Button>
-              <Button
-                onClick={() => handleApplyClick(selectedJob.applyLink)}
-                className="cursor-pointer gap-1.5"
-              >
-                Apply <ExternalLink className="w-4 h-4" />
               </Button>
             </DialogFooter>
           </DialogContent>
