@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchPublishedBlogs, toggleLikeBlogAction } from "@/store/features/blogs/blogSlice";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -29,21 +28,29 @@ import {
   Sparkles,
   ArrowRight,
   LogIn,
+  Calendar,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { useRouter } from "next/navigation";
+import {
+  BlogCoverBanner,
+  BlogContentRenderer,
+  BLOG_CATEGORIES,
+} from "@/components/Blog/BlogRenderer";
+import { BlogItem } from "@/store/features/blogs/type";
 
-const COVER_GRADIENTS = [
-  "from-violet-500 to-indigo-600",
-  "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-600",
-  "from-rose-500 to-pink-600",
-  "from-sky-500 to-blue-600",
-  "from-slate-600 to-slate-800",
-];
+const plainBlogText = (content: string) => content
+  .replace(/```[\s\S]*?```/g, " ")
+  .replace(/!\[[^]]*\]\([^)]*\)/g, " ")
+  .replace(/^#{1,6}\s+/gm, "")
+  .replace(/^>\s?/gm, "")
+  .replace(/^[-*]\s+/gm, "")
+  .replace(/\s+/g, " ")
+  .trim();
 
 export default function PublicBlogsPage() {
   const dispatch = useAppDispatch();
@@ -53,7 +60,8 @@ export default function PublicBlogsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("");
-  const [selectedBlog, setSelectedBlog] = useState<any | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedBlog, setSelectedBlog] = useState<BlogItem | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
@@ -61,16 +69,24 @@ export default function PublicBlogsPage() {
   }, [dispatch]);
 
   const handleSearch = () => {
-    dispatch(fetchPublishedBlogs({ search: searchQuery, tag: selectedTag }));
+    dispatch(
+      fetchPublishedBlogs({ search: searchQuery, tag: selectedTag, category: selectedCategory })
+    );
   };
 
   const handleClearFilter = () => {
     setSearchQuery("");
     setSelectedTag("");
+    setSelectedCategory("");
     dispatch(fetchPublishedBlogs());
   };
 
-  const openBlogDetail = (blog: any) => {
+  const openBlogDetail = (blog: BlogItem) => {
+    if (!user) {
+      toast.error("Please log in to read the full blog post.");
+      router.push("/login");
+      return;
+    }
     setSelectedBlog(blog);
     setIsDetailOpen(true);
   };
@@ -78,7 +94,6 @@ export default function PublicBlogsPage() {
   const handleLike = async (blogId: string) => {
     if (!user) {
       toast.error("Please log in to like blog posts.");
-      router.push("/login");
       return;
     }
     try {
@@ -107,6 +122,35 @@ export default function PublicBlogsPage() {
           </p>
         </div>
 
+        {/* Category Pill Filters */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none justify-center flex-wrap">
+          <Button
+            variant={selectedCategory === "" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setSelectedCategory("");
+              dispatch(fetchPublishedBlogs({ search: searchQuery, tag: selectedTag }));
+            }}
+            className="rounded-full text-xs cursor-pointer"
+          >
+            All Categories
+          </Button>
+          {BLOG_CATEGORIES.map((cat) => (
+            <Button
+              key={cat}
+              variant={selectedCategory === cat ? "default" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSelectedCategory(cat);
+                dispatch(fetchPublishedBlogs({ search: searchQuery, tag: selectedTag, category: cat }));
+              }}
+              className="rounded-full text-xs cursor-pointer"
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+
         {/* Search & Filter */}
         <div className="flex flex-col sm:flex-row gap-3 max-w-3xl mx-auto">
           <div className="relative flex-1">
@@ -133,8 +177,12 @@ export default function PublicBlogsPage() {
             <Button onClick={handleSearch} className="h-11 px-6 cursor-pointer">
               Search
             </Button>
-            {(searchQuery || selectedTag) && (
-              <Button variant="outline" onClick={handleClearFilter} className="h-11 cursor-pointer">
+            {(searchQuery || selectedTag || selectedCategory) && (
+              <Button
+                variant="outline"
+                onClick={handleClearFilter}
+                className="h-11 cursor-pointer"
+              >
                 Clear
               </Button>
             )}
@@ -145,7 +193,7 @@ export default function PublicBlogsPage() {
         {loadingBlogs ? (
           <div className="flex flex-col items-center justify-center py-24 text-muted-foreground gap-3">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
-            <p className="text-sm">Loading community blogs...</p>
+            <p className="text-sm font-medium">Loading community blogs...</p>
           </div>
         ) : blogs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed rounded-2xl bg-muted/10 border-border">
@@ -165,12 +213,12 @@ export default function PublicBlogsPage() {
               return (
                 <div
                   key={blog._id}
-                  className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
+                  className="group overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
                 >
-                  <div
-                    className={`h-28 w-full bg-linear-to-r ${
-                      blog.coverImage || COVER_GRADIENTS[0]
-                    } p-4 flex items-end relative`}
+                  <BlogCoverBanner
+                    coverImage={blog.coverImage}
+                    category={blog.category || "General"}
+                    heightClass="h-36"
                   >
                     <div className="flex items-center gap-2">
                       <Avatar className="w-8 h-8 border-2 border-white/40">
@@ -183,31 +231,36 @@ export default function PublicBlogsPage() {
                         {blog.author?.fullName}
                       </span>
                     </div>
-                  </div>
+                  </BlogCoverBanner>
 
                   <div className="p-5 flex flex-col flex-1 space-y-3">
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-[10px] font-medium">
-                        {blog.tags?.[0] || "Community"}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {blog.tags?.slice(0, 2).map((t) => (
+                          <Badge key={t} variant="secondary" className="text-[10px] font-medium">
+                            #{t}
+                          </Badge>
+                        ))}
+                      </div>
                       <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Clock className="w-3 h-3" />
                         {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
                       </span>
                     </div>
 
-                    <h3
-                      onClick={() => openBlogDetail(blog)}
-                      className="font-bold text-base leading-snug line-clamp-2 hover:text-primary transition-colors cursor-pointer"
-                    >
-                      {blog.title}
-                    </h3>
+                    <div>
+                      <h3
+                        onClick={() => openBlogDetail(blog)}
+                        className="font-bold text-base leading-snug line-clamp-2 hover:text-primary transition-colors cursor-pointer mb-1"
+                      >
+                        {blog.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed flex-1">
+                        {blog.subtitle || plainBlogText(blog.content)}
+                      </p>
+                    </div>
 
-                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed flex-1">
-                      {blog.content}
-                    </p>
-
-                    <div className="flex items-center justify-between border-t border-dashed border-border pt-3 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between border-t border-dashed border-border pt-3 text-xs text-muted-foreground mt-auto">
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => handleLike(blog._id)}
@@ -239,7 +292,7 @@ export default function PublicBlogsPage() {
           </div>
         )}
 
-        {/* Public Action CTA */}
+        {/* CTA */}
         <div className="rounded-2xl bg-linear-to-r from-primary/10 via-primary/5 to-transparent border border-primary/20 p-8 text-center space-y-4">
           <h2 className="text-2xl font-bold">Want to publish your own experience?</h2>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
@@ -249,7 +302,11 @@ export default function PublicBlogsPage() {
             <Button onClick={() => router.push("/signup")} className="rounded-full px-6 cursor-pointer">
               Get Started Free
             </Button>
-            <Button variant="outline" onClick={() => router.push("/login")} className="rounded-full px-6 cursor-pointer gap-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/login")}
+              className="rounded-full px-6 cursor-pointer gap-2"
+            >
               <LogIn className="w-4 h-4" /> Sign In
             </Button>
           </div>
@@ -259,58 +316,86 @@ export default function PublicBlogsPage() {
       {/* Blog Details Modal */}
       <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
         {selectedBlog && (
-          <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
-            <DialogHeader>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="secondary" className="text-[10px]">
-                  {selectedBlog.tags?.[0] || "Blog"}
-                </Badge>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {formatDistanceToNow(new Date(selectedBlog.createdAt), { addSuffix: true })}
-                </span>
-              </div>
-              <DialogTitle className="text-xl font-bold leading-snug">
-                {selectedBlog.title}
-              </DialogTitle>
-              <DialogDescription className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
-                <User className="w-3.5 h-3.5 text-primary" />
-                <span>Written by <strong className="text-foreground">{selectedBlog.author?.fullName}</strong></span>
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="py-4 space-y-4 border-t border-border">
-              <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                {selectedBlog.content}
-              </p>
-
-              {selectedBlog.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 pt-2">
-                  {selectedBlog.tags.map((t: string, i: number) => (
-                    <Badge key={i} variant="outline" className="text-[10px]">
-                      #{t}
+          <DialogContent className="sm:max-w-2xl max-h-[88vh] overflow-y-auto p-0">
+            {/* Modal Cover */}
+            <BlogCoverBanner
+              coverImage={selectedBlog.coverImage}
+              category={selectedBlog.category || "General"}
+              heightClass="h-44"
+              className="rounded-t-lg"
+            >
+              <div className="w-full flex items-end justify-between">
+                <div className="flex flex-wrap gap-1.5">
+                  {selectedBlog.tags?.map((tag: string) => (
+                    <Badge
+                      key={tag}
+                      className="bg-white/15 text-white border border-white/20 text-[10px] backdrop-blur-xs"
+                    >
+                      #{tag}
                     </Badge>
                   ))}
                 </div>
-              )}
+                <div className="flex items-center gap-1.5 text-white/80 text-[11px]">
+                  <Clock className="w-3 h-3" />
+                  {formatDistanceToNow(new Date(selectedBlog.createdAt), { addSuffix: true })}
+                </div>
+              </div>
+            </BlogCoverBanner>
+
+            <div className="p-6 space-y-4">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold leading-snug">
+                  {selectedBlog.title}
+                </DialogTitle>
+                {selectedBlog.subtitle && (
+                  <p className="text-sm text-muted-foreground italic leading-relaxed pt-1">
+                    {selectedBlog.subtitle}
+                  </p>
+                )}
+                <DialogDescription className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
+                  <User className="w-3.5 h-3.5 text-primary" />
+                  <span>
+                    Written by{" "}
+                    <strong className="text-foreground">{selectedBlog.author?.fullName}</strong>
+                  </span>
+                  <span className="text-border">·</span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3" />
+                    {new Date(selectedBlog.createdAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </DialogDescription>
+              </DialogHeader>
+
+              {/* Rendered Blog Content */}
+              <div className="pt-2 border-t border-border">
+                <BlogContentRenderer content={selectedBlog.content} />
+              </div>
             </div>
 
-            <DialogFooter className="border-t border-border pt-4 flex items-center justify-between sm:justify-between">
-              <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <DialogFooter className="border-t border-border px-6 py-4 flex items-center justify-between sm:justify-between bg-muted/30">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
                 <button
                   onClick={() => handleLike(selectedBlog._id)}
-                  className="flex items-center gap-1 hover:text-rose-500 transition-colors cursor-pointer font-medium"
+                  className="flex items-center gap-1.5 hover:text-rose-500 transition-colors cursor-pointer font-medium"
                 >
                   <Heart className="w-4 h-4 text-rose-500" />
                   {selectedBlog.likes?.length || 0} Likes
                 </button>
-                <span className="flex items-center gap-1 font-medium">
+                <span className="flex items-center gap-1.5 font-medium">
                   <Eye className="w-4 h-4" />
                   {selectedBlog.views || 0} Views
                 </span>
               </div>
-              <Button variant="outline" onClick={() => setIsDetailOpen(false)} className="cursor-pointer">
-                Close
+              <Button
+                variant="outline"
+                onClick={() => setIsDetailOpen(false)}
+                className="cursor-pointer gap-2"
+              >
+                <X className="w-3.5 h-3.5" /> Close
               </Button>
             </DialogFooter>
           </DialogContent>

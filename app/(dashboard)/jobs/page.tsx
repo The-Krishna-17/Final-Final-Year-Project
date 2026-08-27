@@ -48,11 +48,16 @@ const JOB_TYPES = [
 ];
 
 const TYPE_COLORS: Record<string, string> = {
-  "Full-time": "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800",
-  "Part-time": "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800",
-  "Internship": "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800",
-  "Contract": "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:border-violet-800",
-  "Placement": "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-800",
+  "Full-time":
+    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800",
+  "Part-time":
+    "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800",
+  Internship:
+    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800",
+  Contract:
+    "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:border-violet-800",
+  Placement:
+    "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-800",
 };
 
 export default function JobsPage() {
@@ -74,7 +79,7 @@ export default function JobsPage() {
       fetchJobs({
         search: searchQuery,
         type: selectedType || undefined,
-      })
+      }),
     );
   };
 
@@ -136,7 +141,7 @@ export default function JobsPage() {
           value={selectedType}
           onValueChange={(val) => setSelectedType(val === "all" ? "" : val)}
         >
-          <SelectTrigger className="w-full sm:w-48 h-10 bg-background">
+          <SelectTrigger className="w-full sm:w-48 h-10! bg-background">
             <SelectValue placeholder="All Job Types" />
           </SelectTrigger>
           <SelectContent>
@@ -331,7 +336,7 @@ export default function JobsPage() {
                   <span className="font-semibold text-foreground text-sm">
                     {new Date(selectedJob.createdAt).toLocaleDateString(
                       undefined,
-                      { dateStyle: "medium" }
+                      { dateStyle: "medium" },
                     )}
                   </span>
                 </div>

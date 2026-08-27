@@ -43,6 +43,7 @@ import { formatDistanceToNow } from "date-fns";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const JOB_TYPES = [
   "Full-time",
@@ -69,6 +70,7 @@ export default function PublicJobsPage() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { jobs, loadingJobs } = useAppSelector((s) => s.jobs);
+  const { user } = useAppSelector((s) => s.auth);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState("");
@@ -100,6 +102,11 @@ export default function PublicJobsPage() {
   };
 
   const handleApplyClick = (applyLink: string) => {
+    if (!user) {
+      toast.error("Please log in to apply for jobs.");
+      router.push("/login");
+      return;
+    }
     let url = applyLink;
     if (url.includes("@") && !url.startsWith("mailto:")) {
       url = `mailto:${url}`;

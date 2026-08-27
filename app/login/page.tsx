@@ -113,7 +113,7 @@ function LoginForm() {
               className="text-xs text-right text-muted-foreground underline underline-offset-2 cursor-pointer hover:text-foreground transition-colors"
               onClick={() => router.push("/forgot-password")}
             >
-              Forgot password?
+              {/* Forgot password? */}
             </span>
           </div>
 

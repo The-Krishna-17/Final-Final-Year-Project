@@ -14,6 +14,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Loader2, Heart, Eye, Clock, Calendar } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
+import {
+  BlogCoverBanner,
+  BlogContentRenderer,
+} from "@/components/Blog/BlogRenderer";
 
 export default function BlogDetailPage() {
   const { id } = useParams() as { id: string };
@@ -22,7 +26,7 @@ export default function BlogDetailPage() {
 
   const { user } = useAppSelector((s) => s.auth);
   const { currentBlog, loadingCurrent, errorCurrent } = useAppSelector(
-    (s) => s.blogs,
+    (s) => s.blogs
   );
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export default function BlogDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-100 text-muted-foreground gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm">Fetching blog details...</p>
+        <p className="text-sm font-medium">Fetching blog post...</p>
       </div>
     );
   }
@@ -83,8 +87,8 @@ export default function BlogDetailPage() {
   const isLiked = user && currentBlog.likes?.includes(user._id);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      {/* Back navigation */}
+    <div className="max-w-5xl mx-auto space-y-6 pb-14">
+      {/* Top Navigation Bar */}
       <div className="flex justify-between items-center">
         <Button
           onClick={() => router.push("/blogs")}
@@ -96,37 +100,48 @@ export default function BlogDetailPage() {
         </Button>
 
         {currentBlog.status === "draft" && (
-          <Badge className="bg-amber-500 text-white hover:bg-amber-500">
-            Draft
+          <Badge className="bg-amber-500 text-white hover:bg-amber-500 font-semibold">
+            Draft Preview
           </Badge>
         )}
       </div>
 
-      {/* Cover + Title */}
-      <div
-        className={`w-full rounded-xl bg-linear-to-r ${
-          currentBlog.coverImage || "from-slate-600 to-slate-800"
-        } p-8 md:p-10 text-white space-y-5 relative overflow-hidden`}
+      {/* Hero Cover Banner */}
+      <BlogCoverBanner
+        coverImage={currentBlog.coverImage}
+        category={currentBlog.category || "General"}
+        heightClass="h-64 sm:h-80"
+        className="rounded-2xl"
       >
-        <div className="relative z-10 space-y-4">
+        <div className="relative z-10 space-y-4 w-full">
+          {/* Category + Tags */}
           <div className="flex flex-wrap gap-1.5">
             {currentBlog.tags?.map((tag) => (
               <Badge
                 key={tag}
-                className="bg-white/15 text-white border border-white/10 hover:bg-white/25 text-[10px] font-medium px-2 py-0.5"
+                className="bg-white/15 text-white border border-white/20 hover:bg-white/25 text-[10px] font-medium px-2 py-0.5 backdrop-blur-xs"
               >
-                {tag}
+                #{tag}
               </Badge>
             ))}
           </div>
 
-          <h1 className="text-2xl md:text-4xl font-bold leading-tight">
+          {/* Title */}
+          <h1 className="text-2xl sm:text-4xl font-extrabold leading-tight text-white drop-shadow-sm">
             {currentBlog.title}
           </h1>
 
-          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-white/10 text-white/90 text-sm">
+          {/* Subtitle */}
+          {currentBlog.subtitle && (
+            <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-2xl italic">
+              {currentBlog.subtitle}
+            </p>
+          )}
+
+          {/* Author + Meta bar */}
+          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-white/15 text-white/90 text-sm">
             <div className="flex items-center gap-2.5">
-              <Avatar className="w-9 h-9 border-2 border-white/20">
+              <Avatar className="w-9 h-9 border-2 border-white/25">
                 <AvatarImage
                   src={currentBlog.author?.avatar || ""}
                   alt={currentBlog.author?.fullName}
@@ -136,62 +151,69 @@ export default function BlogDetailPage() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium text-sm">
+                <p className="font-semibold text-sm leading-tight">
                   {currentBlog.author?.fullName}
+                </p>
+                <p className="text-[11px] text-white/60 capitalize">
+                  {currentBlog.author?.role || "Member"}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-xs">
               <Calendar className="w-3.5 h-3.5 text-white/60" />
-              <span className="text-xs">
+              <span>
                 {formatDistanceToNow(new Date(currentBlog.createdAt), {
                   addSuffix: true,
                 })}
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 text-xs">
               <Clock className="w-3.5 h-3.5 text-white/60" />
-              <span className="text-xs">
+              <span>
                 {Math.max(
                   1,
-                  Math.ceil(currentBlog.content.split(" ").length / 200),
+                  Math.ceil(currentBlog.content.split(" ").length / 200)
                 )}{" "}
                 min read
               </span>
             </div>
           </div>
         </div>
-      </div>
+      </BlogCoverBanner>
 
-      {/* Content + Sidebar */}
+      {/* Content + Sidebar Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Article body */}
+        {/* Article Body */}
         <div className="lg:col-span-3">
-          <div className="border-0 shadow-sm bg-card rounded-xl p-6 md:p-8">
-            <div className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">
-              {currentBlog.content}
-            </div>
+          <div className="border border-border shadow-xs bg-card rounded-2xl p-6 md:p-8 space-y-4">
+            {/* Subtitle at top of content (if present) */}
+            {currentBlog.subtitle && (
+              <p className="text-base text-muted-foreground leading-relaxed italic border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded-r-lg">
+                {currentBlog.subtitle}
+              </p>
+            )}
+            <BlogContentRenderer content={currentBlog.content} />
           </div>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-4">
-          {/* Reactions */}
-          <div className="border-0 shadow-sm bg-card rounded-xl p-4 text-center space-y-3">
-            <h3 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">
-              Feedback
+          {/* Reactions Card */}
+          <div className="border border-border shadow-xs bg-card rounded-2xl p-4 text-center space-y-3">
+            <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+              Reactions
             </h3>
 
             <div className="flex items-center justify-center gap-3 py-1">
               <button
                 onClick={handleLike}
                 disabled={currentBlog.status === "draft"}
-                className={`flex flex-col items-center justify-center p-2.5 rounded-lg border border-border w-18 transition-all cursor-pointer ${
+                className={`flex flex-col items-center justify-center p-2.5 rounded-xl border w-18 transition-all cursor-pointer ${
                   isLiked
                     ? "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50 text-red-500"
-                    : "hover:bg-muted text-muted-foreground"
+                    : "border-border hover:bg-muted text-muted-foreground"
                 }`}
               >
                 <Heart
@@ -204,7 +226,7 @@ export default function BlogDetailPage() {
                 </span>
               </button>
 
-              <div className="flex flex-col items-center justify-center p-2.5 rounded-lg border border-border w-18 text-muted-foreground">
+              <div className="flex flex-col items-center justify-center p-2.5 rounded-xl border border-border w-18 text-muted-foreground">
                 <Eye className="w-5 h-5 mb-1 text-blue-500" />
                 <span className="text-[11px] font-semibold">
                   {currentBlog.views || 0}
@@ -214,15 +236,47 @@ export default function BlogDetailPage() {
 
             <p className="text-[11px] text-muted-foreground leading-snug">
               {isLiked
-                ? "You liked this post."
+                ? "You liked this post!"
                 : "Was this helpful? Leave a like!"}
             </p>
           </div>
 
-          {/* Author */}
-          <div className="border-0 shadow-sm bg-card rounded-xl p-4 space-y-3">
-            <h3 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">
-              Author
+          {/* Category Card */}
+          {currentBlog.category && (
+            <div className="border border-border shadow-xs bg-card rounded-2xl p-4 space-y-2">
+              <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+                Category
+              </h3>
+              <Badge variant="secondary" className="font-semibold">
+                {currentBlog.category}
+              </Badge>
+            </div>
+          )}
+
+          {/* Tags Card */}
+          {currentBlog.tags?.length > 0 && (
+            <div className="border border-border shadow-xs bg-card rounded-2xl p-4 space-y-2">
+              <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+                Tags
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {currentBlog.tags.map((tag) => (
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="text-[11px] font-medium"
+                  >
+                    #{tag}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Author Card */}
+          <div className="border border-border shadow-xs bg-card rounded-2xl p-4 space-y-3">
+            <h3 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">
+              About the Author
             </h3>
             <div className="flex items-center gap-2.5">
               <Avatar className="w-10 h-10 border border-border">
@@ -235,7 +289,7 @@ export default function BlogDetailPage() {
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h4 className="font-medium text-sm">
+                <h4 className="font-semibold text-sm">
                   {currentBlog.author?.fullName}
                 </h4>
                 <p className="text-[11px] text-muted-foreground capitalize">
@@ -245,7 +299,7 @@ export default function BlogDetailPage() {
             </div>
             <p className="text-[11px] text-muted-foreground leading-relaxed">
               {currentBlog.author?.bio ||
-                "Active member of the skill-swap community."}
+                "Active member of the skill-swap community sharing their expertise."}
             </p>
           </div>
         </div>

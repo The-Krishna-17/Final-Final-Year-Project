@@ -3,6 +3,8 @@ import { UserData } from "../auth/type";
 export interface BlogItem {
   _id: string;
   title: string;
+  subtitle?: string;
+  category?: string;
   content: string;
   author: UserData;
   status: "draft" | "published";
@@ -33,6 +35,8 @@ export interface BlogState {
 
 export interface CreateBlogPayload {
   title: string;
+  subtitle?: string;
+  category?: string;
   content: string;
   status?: "draft" | "published";
   coverImage?: string | null;

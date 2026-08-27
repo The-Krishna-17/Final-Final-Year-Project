@@ -33,13 +33,17 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { BlogItem } from "@/store/features/blogs/type";
+import {
+  BlogCoverBanner,
+  BlogContentRenderer,
+} from "@/components/Blog/BlogRenderer";
 
 const STATUS_OPTIONS = ["all", "published", "draft"];
 
 export default function AdminBlogsPage() {
   const dispatch = useAppDispatch();
   const { adminBlogs, loadingAdminBlogs, loadingAction } = useAppSelector(
-    (s) => s.blogs
+    (s) => s.blogs,
   );
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,7 +83,9 @@ export default function AdminBlogsPage() {
       return;
     }
     try {
-      await dispatch(deleteBlogAction({ id: selectedBlog._id, reason: deleteReason.trim() })).unwrap();
+      await dispatch(
+        deleteBlogAction({ id: selectedBlog._id, reason: deleteReason.trim() }),
+      ).unwrap();
       toast.success("Blog deleted successfully.");
       setIsDeleteOpen(false);
     } catch (err: any) {
@@ -96,14 +102,14 @@ export default function AdminBlogsPage() {
           title: selectedBlog.title,
           content: selectedBlog.content,
           status: selectedBlog.status === "published" ? "draft" : "published",
-        })
+        }),
       ).unwrap();
       toast.success(
         `Blog ${
           selectedBlog.status === "published"
             ? "unpublished (set to draft)"
             : "published"
-        } successfully.`
+        } successfully.`,
       );
       setIsStatusOpen(false);
     } catch (err: any) {
@@ -157,7 +163,9 @@ export default function AdminBlogsPage() {
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>
-              {s === "all" ? "All Statuses" : s.charAt(0).toUpperCase() + s.slice(1)}
+              {s === "all"
+                ? "All Statuses"
+                : s.charAt(0).toUpperCase() + s.slice(1)}
             </option>
           ))}
         </select>
@@ -182,7 +190,7 @@ export default function AdminBlogsPage() {
                 <thead className="bg-muted/50 border-b border-border text-muted-foreground font-semibold uppercase tracking-wider">
                   <tr>
                     <th className="px-4 py-3">Title & Author</th>
-                    <th className="px-4 py-3">Tags</th>
+                    <th className="px-4 py-3">Category & Tags</th>
                     <th className="px-4 py-3">Status</th>
                     <th className="px-4 py-3">Stats</th>
                     <th className="px-4 py-3">Date</th>
@@ -191,12 +199,20 @@ export default function AdminBlogsPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {filteredBlogs.map((blog) => (
-                    <tr key={blog._id} className="hover:bg-muted/20 transition-colors">
+                    <tr
+                      key={blog._id}
+                      className="hover:bg-muted/20 transition-colors"
+                    >
                       <td className="px-4 py-3">
                         <div>
                           <p className="font-semibold text-sm text-foreground leading-tight line-clamp-1">
                             {blog.title}
                           </p>
+                          {blog.subtitle && (
+                            <p className="text-muted-foreground text-[10px] italic line-clamp-1 mt-0.5">
+                              {blog.subtitle}
+                            </p>
+                          )}
                           <p className="text-muted-foreground text-[11px] font-medium flex items-center gap-1 mt-0.5">
                             <User className="w-3 h-3" />{" "}
                             {blog.author?.fullName || "Unknown"}
@@ -204,24 +220,34 @@ export default function AdminBlogsPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-1">
-                          {blog.tags?.slice(0, 3).map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="secondary"
-                      className="text-[10px] font-semibold"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                          {(blog.tags?.length || 0) > 3 && (
+                        <div className="space-y-1">
+                          {blog.category && (
                             <Badge
-                              variant="secondary"
-                              className="text-[9px] font-semibold"
+                              variant="outline"
+                              className="text-[10px] font-semibold block w-fit"
                             >
-                              +{(blog.tags?.length || 0) - 3}
+                              {blog.category}
                             </Badge>
                           )}
+                          <div className="flex flex-wrap gap-1">
+                            {blog.tags?.slice(0, 2).map((tag) => (
+                              <Badge
+                                key={tag}
+                                variant="secondary"
+                                className="text-[10px] font-semibold"
+                              >
+                                #{tag}
+                              </Badge>
+                            ))}
+                            {(blog.tags?.length || 0) > 2 && (
+                              <Badge
+                                variant="secondary"
+                                className="text-[9px] font-semibold"
+                              >
+                                +{(blog.tags?.length || 0) - 2}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
@@ -302,14 +328,22 @@ export default function AdminBlogsPage() {
 
           {selectedBlog && (
             <div className="space-y-4 py-2">
-              {selectedBlog.coverImage && (
-                <img
-                  src={selectedBlog.coverImage}
-                  alt={selectedBlog.title}
-                  className="w-full h-48 object-cover rounded-lg border border-border"
-                />
+              {/* Cover Banner */}
+              <BlogCoverBanner
+                coverImage={selectedBlog.coverImage}
+                category={selectedBlog.category}
+                heightClass="h-40"
+                className="rounded-xl"
+              />
+
+              {/* Subtitle */}
+              {selectedBlog.subtitle && (
+                <p className="text-sm text-muted-foreground italic border-l-4 border-primary pl-3 py-1 bg-primary/5 rounded-r-lg">
+                  {selectedBlog.subtitle}
+                </p>
               )}
 
+              {/* Tags */}
               {selectedBlog.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {selectedBlog.tags.map((tag) => (
@@ -325,8 +359,9 @@ export default function AdminBlogsPage() {
                 </div>
               )}
 
-              <div className="prose prose-sm max-w-none text-foreground leading-relaxed whitespace-pre-wrap text-sm">
-                {selectedBlog.content}
+              {/* Formatted Content */}
+              <div className="pt-2 border-t border-border">
+                <BlogContentRenderer content={selectedBlog.content} />
               </div>
 
               <div className="flex items-center gap-4 pt-4 border-t border-border text-xs text-muted-foreground">
@@ -406,7 +441,7 @@ export default function AdminBlogsPage() {
               placeholder="Provide a valid reason for deleting this blog post..."
               value={deleteReason}
               onChange={(e) => setDeleteReason(e.target.value)}
-              className="min-h-[80px] text-sm"
+              className="min-h-20 text-sm"
             />
           </div>
 

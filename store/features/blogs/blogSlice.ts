@@ -42,13 +42,14 @@ const extractError = (error: unknown, defaultMessage: string): string => {
 // Async Thunks
 export const fetchPublishedBlogs = createAsyncThunk<
   BlogsResponse,
-  { search?: string; tag?: string } | undefined,
+  { search?: string; tag?: string; category?: string } | undefined,
   { rejectValue: string }
 >("blogs/fetchPublished", async (params, thunkAPI) => {
   try {
     const query = new URLSearchParams();
     if (params?.search) query.append("search", params.search);
     if (params?.tag) query.append("tag", params.tag);
+    if (params?.category) query.append("category", params.category);
 
     const response = await axiosInstance.get(`/blogs?${query.toString()}`);
     return response.data;
@@ -72,7 +73,7 @@ export const fetchMyBlogs = createAsyncThunk<
 
 export const fetchAdminBlogs = createAsyncThunk<
   BlogsResponse,
-  { search?: string; status?: string; tag?: string } | undefined,
+  { search?: string; status?: string; tag?: string; category?: string } | undefined,
   { rejectValue: string }
 >("blogs/fetchAdmin", async (params, thunkAPI) => {
   try {
@@ -80,6 +81,7 @@ export const fetchAdminBlogs = createAsyncThunk<
     if (params?.search) query.append("search", params.search);
     if (params?.status) query.append("status", params.status);
     if (params?.tag) query.append("tag", params.tag);
+    if (params?.category) query.append("category", params.category);
 
     const response = await axiosInstance.get(`/blogs/admin/all?${query.toString()}`);
     return response.data;

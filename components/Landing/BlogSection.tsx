@@ -9,15 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BookOpen, Heart, Eye, ArrowRight, Clock, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-
-const COVER_GRADIENTS = [
-  "from-violet-500 to-indigo-600",
-  "from-emerald-500 to-teal-600",
-  "from-amber-500 to-orange-600",
-  "from-rose-500 to-pink-600",
-  "from-sky-500 to-blue-600",
-  "from-slate-600 to-slate-800",
-];
+import { BlogCoverBanner } from "@/components/Blog/BlogRenderer";
 
 export default function BlogSection() {
   const dispatch = useAppDispatch();
@@ -57,11 +49,11 @@ export default function BlogSection() {
         {loadingBlogs ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-64 rounded-xl border border-border bg-muted/20 animate-pulse" />
+              <div key={i} className="h-72 rounded-2xl border border-border bg-muted/20 animate-pulse" />
             ))}
           </div>
         ) : featuredBlogs.length === 0 ? (
-          <div className="text-center py-12 border border-dashed rounded-xl bg-card">
+          <div className="text-center py-12 border border-dashed rounded-2xl bg-card">
             <p className="text-muted-foreground text-sm">No blog posts published yet.</p>
             <Link href="/public-blogs" className="mt-3 inline-block">
               <Button size="sm" className="mt-2 cursor-pointer">Be the first to write a blog</Button>
@@ -75,9 +67,13 @@ export default function BlogSection() {
               return (
                 <div
                   key={blog._id}
-                  className="group overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
+                  className="group overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col hover:-translate-y-1"
                 >
-                  <div className={`h-28 w-full bg-linear-to-r ${blog.coverImage || COVER_GRADIENTS[0]} p-4 flex items-end relative`}>
+                  <BlogCoverBanner
+                    coverImage={blog.coverImage}
+                    category={blog.category || "General"}
+                    heightClass="h-36"
+                  >
                     <div className="flex items-center gap-2">
                       <Avatar className="w-8 h-8 border-2 border-white/40">
                         <AvatarImage src={blog.author?.avatar || ""} alt={blog.author?.fullName} />
@@ -85,30 +81,35 @@ export default function BlogSection() {
                       </Avatar>
                       <span className="text-xs font-semibold text-white drop-shadow-sm">{blog.author?.fullName}</span>
                     </div>
-                  </div>
+                  </BlogCoverBanner>
 
                   <div className="p-5 flex flex-col flex-1 space-y-3">
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="text-[10px] font-medium">
-                        {blog.tags?.[0] || "Community"}
-                      </Badge>
+                      <div className="flex flex-wrap gap-1">
+                        {blog.tags?.slice(0, 2).map((t) => (
+                          <Badge key={t} variant="secondary" className="text-[10px] font-medium">
+                            #{t}
+                          </Badge>
+                        ))}
+                      </div>
                       <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                         <Clock className="w-3 h-3" />
                         {formatDistanceToNow(new Date(blog.createdAt), { addSuffix: true })}
                       </span>
                     </div>
 
-                    <Link href={`/public-blogs/${blog._id}`}>
-                      <h3 className="font-bold text-base leading-snug line-clamp-2 hover:text-primary transition-colors">
-                        {blog.title}
-                      </h3>
-                    </Link>
+                    <div>
+                      <Link href={`/public-blogs/${blog._id}`}>
+                        <h3 className="font-bold text-base leading-snug line-clamp-2 hover:text-primary transition-colors mb-1">
+                          {blog.title}
+                        </h3>
+                      </Link>
+                      <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                        {blog.subtitle || blog.content}
+                      </p>
+                    </div>
 
-                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed flex-1">
-                      {blog.content}
-                    </p>
-
-                    <div className="flex items-center justify-between border-t border-dashed border-border pt-3 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between border-t border-dashed border-border pt-3 text-xs text-muted-foreground mt-auto">
                       <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1">
                           <Heart className="w-3.5 h-3.5 text-rose-500" />
