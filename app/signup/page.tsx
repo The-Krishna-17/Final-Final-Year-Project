@@ -14,6 +14,8 @@ import {
   isPasswordValid,
 } from "@/components/ui/password-strength-hints";
 
+import { toast } from "sonner";
+
 const page = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -63,7 +65,8 @@ const page = () => {
     );
 
     if (registerUser.fulfilled.match(resultAction)) {
-      router.push("/verify-email");
+      toast.success("Account created successfully! Please log in.");
+      router.push("/login");
     }
   };
 

@@ -64,7 +64,6 @@ export interface UserData {
   email: string;
   role: string;
   avatar: string | null;
-  isEmailVerified: boolean;
   lastLogin: string | null;
   _id: string;
   createdAt: string;
@@ -118,10 +117,6 @@ export interface AuthState {
   loadingResetPassword: boolean;
   errorResetPassword: AuthError | null;
   successResetPassword: string | null;
-
-  loadingVerifyEmail: boolean;
-  errorVerifyEmail: AuthError | null;
-  successVerifyEmail: string | null;
 
   loadingChangePassword: boolean;
   errorChangePassword: AuthError | null;

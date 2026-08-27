@@ -53,11 +53,16 @@ const JOB_TYPES = [
 ];
 
 const TYPE_COLORS: Record<string, string> = {
-  "Full-time": "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800",
-  "Part-time": "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800",
-  "Internship": "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800",
-  "Contract": "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:border-violet-800",
-  "Placement": "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-800",
+  "Full-time":
+    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800",
+  "Part-time":
+    "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-800",
+  Internship:
+    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800",
+  Contract:
+    "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/30 dark:text-violet-400 dark:border-violet-800",
+  Placement:
+    "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-800",
 };
 
 export default function PublicJobsPage() {
@@ -79,7 +84,7 @@ export default function PublicJobsPage() {
       fetchJobs({
         search: searchQuery,
         type: selectedType || undefined,
-      })
+      }),
     );
   };
 
@@ -123,7 +128,8 @@ export default function PublicJobsPage() {
             Discover <span className="text-primary">Jobs & Internships</span>
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Browse open placements, full-time positions, and internship opportunities verified by our platform admins.
+            Browse open placements, full-time positions, and internship
+            opportunities verified by our platform admins.
           </p>
         </div>
 
@@ -144,7 +150,7 @@ export default function PublicJobsPage() {
             value={selectedType}
             onValueChange={(val) => setSelectedType(val === "all" ? "" : val)}
           >
-            <SelectTrigger className="w-full sm:w-48 h-11 bg-card border-border">
+            <SelectTrigger className="w-full sm:w-48 h-11! bg-card border-border">
               <SelectValue placeholder="All Job Types" />
             </SelectTrigger>
             <SelectContent>
@@ -162,7 +168,11 @@ export default function PublicJobsPage() {
               Search
             </Button>
             {(searchQuery || selectedType) && (
-              <Button variant="outline" onClick={handleClearFilters} className="h-11 cursor-pointer">
+              <Button
+                variant="outline"
+                onClick={handleClearFilters}
+                className="h-11 cursor-pointer"
+              >
                 Clear
               </Button>
             )}
@@ -204,7 +214,8 @@ export default function PublicJobsPage() {
                       <Badge
                         variant="outline"
                         className={`text-[10px] font-medium border ${
-                          TYPE_COLORS[job.type] || "bg-muted text-muted-foreground border-border"
+                          TYPE_COLORS[job.type] ||
+                          "bg-muted text-muted-foreground border-border"
                         }`}
                       >
                         {job.type}
@@ -227,7 +238,10 @@ export default function PublicJobsPage() {
                     <div className="space-y-1.5 text-xs text-muted-foreground pt-1">
                       <div className="flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">{job.location} &middot; {job.workLocation || "On-site"}</span>
+                        <span className="truncate">
+                          {job.location} &middot;{" "}
+                          {job.workLocation || "On-site"}
+                        </span>
                       </div>
                       {job.salaryRange && (
                         <div className="flex items-center gap-1.5 font-semibold text-foreground">
@@ -267,15 +281,25 @@ export default function PublicJobsPage() {
 
         {/* Public Action CTA */}
         <div className="rounded-2xl bg-linear-to-r from-emerald-500/10 via-primary/5 to-transparent border border-emerald-500/20 p-8 text-center space-y-4">
-          <h2 className="text-2xl font-bold">Ready to jumpstart your career?</h2>
+          <h2 className="text-2xl font-bold">
+            Ready to jumpstart your career?
+          </h2>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            Create an account to match with mentors, swap technical skills, and apply to exclusive placement programs.
+            Create an account to match with mentors, swap technical skills, and
+            apply to exclusive placement programs.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <Button onClick={() => router.push("/signup")} className="rounded-full px-6 cursor-pointer">
+            <Button
+              onClick={() => router.push("/signup")}
+              className="rounded-full px-6 cursor-pointer"
+            >
               Join Community
             </Button>
-            <Button variant="outline" onClick={() => router.push("/login")} className="rounded-full px-6 cursor-pointer gap-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/login")}
+              className="rounded-full px-6 cursor-pointer gap-2"
+            >
               <LogIn className="w-4 h-4" /> Sign In
             </Button>
           </div>
@@ -334,9 +358,12 @@ export default function PublicJobsPage() {
                     Posted
                   </span>
                   <span className="font-semibold text-foreground text-sm">
-                    {new Date(selectedJob.createdAt).toLocaleDateString(undefined, {
-                      dateStyle: "medium",
-                    })}
+                    {new Date(selectedJob.createdAt).toLocaleDateString(
+                      undefined,
+                      {
+                        dateStyle: "medium",
+                      },
+                    )}
                   </span>
                 </div>
               </div>
@@ -366,7 +393,11 @@ export default function PublicJobsPage() {
             </div>
 
             <DialogFooter className="border-t border-border pt-4 flex gap-2 sm:justify-end">
-              <Button variant="outline" onClick={() => setIsDetailsOpen(false)} className="cursor-pointer">
+              <Button
+                variant="outline"
+                onClick={() => setIsDetailsOpen(false)}
+                className="cursor-pointer"
+              >
                 Close
               </Button>
               <Button

@@ -51,7 +51,7 @@ export default function AdminOverviewPage() {
     );
   }
 
-  const users = overview.users || { total: 0, verified: 0, locked: 0, roles: {} };
+  const users = overview.users || { total: 0, locked: 0, roles: {} };
   const skills = overview.skills || { totalProfiles: 0, totalOffers: 0, totalWants: 0, topOffers: [], topWants: [] };
   const swaps = overview.swaps || { total: 0, breakdown: {} };
   const meetings = overview.meetings || { total: 0, breakdown: {} };
@@ -73,7 +73,7 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card className="bg-card border-border shadow-xs">
           <CardContent className="p-4 space-y-2">
             <div className="flex items-center justify-between text-muted-foreground">
@@ -81,20 +81,7 @@ export default function AdminOverviewPage() {
               <RiUser3Line className="text-lg text-primary" />
             </div>
             <div className="text-2xl font-bold">{users.total}</div>
-            <p className="text-[11px] text-muted-foreground">{users.verified} verified accounts</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card border-border shadow-xs">
-          <CardContent className="p-4 space-y-2">
-            <div className="flex items-center justify-between text-muted-foreground">
-              <span className="text-xs font-semibold uppercase tracking-wider">Email Verified</span>
-              <RiCheckDoubleLine className="text-lg text-green-500" />
-            </div>
-            <div className="text-2xl font-bold">{users.verified}</div>
-            <p className="text-[11px] text-muted-foreground">
-              {users.total > 0 ? Math.round((users.verified / users.total) * 100) : 0}% verification rate
-            </p>
+            <p className="text-[11px] text-muted-foreground">Active platform accounts</p>
           </CardContent>
         </Card>
 

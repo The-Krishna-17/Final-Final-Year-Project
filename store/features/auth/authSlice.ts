@@ -35,9 +35,6 @@ const initialState: AuthState = {
   errorResetPassword: null,
   successResetPassword: null,
 
-  loadingVerifyEmail: false,
-  errorVerifyEmail: null,
-  successVerifyEmail: null,
 
   loadingChangePassword: false,
   errorChangePassword: null,
@@ -159,20 +156,6 @@ export const resetPassword = createAsyncThunk<
   },
 );
 
-export const verifyEmail = createAsyncThunk<
-  GenericResponse,
-  string,
-  { rejectValue: AuthError }
->("auth/verifyEmail", async (token, thunkAPI) => {
-  try {
-    const response = await normalInstance.get(`/auth/verify-email/${token}`);
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Email verification failed"),
-    );
-  }
-});
 
 export const changePassword = createAsyncThunk<
   GenericResponse,
@@ -220,20 +203,6 @@ export const logoutAll = createAsyncThunk<
   }
 });
 
-export const resendVerificationEmail = createAsyncThunk<
-  GenericResponse,
-  void,
-  { rejectValue: AuthError }
->("auth/resendVerificationEmail", async (_, thunkAPI) => {
-  try {
-    const response = await axiosInstance.post("/auth/resend-verification");
-    return response.data;
-  } catch (error) {
-    return thunkAPI.rejectWithValue(
-      extractError(error, "Failed to send verification email"),
-    );
-  }
-});
 
 const authSlice = createSlice({
   name: "auth",
@@ -245,7 +214,6 @@ const authSlice = createSlice({
       state.errorMe = null;
       state.errorForgotPassword = null;
       state.errorResetPassword = null;
-      state.errorVerifyEmail = null;
       state.errorChangePassword = null;
     },
     // Used by profileSlice thunks to sync enriched user data into auth state
@@ -260,9 +228,8 @@ const authSlice = createSlice({
         state.loadingRegister = true;
         state.errorRegister = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.loadingRegister = false;
-        state.user = action.payload.data.user;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loadingRegister = false;
@@ -336,22 +303,6 @@ const authSlice = createSlice({
         };
       })
 
-      // VERIFY EMAIL
-      .addCase(verifyEmail.pending, (state) => {
-        state.loadingVerifyEmail = true;
-        state.errorVerifyEmail = null;
-        state.successVerifyEmail = null;
-      })
-      .addCase(verifyEmail.fulfilled, (state, action) => {
-        state.loadingVerifyEmail = false;
-        state.successVerifyEmail = action.payload.message;
-      })
-      .addCase(verifyEmail.rejected, (state, action) => {
-        state.loadingVerifyEmail = false;
-        state.errorVerifyEmail = action.payload ?? {
-          global: "Email verification failed",
-        };
-      })
 
       // CHANGE PASSWORD
       .addCase(changePassword.pending, (state) => {

@@ -9,6 +9,7 @@ import {
   AdminSwap,
   AdminReview,
   AdminMeeting,
+  AdminContactMessage,
 } from "./adminType";
 import axios from "axios";
 
@@ -31,6 +32,9 @@ const initialState: AdminState = {
 
   meetings: [],
   loadingMeetings: false,
+
+  contacts: [],
+  loadingContacts: false,
 
   actionLoading: false,
   error: null,
@@ -60,7 +64,7 @@ export const fetchOverviewStats = createAsyncThunk<
 
 export const fetchAdminUsers = createAsyncThunk<
   { users: AdminUser[]; pagination: Pagination },
-  { page?: number; limit?: number; search?: string; role?: string; isVerified?: string; isLocked?: string },
+  { page?: number; limit?: number; search?: string; role?: string; isLocked?: string },
   { rejectValue: string }
 >("admin/fetchUsers", async (params, thunkAPI) => {
   try {
@@ -97,18 +101,6 @@ export const toggleAdminUserLock = createAsyncThunk<
   }
 });
 
-export const toggleAdminUserVerification = createAsyncThunk<
-  AdminUser,
-  { userId: string; isVerified: boolean },
-  { rejectValue: string }
->("admin/toggleVerify", async ({ userId, isVerified }, thunkAPI) => {
-  try {
-    const res = await axiosInstance.patch(`/admin/users/${userId}/verify`, { isVerified });
-    return res.data.data;
-  } catch (err) {
-    return thunkAPI.rejectWithValue(extractError(err, "Failed to toggle email verification"));
-  }
-});
 
 export const deleteAdminUser = createAsyncThunk<
   string,
@@ -214,6 +206,45 @@ export const fetchAdminMeetings = createAsyncThunk<
   }
 });
 
+export const fetchAdminContacts = createAsyncThunk<
+  AdminContactMessage[],
+  { status?: string; search?: string } | void,
+  { rejectValue: string }
+>("admin/fetchContacts", async (params, thunkAPI) => {
+  try {
+    const res = await axiosInstance.get("/admin/contacts", { params: params || {} });
+    return res.data.data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(extractError(err, "Failed to fetch contact messages"));
+  }
+});
+
+export const updateAdminContactStatus = createAsyncThunk<
+  AdminContactMessage,
+  { messageId: string; status: "unread" | "read" | "replied" },
+  { rejectValue: string }
+>("admin/updateContactStatus", async ({ messageId, status }, thunkAPI) => {
+  try {
+    const res = await axiosInstance.patch(`/admin/contacts/${messageId}/status`, { status });
+    return res.data.data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(extractError(err, "Failed to update contact message status"));
+  }
+});
+
+export const deleteAdminContact = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("admin/deleteContact", async (messageId, thunkAPI) => {
+  try {
+    await axiosInstance.delete(`/admin/contacts/${messageId}`);
+    return messageId;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(extractError(err, "Failed to delete contact message"));
+  }
+});
+
 // ─── SLICE ───────────────────────────────────────────────────────────────────
 
 const adminSlice = createSlice({
@@ -274,12 +305,7 @@ const adminSlice = createSlice({
           };
         }
       })
-      .addCase(toggleAdminUserVerification.fulfilled, (state, action) => {
-        const idx = state.users.findIndex((u) => u._id === action.payload?._id);
-        if (idx !== -1) {
-          state.users[idx] = { ...state.users[idx], ...action.payload };
-        }
-      })
+
       .addCase(deleteAdminUser.fulfilled, (state, action) => {
         state.users = state.users.filter((u) => u._id !== action.payload);
       })
@@ -351,6 +377,28 @@ const adminSlice = createSlice({
       .addCase(fetchAdminMeetings.rejected, (state, action) => {
         state.loadingMeetings = false;
         state.error = action.payload as string;
+      })
+
+      // fetchAdminContacts
+      .addCase(fetchAdminContacts.pending, (state) => {
+        state.loadingContacts = true;
+        state.error = null;
+      })
+      .addCase(fetchAdminContacts.fulfilled, (state, action) => {
+        state.loadingContacts = false;
+        const raw = action.payload;
+        state.contacts = Array.isArray(raw) ? raw : (raw as any)?.messages || (raw as any)?.data || [];
+      })
+      .addCase(fetchAdminContacts.rejected, (state, action) => {
+        state.loadingContacts = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateAdminContactStatus.fulfilled, (state, action) => {
+        const idx = state.contacts.findIndex((c) => c._id === action.payload?._id);
+        if (idx !== -1) state.contacts[idx] = action.payload;
+      })
+      .addCase(deleteAdminContact.fulfilled, (state, action) => {
+        state.contacts = state.contacts.filter((c) => c._id !== action.payload);
       });
   },
 });

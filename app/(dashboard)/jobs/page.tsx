@@ -128,7 +128,7 @@ export default function JobsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            className="pl-10 bg-background"
+            className="pl-10 h-10 bg-background"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function JobsPage() {
           value={selectedType}
           onValueChange={(val) => setSelectedType(val === "all" ? "" : val)}
         >
-          <SelectTrigger className="w-full sm:w-48 bg-background">
+          <SelectTrigger className="w-full sm:w-48 h-10 bg-background">
             <SelectValue placeholder="All Job Types" />
           </SelectTrigger>
           <SelectContent>
@@ -150,14 +150,14 @@ export default function JobsPage() {
         </Select>
 
         <div className="flex gap-2">
-          <Button onClick={handleSearch} className="cursor-pointer">
+          <Button onClick={handleSearch} className="h-10 px-5 cursor-pointer">
             Search
           </Button>
           {(searchQuery || selectedType) && (
             <Button
               variant="outline"
               onClick={handleClearFilters}
-              className="cursor-pointer"
+              className="h-10 cursor-pointer"
             >
               Clear
             </Button>

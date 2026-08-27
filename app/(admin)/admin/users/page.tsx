@@ -6,7 +6,6 @@ import {
   fetchAdminUsers,
   updateAdminUserRole,
   toggleAdminUserLock,
-  toggleAdminUserVerification,
   deleteAdminUser,
 } from "@/store/features/admin/adminSlice";
 import { Card, CardContent } from "@/components/ui/card";
@@ -37,7 +36,7 @@ import {
   RiShieldLine,
 } from "react-icons/ri";
 
-type ModalType = "delete" | "lock" | "unlock" | "verify" | "unverify" | null;
+type ModalType = "delete" | "lock" | "unlock" | null;
 
 interface ConfirmTarget {
   userId: string;
@@ -56,7 +55,7 @@ export default function AdminUsersPage() {
 
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  const [verifiedFilter, setVerifiedFilter] = useState("");
+
   const [page, setPage] = useState(1);
 
   // Modal state
@@ -74,7 +73,6 @@ export default function AdminUsersPage() {
         limit: 10,
         search,
         role: roleFilter,
-        isVerified: verifiedFilter,
       }),
     );
   };
@@ -84,7 +82,7 @@ export default function AdminUsersPage() {
       loadData();
     }, 300);
     return () => clearTimeout(timeout);
-  }, [dispatch, search, roleFilter, verifiedFilter, page]);
+  }, [dispatch, search, roleFilter, page]);
 
   const openModal = (
     type: ModalType,
@@ -142,22 +140,6 @@ export default function AdminUsersPage() {
           toggleAdminUserLock({ userId: confirmTarget.userId, lock: false }),
         ).unwrap();
         toast.success("Account unlocked");
-      } else if (modalType === "verify") {
-        await dispatch(
-          toggleAdminUserVerification({
-            userId: confirmTarget.userId,
-            isVerified: true,
-          }),
-        ).unwrap();
-        toast.success("Email marked as verified");
-      } else if (modalType === "unverify") {
-        await dispatch(
-          toggleAdminUserVerification({
-            userId: confirmTarget.userId,
-            isVerified: false,
-          }),
-        ).unwrap();
-        toast.success("Email marked as unverified");
       }
       closeModal();
     } catch (err: any) {
@@ -195,24 +177,7 @@ export default function AdminUsersPage() {
           confirmLabel: "Unlock Account",
           confirmVariant: "default" as const,
         };
-      case "verify":
-        return {
-          icon: <RiShieldCheckLine className="w-6 h-6 text-green-500" />,
-          iconBg: "bg-green-500/10",
-          title: "Mark Email Verified",
-          description: `This will manually mark the email for "${confirmTarget?.name}" as verified, bypassing the normal email confirmation flow.`,
-          confirmLabel: "Mark as Verified",
-          confirmVariant: "default" as const,
-        };
-      case "unverify":
-        return {
-          icon: <RiShieldLine className="w-6 h-6 text-muted-foreground" />,
-          iconBg: "bg-muted",
-          title: "Revoke Email Verification",
-          description: `This will mark the email for "${confirmTarget?.name}" as unverified. They may need to re-verify to access certain features.`,
-          confirmLabel: "Revoke Verification",
-          confirmVariant: "default" as const,
-        };
+
       default:
         return null;
     }
@@ -230,8 +195,8 @@ export default function AdminUsersPage() {
             User Management & Moderation
           </h1>
           <p className="text-sm text-muted-foreground mt-1.5">
-            Manage registered accounts, assign administrative roles, toggle
-            account security locks, and verify user emails.
+            Manage registered accounts, assign administrative roles, and toggle
+            account security locks.
           </p>
         </div>
       </div>
@@ -262,15 +227,7 @@ export default function AdminUsersPage() {
             <option value="admin">Admin</option>
           </select>
 
-          <select
-            value={verifiedFilter}
-            onChange={(e) => setVerifiedFilter(e.target.value)}
-            className="h-9 px-3 rounded-lg border border-border bg-background text-foreground text-xs font-semibold focus:outline-hidden cursor-pointer"
-          >
-            <option value="">All Verifications</option>
-            <option value="true">Verified Only</option>
-            <option value="false">Unverified Only</option>
-          </select>
+
         </div>
       </div>
 
@@ -353,28 +310,19 @@ export default function AdminUsersPage() {
                         {/* Status badges */}
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            {u.isEmailVerified ? (
-                              <Badge
-                                variant="outline"
-                                className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20"
-                              >
-                                <RiCheckDoubleLine className="mr-1" /> Verified
-                              </Badge>
-                            ) : (
-                              <Badge
-                                variant="outline"
-                                className="text-[10px] bg-muted text-muted-foreground"
-                              >
-                                Unverified
-                              </Badge>
-                            )}
-
-                            {isLocked && (
+                            {isLocked ? (
                               <Badge
                                 variant="outline"
                                 className="text-[10px] bg-red-500/10 text-red-600 border-red-500/20"
                               >
                                 <RiLock2Line className="mr-1" /> Locked
+                              </Badge>
+                            ) : (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] bg-green-500/10 text-green-600 border-green-500/20"
+                              >
+                                Active
                               </Badge>
                             )}
                           </div>
@@ -388,32 +336,7 @@ export default function AdminUsersPage() {
                         {/* Actions */}
                         <td className="px-4 py-3 text-right">
                           <div className="flex items-center justify-end gap-1.5">
-                            {/* Toggle Verification */}
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-8 w-8 text-muted-foreground hover:text-foreground cursor-pointer"
-                              title={
-                                u.isEmailVerified
-                                  ? "Revoke Verification"
-                                  : "Mark Verified"
-                              }
-                              onClick={() =>
-                                openModal(
-                                  u.isEmailVerified ? "unverify" : "verify",
-                                  u._id,
-                                  fullName,
-                                  u.email,
-                                  u.avatar ?? undefined,
-                                )
-                              }
-                            >
-                              <RiShieldCheckLine
-                                className={
-                                  u.isEmailVerified ? "text-green-500" : ""
-                                }
-                              />
-                            </Button>
+
 
                             {/* Toggle Lock */}
                             <Button

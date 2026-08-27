@@ -3,10 +3,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getMe,
-  resendVerificationEmail,
-} from "@/store/features/auth/authSlice";
+import { getMe } from "@/store/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Activity,
@@ -87,7 +84,7 @@ const page = () => {
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({});
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [resending, setResending] = useState(false);
+
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -277,19 +274,7 @@ const page = () => {
   const updateSocial = (key: keyof SocialLinks, value: string) =>
     setSocialLinks((prev) => ({ ...prev, [key]: value || null }));
 
-  const handleResendVerification = async () => {
-    setResending(true);
-    try {
-      await dispatch(resendVerificationEmail()).unwrap();
-      toast.success("Verification email sent!", {
-        description: "Please check your inbox and click the link.",
-      });
-    } catch (error: any) {
-      toast.error(error?.global || "Failed to send verification email.");
-    } finally {
-      setResending(false);
-    }
-  };
+
 
   return (
     <>
@@ -1152,22 +1137,7 @@ const page = () => {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  {user?.isEmailVerified ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-success-muted text-success-muted-foreground">
-                      <CircleCheck className="w-3 h-3" />
-                      Verified
-                    </span>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="rounded-full text-xs px-3 py-1"
-                      onClick={handleResendVerification}
-                      disabled={resending}
-                    >
-                      {resending ? "Sending..." : "Verify Email"}
-                    </Button>
-                  )}
+                  <p className="text-sm font-semibold truncate">{user?.email || "—"}</p>
                 </div>
               </div>
 

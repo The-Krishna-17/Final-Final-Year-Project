@@ -1,7 +1,6 @@
 export interface OverviewStats {
   users: {
     total: number;
-    verified: number;
     locked: number;
     roles: Record<string, number>;
   };
@@ -34,7 +33,6 @@ export interface AdminUser {
   role: "user" | "admin" | "moderator";
   avatar: string | null;
   bio: string | null;
-  isEmailVerified: boolean;
   lockUntil: string | null;
   lastLogin: string | null;
   createdAt: string;
@@ -146,6 +144,17 @@ export interface AdminMeeting {
   createdAt: string;
 }
 
+export interface AdminContactMessage {
+  _id: string;
+  fullName: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: "unread" | "read" | "replied";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AdminState {
   overview: OverviewStats | null;
   loadingOverview: boolean;
@@ -165,6 +174,9 @@ export interface AdminState {
 
   meetings: AdminMeeting[];
   loadingMeetings: boolean;
+
+  contacts: AdminContactMessage[];
+  loadingContacts: boolean;
 
   actionLoading: boolean;
   error: string | null;

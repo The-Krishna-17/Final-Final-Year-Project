@@ -606,7 +606,6 @@ export default function DashboardPage() {
                     user?.socialLinks &&
                     Object.values(user.socialLinks).some(Boolean)
                   ),
-                  !!user?.isEmailVerified,
                   !!user?.avatar,
                   !!skillProfile?.offerSkills?.length,
                 ];
@@ -658,13 +657,6 @@ export default function DashboardPage() {
                         Object.values(user.socialLinks).some(Boolean)
                       ),
                       icon: Link2,
-                      href: "/profile",
-                    },
-                    {
-                      label: "Verify Email",
-                      description: "Confirm your email address",
-                      done: !!user?.isEmailVerified,
-                      icon: MailCheck,
                       href: "/profile",
                     },
                     {

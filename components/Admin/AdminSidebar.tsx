@@ -12,6 +12,7 @@ import {
   RiShieldFlashLine,
   RiBriefcaseLine,
   RiBookOpenLine,
+  RiMailLine,
 } from "react-icons/ri";
 
 const navItems = [
@@ -54,6 +55,11 @@ const navItems = [
     name: "Blog Management",
     href: "/admin/blogs",
     icon: RiBookOpenLine,
+  },
+  {
+    name: "Contact Messages",
+    href: "/admin/contacts",
+    icon: RiMailLine,
   },
 ];
 
