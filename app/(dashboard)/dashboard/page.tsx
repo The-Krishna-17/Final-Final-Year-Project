@@ -156,34 +156,59 @@ const MatchCard = ({ match }: { match: any }) => {
     `${match.userProfile?.user?.firstName || ""} ${match.userProfile?.user?.lastName || ""}`.trim() ||
     "Unknown User";
 
+  const learnSkillObj = match.matchDetails?.aWantsB?.offerSkill;
+  const learnSkillName =
+    learnSkillObj?.ai?.primarySkill || learnSkillObj?.rawInput || "";
+
+  const matchPercent =
+    match.matchPercent ?? Math.round(((match.totalScore || 0) / 200) * 100);
+  const isMutual = match.matchDetails?.isMutual;
+
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/60 transition-colors">
-      <Avatar className="h-10 w-10">
-        <AvatarImage src={match.userProfile?.user?.avatar || undefined} />
-        <AvatarFallback className="text-xs">
-          {name
-            .split(" ")
-            .map((n: string) => n[0])
-            .join("")
-            .slice(0, 2)}
-        </AvatarFallback>
-      </Avatar>
-      <div className="flex-1 min-w-0">
-        <p className="text-base font-medium truncate">{name}</p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <Badge variant="secondary" className="text-[10px]">
-            {match.matchPercent}
-          </Badge>
-          <span className="text-[10px] text-muted-foreground text-nowrap">
-            {match.matchDetails?.isMutual ? "Mutual match" : "Recommended"}
-          </span>
+    <div
+      className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-border/60 bg-card hover:bg-muted/40 hover:border-primary/30 transition-all cursor-pointer group shrink-0 min-w-[240px]"
+      onClick={() => router.push(`/matches`)}
+    >
+      <div className="flex items-center gap-3 min-w-0">
+        <Avatar className="h-10 w-10 ring-2 ring-border/80 group-hover:ring-primary/40 transition-all">
+          <AvatarImage src={match.userProfile?.user?.avatar || undefined} />
+          <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
+            {name
+              .split(" ")
+              .map((n: string) => n[0])
+              .join("")
+              .slice(0, 2)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold truncate text-foreground group-hover:text-primary transition-colors">
+            {name}
+          </p>
+          {learnSkillName && (
+            <p className="text-xs text-muted-foreground truncate">
+              Teaches <span className="font-medium text-foreground">{learnSkillName}</span>
+            </p>
+          )}
+          <div className="flex items-center gap-1.5 mt-1">
+            <span
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                matchPercent >= 75
+                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                  : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30"
+              }`}
+            >
+              {matchPercent}% Match
+            </span>
+            <span className="text-[10px] text-muted-foreground">
+              {isMutual ? "✨ Mutual" : "⚡ 1-Way"}
+            </span>
+          </div>
         </div>
       </div>
       <Button
         size="sm"
         variant="ghost"
-        className="h-8 w-8 p-0 shrink-0"
-        onClick={() => router.push(`/matches`)}
+        className="h-8 w-8 p-0 shrink-0 text-muted-foreground group-hover:text-primary transition-colors"
       >
         <ArrowRight className="w-4 h-4" />
       </Button>
