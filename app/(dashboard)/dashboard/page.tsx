@@ -166,7 +166,7 @@ const MatchCard = ({ match }: { match: any }) => {
 
   return (
     <div
-      className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-border/60 bg-card hover:bg-muted/40 hover:border-primary/30 transition-all cursor-pointer group shrink-0 min-w-[240px]"
+      className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-border/60 bg-card hover:bg-muted/40 hover:border-primary/30 transition-all cursor-pointer group shrink-0 min-w-60"
       onClick={() => router.push(`/matches`)}
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -186,7 +186,10 @@ const MatchCard = ({ match }: { match: any }) => {
           </p>
           {learnSkillName && (
             <p className="text-xs text-muted-foreground truncate">
-              Teaches <span className="font-medium text-foreground">{learnSkillName}</span>
+              Teaches{" "}
+              <span className="font-medium text-foreground">
+                {learnSkillName}
+              </span>
             </p>
           )}
           <div className="flex items-center gap-1.5 mt-1">
