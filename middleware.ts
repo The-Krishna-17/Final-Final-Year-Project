@@ -31,13 +31,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const accessToken = request.cookies.get("accessToken");
-
-  if (!accessToken) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("from", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  // Authentication cookies belong to the API origin and are not visible to
+  // this Vercel middleware. Protected client components validate the session
+  // through the backend with credentials.
 
   return NextResponse.next();
 }
