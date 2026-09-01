@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   RiDashboardLine,
   RiUserSettingsLine,
@@ -14,6 +14,11 @@ import {
   RiBookOpenLine,
   RiMailLine,
 } from "react-icons/ri";
+import { MdOutlineLogout } from "react-icons/md";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logoutUser } from "@/store/features/auth/authSlice";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const navItems = [
   {
@@ -65,6 +70,15 @@ const navItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const loadingLogout = useAppSelector((state) => state.auth.loadingLogout);
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    toast.success("Logged out successfully");
+    router.push("/");
+  };
 
   return (
     <aside className="w-[16rem] shrink-0 bg-sidebar border-r border-border min-h-screen flex flex-col justify-between p-2 shadow-sm text-sidebar-foreground">
@@ -111,6 +125,15 @@ export function AdminSidebar() {
           })}
         </nav>
       </div>
+      <Button
+        onClick={handleLogout}
+        disabled={loadingLogout}
+        variant="ghost"
+        className="w-full flex items-center justify-start gap-2 text-base text-red-500 hover:text-red-600 hover:bg-sidebar-accent cursor-pointer"
+      >
+        <MdOutlineLogout />
+        {loadingLogout ? "Logging out..." : "Logout"}
+      </Button>
     </aside>
   );
 }
