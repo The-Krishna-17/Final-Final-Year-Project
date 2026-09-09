@@ -231,7 +231,7 @@ export default function ConnectionsPage() {
           ) : (
             /* Connection grid */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filteredActive.map((partner) => {
+              {filteredActive.map((partner, i) => {
                 const firstName = partner.user.firstName || "";
                 const lastName = partner.user.lastName || "";
                 const fullName =
@@ -241,7 +241,10 @@ export default function ConnectionsPage() {
                   "U";
 
                 return (
-                  <div className="group overflow-hidden rounded-lg border border-border bg-card text-card-foreground transition-shadow duration-200 hover:shadow-md">
+                  <div
+                    key={partner.swapId || i}
+                    className="group overflow-hidden rounded-lg border border-border bg-card text-card-foreground transition-shadow duration-200 hover:shadow-md"
+                  >
                     {/* Ledger header strip */}
                     <div className="flex items-center justify-between border-b border-dashed border-border bg-muted/50 px-4 py-2">
                       <span className="text-xs font-semibold text-muted-foreground tracking-[0.15em]">
