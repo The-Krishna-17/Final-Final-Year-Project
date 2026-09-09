@@ -41,12 +41,12 @@ const HeroSection = () => {
 
   return (
     <Layout>
-      <section className="w-full mx-auto  flex flex-col gap-4 items-center justify-center text-center">
+      <section className="w-full mx-auto flex flex-col gap-3 sm:gap-4 items-center justify-center text-center">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-2xl font-semibold opacity-60 text-primary"
+          className="text-base sm:text-2xl font-semibold opacity-60 text-primary"
         >
           ENHANCE YOUR CAREER
         </motion.h2>
@@ -54,7 +54,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl font-bold max-w-3xl leading-tight"
+          className="text-3xl sm:text-5xl font-bold max-w-3xl leading-tight"
         >
           Learn and boost your skillset with
         </motion.h1>
@@ -62,7 +62,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-44 my-4"
+          className="max-w-36 sm:max-w-44 my-3 sm:my-4"
         >
           <Image src={lightLogo} alt="logo" className="dark:hidden" />
           <Image src={darkLogo} alt="logo" className="hidden dark:block" />
@@ -72,7 +72,7 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-2xl font-semibold"
+          className="text-lg sm:text-2xl font-semibold"
         >
           {displayText}
           <span className="animate-pulse">|</span>
@@ -98,12 +98,12 @@ const HeroSection = () => {
           <Image
             src={dashboardImageLight}
             alt="dashboard"
-            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8 dark:hidden"
+            className="w-full max-w-full max-h-[70vh] h-auto object-cover object-top rounded-t-2xl sm:rounded-t-4xl border-t-4 sm:border-t-8 border-r-4 sm:border-r-8 border-l-4 sm:border-l-8 dark:hidden"
           />
           <Image
             src={dashboardImageDark}
             alt="dashboard"
-            className="border-foreground/30 max-h-[70vh] object-cover object-top rounded-t-4xl border-t-8 border-r-8 border-l-8 hidden dark:block"
+            className="w-full max-w-full max-h-[70vh] h-auto object-cover object-top rounded-t-2xl sm:rounded-t-4xl border-t-4 sm:border-t-8 border-r-4 sm:border-r-8 border-l-4 sm:border-l-8 hidden dark:block"
           />
         </motion.div>
       </section>

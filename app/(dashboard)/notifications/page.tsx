@@ -88,11 +88,11 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <div className="container mx-auto px-3 py-5 sm:px-6 sm:py-10">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-semibold text-foreground tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight flex items-center gap-2 sm:gap-3">
             Notifications
             {unreadCount > 0 && (
               <span className="inline-flex items-center justify-center w-6 h-6 text-[11px] font-bold rounded-full bg-primary text-primary-foreground">
@@ -104,13 +104,13 @@ export default function NotificationsPage() {
             Stay updated with your skill swaps, meetings, and messages.
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex w-full items-center gap-2 sm:w-auto">
           {unreadCount > 0 && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => dispatch(markAllAsRead())}
-              className="gap-2 text-xs"
+              className="flex-1 gap-2 text-xs sm:flex-none"
             >
               <CheckCheck className="w-4 h-4" />
               Mark all read
@@ -135,11 +135,11 @@ export default function NotificationsPage() {
         value={filter}
         onValueChange={(val) => setFilter(val as "all" | "unread")}
       >
-        <TabsList variant="line" className="flex items-center gap-4 mb-8">
-          <TabsTrigger value="all" className="cursor-pointer">
+        <TabsList variant="line" className="flex w-full items-center gap-3 overflow-x-auto mb-6 sm:mb-8">
+          <TabsTrigger value="all" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
             All
           </TabsTrigger>
-          <TabsTrigger value="unread" className="cursor-pointer gap-2">
+          <TabsTrigger value="unread" className="cursor-pointer whitespace-nowrap gap-2 text-xs sm:text-sm">
             Unread
             {unreadCount > 0 && (
               <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
@@ -173,7 +173,7 @@ export default function NotificationsPage() {
             {notifications.map((n) => (
               <div
                 key={n._id}
-                className={`flex items-start gap-4 rounded-lg border p-4 transition-all duration-200 hover:border-primary/40 bg-card ${
+                className={`flex items-start gap-3 sm:gap-4 rounded-lg border p-3 sm:p-4 transition-all duration-200 hover:border-primary/40 bg-card ${
                   !n.isRead ? "border-primary/20" : "border-border opacity-90"
                 }`}
               >
@@ -213,7 +213,7 @@ export default function NotificationsPage() {
                   <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                     {n.message}
                   </p>
-                  <div className="flex items-center gap-4 mt-2">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2">
                     <span className="text-xs text-muted-foreground/70">
                       {formatRelativeTime(n.createdAt)}
                     </span>

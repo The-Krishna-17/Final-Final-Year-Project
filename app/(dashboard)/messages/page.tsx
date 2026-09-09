@@ -12,6 +12,7 @@ import {
   Send,
   Video,
   MessageCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ export default function MessagesPage() {
   const endRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activePartnerIdRef = useRef<string | null>(null);
-  const { open } = useSidebar();
+  const { open, isMobile } = useSidebar();
 
   useEffect(() => {
     axiosInstance
@@ -201,12 +202,12 @@ export default function MessagesPage() {
      * the remaining viewport height below the top nav (≈ 64px / 4rem).
      */
     <div
-      className={`-m-4 -mt-6 flex h-[calc(100vh-4rem)] overflow-hidden bg-background fixed
+      className={`-mx-4 -mt-6 md:-m-4 md:-mt-6 flex h-[calc(100dvh-4rem)] overflow-hidden bg-background fixed
     transition-[width] duration-200 ease-linear
-    ${open ? "w-[calc(100%-16rem)]" : "w-full"}`}
+    ${open ? "w-full md:w-[calc(100%-16rem)]" : "w-full"}`}
     >
       {/* ── Sidebar ─────────────────────────────────────────────────── */}
-      <aside className="flex w-72 shrink-0 flex-col border-r">
+      <aside className={`${isMobile && active ? "hidden" : ""} flex w-full md:w-72 shrink-0 flex-col border-r`}>
         <div className="shrink-0 border-b border-border p-4 font-semibold">
           Messages
         </div>
@@ -238,9 +239,14 @@ export default function MessagesPage() {
 
       {/* ── Chat panel ──────────────────────────────────────────────── */}
       {active ? (
-        <section className="flex min-w-0 flex-1 flex-col">
+        <section className={`${isMobile && !active ? "hidden" : ""} flex min-w-0 flex-1 flex-col`}>
           {/* Header */}
-          <header className="flex shrink-0 items-center gap-3 border-b p-4">
+          <header className="flex shrink-0 items-center gap-3 border-b p-3 sm:p-4">
+            {isMobile && (
+              <Button variant="ghost" size="icon" onClick={() => setActive(null)} aria-label="Back to conversations">
+                <ArrowLeft size={18} />
+              </Button>
+            )}
             <Avatar>
               <AvatarImage src={active.user.avatar} />
               <AvatarFallback>{initials(active)}</AvatarFallback>
@@ -381,13 +387,13 @@ export default function MessagesPage() {
             </div>
           </footer>
         </section>
-      ) : (
+      ) : !isMobile ? (
         /* No active conversation selected */
         <div className="flex flex-1 flex-col items-center justify-center gap-3 text-center text-muted-foreground">
           <MessageCircle className="h-10 w-10 opacity-30" />
           <p className="text-sm">Select a conversation to start chatting</p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

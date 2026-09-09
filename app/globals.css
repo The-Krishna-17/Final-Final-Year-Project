@@ -193,5 +193,6 @@
   body {
     @apply bg-background text-foreground font-sans;
     letter-spacing: var(--tracking-normal);
+    overflow-x: hidden;
   }
 }

@@ -753,17 +753,17 @@ const page = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       {/* Top Bar */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1 flex-1 max-w-xl">
-          <h1 className="font-semibold text-2xl">Matches</h1>
-          <h2 className="text-base text-muted-foreground">
+          <h1 className="font-semibold text-xl sm:text-2xl">Matches</h1>
+          <h2 className="text-sm sm:text-base text-muted-foreground">
             Find your perfect skill match and connect with peers who can teach
             what you want to learn.
           </h2>
         </div>
-        <div className="flex gap-2 w-full max-w-xl">
+        <div className="flex w-full max-w-xl flex-col gap-2 sm:flex-row">
           <div className="relative w-full" ref={dropdownRef}>
             <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-lg" />
             <Input
@@ -781,7 +781,7 @@ const page = () => {
             {/* Search Results Dropdown */}
             {showDropdown && searchQuery.trim().length > 0 && (
               <div
-                className="absolute top-full right-0 mt-2 w-200 max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col"
+                className="absolute top-full right-0 mt-2 w-[min(50rem,calc(100vw-2rem))] sm:w-[50rem] max-w-[calc(100vw-2rem)] z-50 bg-background border border-border rounded-xl shadow-2xl max-h-[75vh] overflow-y-auto flex flex-col"
                 style={{ msOverflowStyle: "none", scrollbarWidth: "none" }}
               >
                 <div className="p-4 border-b border-border sticky top-0 bg-background/95 backdrop-blur z-10 flex justify-between items-center">
@@ -826,7 +826,7 @@ const page = () => {
             <DropdownMenuTrigger asChild>
               <Button
                 variant={filters.difficulty ? "secondary" : "outline"}
-                className="shrink-0"
+                className="w-full shrink-0 sm:w-auto"
               >
                 <RiEqualizerLine className="mr-2 text-lg" />
                 Filter
@@ -917,15 +917,15 @@ const page = () => {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList variant={"line"} className="flex items-center gap-4">
-          <TabsTrigger value="recommended" className="cursor-pointer">
+        <TabsList variant={"line"} className="flex w-full items-center gap-3 overflow-x-auto">
+          <TabsTrigger value="recommended" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
             Recommended
           </TabsTrigger>
-          <TabsTrigger value="mutual" className="cursor-pointer">
+          <TabsTrigger value="mutual" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
             Mutual
           </TabsTrigger>
           {(filteredMatches?.length > 0 || activeTab === "filtered") && (
-            <TabsTrigger value="filtered" className="cursor-pointer">
+            <TabsTrigger value="filtered" className="cursor-pointer whitespace-nowrap text-xs sm:text-sm">
               Filtered
             </TabsTrigger>
           )}

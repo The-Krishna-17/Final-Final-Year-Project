@@ -33,7 +33,7 @@ const ProcessSection = () => {
             journey powered by AI matching and real-time communication.
           </p>
         </motion.div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col lg:flex-row items-center gap-4">
           <div className="flex-1 p-4 flex flex-col gap-6">
             {PROCESS_STEPS.map((c, index) => {
               const Icon = c.icon;
@@ -62,7 +62,7 @@ const ProcessSection = () => {
             })}
           </div>
           <motion.div
-            className="flex-1 p-4 relative"
+            className="w-full lg:flex-1 p-2 sm:p-4 relative"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -74,15 +74,15 @@ const ProcessSection = () => {
               className="w-full rounded-2xl object-cover shadow-xl"
             />
 
-            <div className="absolute left-1/2 -translate-x-1/2 -bottom-5 w-[92%] max-w-lg rounded-lg bg-primary text-primary-foreground backdrop-blur-sm shadow-2xl p-4">
-              <div className="flex items-center justify-between">
+            <div className="relative lg:absolute left-1/2 -translate-x-1/2 -bottom-5 w-[92%] max-w-lg rounded-lg bg-primary text-primary-foreground backdrop-blur-sm shadow-2xl p-3 sm:p-4 mt-[-2rem] lg:mt-0">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background">
                       <FaUsers className="text-lg text-primary" />
                     </div>
 
-                    <h3 className="text-3xl font-semibold">Free</h3>
+                    <h3 className="text-xl sm:text-3xl font-semibold">Free</h3>
                   </div>
 
                   <p className="mt-1 text-sm text-primary-foreground">
@@ -90,7 +90,7 @@ const ProcessSection = () => {
                   </p>
                 </div>
 
-                <div className="h-16 w-px bg-border mx-6 shrink-0" />
+                <div className="h-12 sm:h-16 w-px bg-border mx-1 sm:mx-6 shrink-0" />
 
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ const ProcessSection = () => {
                       <FaExchangeAlt className="text-lg text-primary" />
                     </div>
 
-                    <h3 className="text-3xl font-semibold">P2P</h3>
+                    <h3 className="text-xl sm:text-3xl font-semibold">P2P</h3>
                   </div>
 
                   <p className="mt-1 text-sm text-primary-foreground">

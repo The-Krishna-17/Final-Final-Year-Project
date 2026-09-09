@@ -191,10 +191,10 @@ export default function MeetingsPage() {
   };
 
   return (
-    <div className="container mx-auto max-w-6xl px-6 py-10">
-      <div className="flex justify-between items-center mb-8">
+    <div className="container mx-auto max-w-6xl px-3 py-5 sm:px-6 sm:py-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-semibold text-foreground tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-foreground tracking-tight">
             Meetings
           </h1>
           <p className="text-muted-foreground mt-1.5">
@@ -211,8 +211,8 @@ export default function MeetingsPage() {
       </div>
 
       <Tabs value={filter} onValueChange={(val) => setFilter(val as any)}>
-        <TabsList variant="line" className="flex items-center gap-4 mb-8">
-          <TabsTrigger value="today" className="cursor-pointer gap-2">
+        <TabsList variant="line" className="flex w-full items-center gap-3 overflow-x-auto mb-6 sm:mb-8">
+          <TabsTrigger value="today" className="cursor-pointer whitespace-nowrap gap-2 text-xs sm:text-sm">
             Today
             {todayCount > 0 && (
               <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
@@ -220,7 +220,7 @@ export default function MeetingsPage() {
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="upcoming" className="cursor-pointer gap-2">
+          <TabsTrigger value="upcoming" className="cursor-pointer whitespace-nowrap gap-2 text-xs sm:text-sm">
             Upcoming
             {upcomingCount > 0 && (
               <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
@@ -228,7 +228,7 @@ export default function MeetingsPage() {
               </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="past" className="cursor-pointer gap-2">
+          <TabsTrigger value="past" className="cursor-pointer whitespace-nowrap gap-2 text-xs sm:text-sm">
             Past
             {pastCount > 0 && (
               <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold rounded-full bg-primary text-primary-foreground">
@@ -373,7 +373,7 @@ export default function MeetingsPage() {
 
       {/* Create Meeting Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Video className="w-5 h-5 text-muted-foreground" /> Schedule
@@ -612,7 +612,7 @@ export default function MeetingsPage() {
             };
 
             return (
-              <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-2xl overflow-hidden flex">
+              <DialogContent className="w-[calc(100vw-1.5rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0 rounded-2xl overflow-hidden flex flex-col sm:flex-row">
                 {/* on-air strip */}
                 <div
                   className="w-1.5 shrink-0 bg-primary"
@@ -620,7 +620,7 @@ export default function MeetingsPage() {
 
                 <div className="flex-1 overflow-y-auto max-h-[90vh]">
                   {/* Header */}
-                  <DialogHeader className="px-6 pt-5 pb-4 sticky top-0 z-10 space-y-0 bg-card border-b border-border">
+                  <DialogHeader className="px-4 sm:px-6 pt-5 pb-4 sticky top-0 z-10 space-y-0 bg-card border-b border-border">
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <DialogTitle className="text-lg font-semibold truncate">
                         {selectedMeeting.title}
@@ -641,7 +641,7 @@ export default function MeetingsPage() {
                   </DialogHeader>
 
                   {/* Body */}
-                  <div className="px-6 py-5 flex gap-6">
+                  <div className="px-4 sm:px-6 py-5 flex flex-col sm:flex-row gap-6">
                     <div className="flex-1 space-y-6">
                       <div>
                         <h3 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
@@ -716,7 +716,7 @@ export default function MeetingsPage() {
                   </div>
 
                   {/* Footer */}
-                  <div className="px-6 py-4 flex justify-between items-center sticky bottom-0 bg-card border-t border-border">
+                  <div className="px-4 sm:px-6 py-4 flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center sticky bottom-0 bg-card border-t border-border">
                     <div className="flex gap-2">
                       {isHost(selectedMeeting) &&
                         selectedMeeting.status === "scheduled" && (

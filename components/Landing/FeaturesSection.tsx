@@ -81,7 +81,7 @@ const FeaturesSection = () => {
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
             {chunked.map((group, i) => (
-              <div key={i} className="w-full flex gap-4 shrink-0 px-2 py-4">
+              <div key={i} className="w-full flex flex-col sm:flex-row gap-4 shrink-0 px-2 py-4">
                 {group.map((feature) => {
                   const Icon = feature.icon;
 

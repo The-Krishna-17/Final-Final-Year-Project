@@ -60,10 +60,10 @@ const DashboardNav = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between w-full border-b px-4 py-1.5 sticky top-0 backdrop-blur-md z-50 bg-sidebar">
+    <nav className="flex items-center justify-between w-full border-b px-2 sm:px-4 py-1.5 sticky top-0 backdrop-blur-md z-50 bg-sidebar">
       <SidebarTrigger />
-      <div className="flex items-center gap-8">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-8">
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Notifications Dropdown */}
           <DropdownMenu
             onOpenChange={(open) => open && handleFetchNotifications()}
@@ -200,7 +200,7 @@ const DashboardNav = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center gap-3 cursor-pointer">
-                  <span>
+                  <span className="hidden sm:inline">
                     {user.firstName[0].toUpperCase() +
                       user.firstName.slice(1).toLowerCase() +
                       " " +

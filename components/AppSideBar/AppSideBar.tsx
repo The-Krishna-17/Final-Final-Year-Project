@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +37,7 @@ export function AppSideBar() {
   const { meetings } = useAppSelector((s) => s.meetings);
   const { unreadCount } = useAppSelector((s) => s.notifications);
   const path = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   const [unreadMessages, setUnreadMessages] = useState(0);
 
@@ -46,6 +48,10 @@ export function AppSideBar() {
   const upcomingMeetings = meetings.filter(
     (m) => m.status === "scheduled" || m.status === "ongoing",
   ).length;
+
+  useEffect(() => {
+    if (isMobile) setOpenMobile(false);
+  }, [path, isMobile, setOpenMobile]);
 
   // Fetch initial unread message count
   useEffect(() => {

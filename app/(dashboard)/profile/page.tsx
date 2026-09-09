@@ -279,14 +279,14 @@ const page = () => {
   return (
     <>
       {loadingMe || loadingUser ? (
-        <div className="px-8 py-0 overflow-hidden rounded-xl border bg-card">
+        <div className="px-3 sm:px-8 py-0 overflow-hidden rounded-xl border bg-card">
           {/* Cover strip skeleton */}
-          <Skeleton className="h-24 bg-muted border-b border-border -mx-8" />
+          <Skeleton className="h-20 sm:h-24 bg-muted border-b border-border -mx-3 sm:-mx-8" />
 
-          <div className="flex items-end justify-between flex-wrap gap-4 -mt-12 pb-0 px-0">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between flex-wrap gap-4 -mt-10 sm:-mt-12 pb-0 px-0">
             {/* Avatar + info */}
-            <div className="flex items-end gap-5">
-              <Skeleton className="h-24 w-24 rounded-full shrink-0 border-[3px] border-background" />
+            <div className="flex items-end gap-3 sm:gap-5">
+              <Skeleton className="h-20 w-20 sm:h-24 sm:w-24 rounded-full shrink-0 border-[3px] border-background" />
 
               <div className="pb-1 space-y-2">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -299,14 +299,14 @@ const page = () => {
             </div>
 
             {/* Action buttons */}
-            <div className="flex items-center gap-2 pb-1">
+            <div className="flex w-full items-center gap-2 pb-1 sm:w-auto">
               <Skeleton className="h-8 w-28 rounded-full" />
               <Skeleton className="h-8 w-32 rounded-full" />
             </div>
           </div>
 
           {/* Stats strip */}
-          <div className="grid grid-cols-4 gap-2 mt-6 pt-5 border-t pb-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-6 pt-5 border-t pb-6">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="bg-muted rounded-lg px-3 py-3 space-y-2">
                 <Skeleton className="h-3 w-12" />
@@ -317,9 +317,9 @@ const page = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          <Card className="px-8 py-0 overflow-hidden">
+          <Card className="px-3 sm:px-8 py-0 overflow-hidden">
             {/* Cover strip */}
-            <div className="h-24 -mx-8 border-b border-border relative overflow-hidden">
+            <div className="h-20 sm:h-24 -mx-3 sm:-mx-8 border-b border-border relative overflow-hidden">
               <div className="absolute inset-0 bg-linear-to-r from-primary/60 via-primary/70 to-primary/50 dark:from-primary/20 dark:via-primary/30 dark:to-primary/10" />
               <svg
                 className="absolute inset-0 w-full h-full"
@@ -451,9 +451,9 @@ const page = () => {
               </svg>
             </div>
 
-            <div className="flex items-end justify-between flex-wrap gap-4 -mt-12 pb-0">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between flex-wrap gap-4 -mt-10 sm:-mt-12 pb-0">
               {/* Avatar + info */}
-              <div className="flex items-end gap-5">
+              <div className="flex items-end gap-3 sm:gap-5">
                 <div
                   className="relative cursor-pointer group w-fit"
                   onClick={openFilePicker}
@@ -470,10 +470,10 @@ const page = () => {
                     <img
                       src={user.avatar}
                       alt="profile picture"
-                      className="h-24 w-24 rounded-full border-[3px] border-background ring-1 ring-border object-cover object-center transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]"
+                      className="h-20 w-20 sm:h-24 sm:w-24 rounded-full border-[3px] border-background ring-1 ring-border object-cover object-center transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]"
                     />
                   ) : (
-                    <Avatar className="h-24 w-24 border-[3px] border-background ring-1 ring-border transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]">
+                    <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-[3px] border-background ring-1 ring-border transition-all duration-200 group-hover:brightness-60 group-hover:scale-[1.03]">
                       <AvatarFallback className="text-2xl bg-muted text-primary">
                         {user?.firstName?.[0]?.toUpperCase()}
                         {user?.lastName?.[0]?.toUpperCase()}
@@ -529,7 +529,7 @@ const page = () => {
                   <span className="absolute bottom-1 right-1.5 w-3.5 h-3.5 rounded-full bg-success border-2 border-background group-hover:opacity-0 transition-opacity duration-200" />
                 </div>
 
-                <div className="pb-1 mt-8">
+                <div className="pb-1 mt-4 sm:mt-8 min-w-0">
                   <p className="text-lg font-medium">
                     {user &&
                       user?.firstName?.[0]?.toUpperCase() +
@@ -550,12 +550,12 @@ const page = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-2 pb-1">
+              <div className="flex w-full items-center gap-2 pb-1 sm:w-auto">
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button
                       variant={"outline"}
-                      className="flex items-center gap-2"
+                      className="flex-1 flex items-center justify-center gap-2 sm:flex-none"
                     >
                       <ClipboardEdit />
                       Edit Profile
@@ -563,11 +563,11 @@ const page = () => {
                   </DialogTrigger>
 
                   <DialogContent
-                    className="p-0 min-w-140 max-h-[90vh] overflow-y-auto rounded-2xl border border-border"
+                    className="w-[calc(100vw-1.5rem)] sm:min-w-140 p-0 max-h-[90vh] overflow-y-auto rounded-2xl border border-border"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                   >
                     {/* ── Hero Banner ── */}
-                    <div className="relative overflow-visible bg-linear-to-r from-primary/60 via-primary/70 to-primary/50 dark:from-primary/20 dark:via-primary/30 dark:to-primary/10 px-7 pt-6 pb-10">
+                    <div className="relative overflow-visible bg-linear-to-r from-primary/60 via-primary/70 to-primary/50 dark:from-primary/20 dark:via-primary/30 dark:to-primary/10 px-4 sm:px-7 pt-6 pb-10">
                       {/* Decorative SVG */}
                       <div className="absolute inset-0 overflow-hidden rounded-t-2xl">
                         <svg
@@ -1089,7 +1089,7 @@ const page = () => {
 
                 <Button
                   onClick={() => router.push("/change-password")}
-                  className="flex items-center gap-2"
+                  className="flex-1 flex items-center justify-center gap-2 sm:flex-none"
                 >
                   <IoKeyOutline />
                   Change Password
@@ -1164,10 +1164,10 @@ const page = () => {
             </div>
           </Card>
 
-          <div className="grid grid-cols-3 gap-6">
-            <div className="col-span-2 space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-2 space-y-4">
               {/* Professional Summary */}
-              <Card className="px-8">
+              <Card className="px-4 sm:px-8">
                 <CardHeader className="px-0">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <IoBagOutline className="text-xl" />
@@ -1194,7 +1194,7 @@ const page = () => {
               </Card>
 
               {/* Work Experience */}
-              <Card className="px-8">
+              <Card className="px-4 sm:px-8">
                 <CardHeader className="px-0">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <IoTimerOutline className="text-xl" />
@@ -1291,7 +1291,7 @@ const page = () => {
             </div>
 
             {/* Social Profile */}
-            <Card className="px-8 h-fit">
+            <Card className="px-4 sm:px-8 h-fit">
               <CardHeader className="px-0">
                 <CardTitle className="text-lg flex items-center gap-2">
                   <IoShareSocialOutline className="text-xl" />
