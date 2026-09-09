@@ -93,8 +93,8 @@ export function AppSideBar() {
     };
   }, [user, path]);
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     router.push("/");
     toast.success("Logged out successfully");
   };

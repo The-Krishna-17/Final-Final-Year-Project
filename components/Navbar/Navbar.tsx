@@ -42,8 +42,8 @@ const Navbar = () => {
     fetchUser();
   }, []);
 
-  const handleLogout = () => {
-    dispatch(logoutUser());
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     router.push("/");
     toast.success("Logged out successfully");
   };
