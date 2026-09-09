@@ -257,6 +257,8 @@ export const AddSkillDialog = ({
   const [step, setStep] = useState<Step>("form");
   const [form, setForm] = useState<SkillFormState>(EMPTY_FORM);
   const [clarificationAnswer, setClarificationAnswer] = useState("");
+  const [clarificationHistory, setClarificationHistory] = useState<string[]>([]);
+  const [submittedDescription, setSubmittedDescription] = useState("");
 
   // Editable AI fields (user can correct after preview)
   const [editablePrimarySkill, setEditablePrimarySkill] = useState("");
@@ -277,6 +279,8 @@ export const AddSkillDialog = ({
     setStep("form");
     setForm(EMPTY_FORM);
     setClarificationAnswer("");
+    setClarificationHistory([]);
+    setSubmittedDescription("");
     setEditablePrimarySkill("");
     setEditableDomain("");
     setEditableCategory("");
@@ -291,7 +295,15 @@ export const AddSkillDialog = ({
   // ── Step 1: submit description to AI ─────────────────────────────────────
 
   const handleAnalyse = async () => {
-    const desc = clarificationAnswer.trim() || form.description.trim();
+    const answer = clarificationAnswer.trim();
+    const originalDescription = form.description.trim();
+    const isClarifying = step === "clarification";
+    const desc = isClarifying
+      ? [originalDescription, ...clarificationHistory, answer]
+          .filter(Boolean)
+          .join("\nAdditional clarification: ")
+      : originalDescription;
+
     if (!desc) {
       toast.error("Please describe the skill first.");
       return;
@@ -312,8 +324,13 @@ export const AddSkillDialog = ({
       ).unwrap();
 
       const p: SkillPreview = result.data.preview;
+      setSubmittedDescription(desc);
 
       if (p.ai.needsClarification) {
+        if (isClarifying && answer) {
+          setClarificationHistory((history) => [...history, answer]);
+        }
+        setClarificationAnswer("");
         setStep("clarification");
         return;
       }
@@ -334,7 +351,11 @@ export const AddSkillDialog = ({
     if (!preview) return;
 
     const payload = {
-      description: form.description.trim() || clarificationAnswer.trim(),
+      description:
+        submittedDescription ||
+        [form.description.trim(), ...clarificationHistory]
+          .filter(Boolean)
+          .join("\nAdditional clarification: "),
       currentLevel: form.currentLevel || undefined,
       experience: form.experience || undefined,
       goal: form.goal || undefined,
@@ -698,7 +719,12 @@ export const AddSkillDialog = ({
                     <Button
                       variant="outline"
                       className="flex-1"
-                      onClick={() => setStep("form")}
+                      onClick={() => {
+                        setClarificationAnswer("");
+                        setClarificationHistory([]);
+                        setSubmittedDescription("");
+                        setStep("form");
+                      }}
                     >
                       <ChevronLeft className="mr-2 h-4 w-4" />
                       Back
@@ -898,7 +924,12 @@ export const AddSkillDialog = ({
                     <Button
                       variant="outline"
                       className="flex-1"
-                      onClick={() => setStep("form")}
+                      onClick={() => {
+                        setClarificationAnswer("");
+                        setClarificationHistory([]);
+                        setSubmittedDescription("");
+                        setStep("form");
+                      }}
                     >
                       <ChevronLeft className="mr-2 h-4 w-4" />
                       Edit Form
